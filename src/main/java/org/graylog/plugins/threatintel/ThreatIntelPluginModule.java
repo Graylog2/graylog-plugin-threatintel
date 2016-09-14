@@ -3,7 +3,7 @@ package org.graylog.plugins.threatintel;
 import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
-import org.graylog.plugins.threatintel.pipelines.functions.ThreatIntelDomainLookupFunction;
+import org.graylog.plugins.threatintel.pipelines.functions.OTXDomainLookupFunction;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
@@ -20,7 +20,7 @@ public class ThreatIntelPluginModule extends PluginModule {
 
     @Override
     protected void configure() {
-        addMessageProcessorFunction(ThreatIntelDomainLookupFunction.NAME, ThreatIntelDomainLookupFunction.class);
+        addMessageProcessorFunction(OTXDomainLookupFunction.NAME, OTXDomainLookupFunction.class);
     }
 
     protected void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {
