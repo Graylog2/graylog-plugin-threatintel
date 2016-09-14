@@ -1,3 +1,5 @@
+# This plugin is in development. Do not use yet.
+
 # ThreatIntelPlugin Plugin for Graylog
 
 [![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-threatintel.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-threatintel)
