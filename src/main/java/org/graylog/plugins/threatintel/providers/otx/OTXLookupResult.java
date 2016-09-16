@@ -10,12 +10,15 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
 
     private final ImmutableMap<String, Object> results;
 
+    public static final OTXLookupResult EMPTY = new EmptyOTXLookupResult();
+    public static final OTXLookupResult FALSE = new FalseOTXLookupResult();
+
     public static OTXLookupResult buildFromIntel(OTXIntel intel) {
         if(intel.getPulseCount() > 0) {
             ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
 
             // Indicator that we threat intelligence was returned for the query.
-            builder.put("otx_threat_matches", true);
+            builder.put("otx_threat_indicated", true);
 
             // Add metadata.
             Joiner joiner = Joiner.on(", ").skipNulls();
@@ -24,7 +27,7 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
 
             return new OTXLookupResult(builder.build());
         } else {
-            return new EmptyOTXLookupResult();
+            return OTXLookupResult.FALSE;
         }
     }
 
@@ -39,6 +42,16 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
     @Override
     protected Map<String, Object> delegate() {
         return getResults();
+    }
+
+    private static class FalseOTXLookupResult extends OTXLookupResult {
+        private static final ImmutableMap<String, Object> EMPTY = ImmutableMap.<String, Object>builder()
+                .put("otx_threat_matches", false)
+                .build();
+
+        private FalseOTXLookupResult() {
+            super(EMPTY);
+        }
     }
 
     private static class EmptyOTXLookupResult extends OTXLookupResult {

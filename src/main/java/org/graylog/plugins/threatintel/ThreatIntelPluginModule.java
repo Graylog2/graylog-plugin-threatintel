@@ -4,6 +4,7 @@ import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.threatintel.pipelines.functions.OTXDomainLookupFunction;
+import org.graylog.plugins.threatintel.providers.otx.OTXDomainLookupProvider;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;

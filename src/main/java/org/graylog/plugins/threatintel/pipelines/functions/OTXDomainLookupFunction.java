@@ -1,13 +1,18 @@
 package org.graylog.plugins.threatintel.pipelines.functions;
 
+import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.expressions.Expression;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
+import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.providers.otx.OTXDomainLookupProvider;
+import org.graylog.plugins.threatintel.providers.otx.OTXIntel;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupResult;
+import org.graylog2.plugin.LocalMetricRegistry;
+import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +28,22 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
 
     private final OTXDomainLookupProvider provider;
 
+    private final LocalMetricRegistry metrics;
+
     private final ParameterDescriptor<String, String> valueParam;
 
-    public OTXDomainLookupFunction() {
+    private ThreatIntelPluginConfiguration config;
+
+    @Inject
+    public OTXDomainLookupFunction(final ClusterConfigService clusterConfigService,
+                                   final LocalMetricRegistry localRegistry) {
+        // meh meh meh
+        OTXDomainLookupProvider.getInstance().initialize(clusterConfigService, localRegistry);
+
         this.provider = OTXDomainLookupProvider.getInstance();
         this.valueParam = ParameterDescriptor.string(VALUE).description("The domain to look up. Example: foo.example.org").build();
+
+        this.metrics = localRegistry;
     }
 
     @Override
@@ -38,10 +54,18 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
     @Override
     public OTXLookupResult evaluate(FunctionArgs args, EvaluationContext context) {
         final String domain = valueParam.required(args, context);
+
         LOG.debug("Running OTX lookup for domain [{}].", domain);
 
         try {
-            return OTXLookupResult.buildFromIntel(provider.lookup(domain));
+            OTXIntel result = provider.lookup(domain);
+
+            // It might return null in case of missing or invalid configuration.
+            if(result == null) {
+                return OTXLookupResult.EMPTY;
+            }
+
+            return OTXLookupResult.buildFromIntel(result);
         } catch (ExecutionException e) {
             LOG.error("Could not lookup OTX threat intelligence for domain [{}].", domain, e);
             return null;
