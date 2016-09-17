@@ -46,7 +46,7 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
 
     private static class FalseOTXLookupResult extends OTXLookupResult {
         private static final ImmutableMap<String, Object> EMPTY = ImmutableMap.<String, Object>builder()
-                .put("otx_threat_matches", false)
+                .put("otx_threat_indicated", false)
                 .build();
 
         private FalseOTXLookupResult() {
