@@ -7,7 +7,6 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
-import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.providers.otx.OTXDomainLookupProvider;
 import org.graylog.plugins.threatintel.providers.otx.OTXIntel;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupResult;
@@ -23,16 +22,13 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
     private static final Logger LOG = LoggerFactory.getLogger(OTXDomainLookupFunction.class);
 
     public static final String NAME = "otx_lookup_domain";
-
     private static final String VALUE = "domain_name";
+
+    private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The domain to look up. Example: foo.example.org (A trailing dot ('.') will be ignored.)").build();
 
     private final OTXDomainLookupProvider provider;
 
     private final LocalMetricRegistry metrics;
-
-    private final ParameterDescriptor<String, String> valueParam;
-
-    private ThreatIntelPluginConfiguration config;
 
     @Inject
     public OTXDomainLookupFunction(final ClusterConfigService clusterConfigService,
@@ -41,9 +37,21 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
         OTXDomainLookupProvider.getInstance().initialize(clusterConfigService, localRegistry);
 
         this.provider = OTXDomainLookupProvider.getInstance();
-        this.valueParam = ParameterDescriptor.string(VALUE).description("The domain to look up. Example: foo.example.org").build();
-
         this.metrics = localRegistry;
+    }
+
+    private OTXDomainLookupFunction() {
+        this.provider = null;
+        this.metrics = null;
+    }
+
+    /**
+     * Useful for testing.
+     *
+     * @return the function but without an initialized lookup provider or any dependencies.
+     */
+    public static OTXDomainLookupFunction buildStateless() {
+        return new OTXDomainLookupFunction();
     }
 
     @Override
@@ -53,7 +61,13 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
 
     @Override
     public OTXLookupResult evaluate(FunctionArgs args, EvaluationContext context) {
-        final String domain = valueParam.required(args, context);
+        String domain = valueParam.required(args, context);
+        if (domain == null) {
+            LOG.error("NULL parameter passed to OTX threat intel lookup.");
+            return null;
+        }
+
+        domain = prepareDomain(domain);
 
         LOG.debug("Running OTX lookup for domain [{}].", domain);
 
@@ -70,6 +84,18 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
             LOG.error("Could not lookup OTX threat intelligence for domain [{}].", domain, e);
             return null;
         }
+    }
+
+    public String prepareDomain(String domain) {
+        // A typical issue is regular expressions that also capture a whitespace at the beginning or the end.
+        domain = domain.trim();
+
+        // Some systems will capture DNS requests with a trailing '.'. Remove that for the lookup.
+        if(domain.endsWith(".")) {
+            domain = domain.substring(0, domain.length()-1);
+        }
+
+        return domain;
     }
 
     @Override
