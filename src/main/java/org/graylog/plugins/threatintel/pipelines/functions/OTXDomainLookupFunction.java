@@ -15,6 +15,8 @@ import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ExecutionException;
+
 public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OTXDomainLookupFunction.class);
@@ -78,7 +80,7 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
             }
 
             return OTXLookupResult.buildFromIntel(result);
-        } catch (Exception e) {
+        } catch (ExecutionException e) {
             LOG.error("Could not lookup OTX threat intelligence for domain [{}].", domain, e);
             return null;
         }
@@ -97,8 +99,8 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
     }
 
     @Override
-    public FunctionDescriptor<OTXLookupResult> descriptor() {
-        return FunctionDescriptor.<OTXLookupResult>builder()
+    public FunctionDescriptor descriptor() {
+        return FunctionDescriptor.builder()
                 .name(NAME)
                 .description("Look up AlienVault OTX threat intelligence data for a domain name.")
                 .params(valueParam)
