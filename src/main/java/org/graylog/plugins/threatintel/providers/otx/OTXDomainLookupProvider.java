@@ -1,5 +1,8 @@
 package org.graylog.plugins.threatintel.providers.otx;
 
+import com.codahale.metrics.Gauge;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.Timer;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.CacheBuilder;
@@ -25,6 +28,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.codahale.metrics.MetricRegistry.name;
+
 public class OTXDomainLookupProvider {
 
     /* TODO:
@@ -44,6 +49,11 @@ public class OTXDomainLookupProvider {
     private ObjectMapper om;
     private boolean initialized = false;
     private ThreatIntelPluginConfiguration config;
+
+    private LocalMetricRegistry metrics;
+
+    private Meter lookupCount;
+    private Timer lookupTiming;
 
     private OTXDomainLookupProvider() {
         this.cache = CacheBuilder.newBuilder()
@@ -69,7 +79,7 @@ public class OTXDomainLookupProvider {
     }
 
     public void initialize(final ClusterConfigService clusterConfigService,
-                      final LocalMetricRegistry localRegistry) {
+                           final LocalMetricRegistry localRegistry) {
         if(initialized) {
             return;
         }
@@ -92,10 +102,22 @@ public class OTXDomainLookupProvider {
 
         executor.scheduleWithFixedDelay(refresh, 0, 15, TimeUnit.SECONDS);
 
+        // Metrics.
+        this.lookupCount = metrics.meter(name(OTXDomainLookupProvider.class, "lookupCount"));
+        this.lookupTiming = metrics.timer(name(OTXDomainLookupProvider.class, "lookupTime"));
+        metrics.register(name(OTXDomainLookupProvider.class, "cacheSize"), (Gauge<Long>) cache::size);
+        metrics.register(name(OTXDomainLookupProvider.class, "cacheHitRate"), (Gauge<Double>) () -> cache.stats().hitRate());
+        metrics.register(name(OTXDomainLookupProvider.class, "cacheMissRate"), (Gauge<Double>) () -> cache.stats().missRate());
+        metrics.register(name(OTXDomainLookupProvider.class, "cacheExceptionRate"), (Gauge<Double>) () -> cache.stats().loadExceptionRate());
+
         this.initialized = true;
     }
 
-    public OTXIntel lookup(String domain) throws ExecutionException {
+    public OTXIntel lookup(String domain) throws Exception {
+        if(!initialized) {
+            throw new IllegalAccessException("Provider is not initialized.");
+        }
+
         // See if we are supposed to run at all.
         if(this.config == null || !this.config.otxEnabled()) {
             LOG.warn("OTX domain lookup requested but OTX is not enabled in configuration. Please enable it first.");
@@ -112,6 +134,8 @@ public class OTXDomainLookupProvider {
 
     private OTXIntel loadIntel(String domain) throws IOException {
         LOG.debug("Loading OTX threat intel for domain [{}].", domain);
+
+        this.lookupCount.mark();
 
         // TODO: make timeouts configurable.
         OkHttpClient client = new OkHttpClient.Builder()
@@ -137,7 +161,9 @@ public class OTXDomainLookupProvider {
                 .build()
         );
 
+        Timer.Context timer = this.lookupTiming.time();
         Response response = request.execute();
+        timer.stop();
 
         if(response.code() != 200) {
             throw new IOException("Expected OTX threat intel API HTTP status 200 but got [" + response.code() + "].");
