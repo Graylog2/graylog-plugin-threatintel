@@ -1,4 +1,4 @@
-package org.graylog.plugins.threatintel.pipelines.functions;
+package org.graylog.plugins.threatintel.providers.otx.domain;
 
 import org.junit.Test;
 

@@ -1,5 +1,6 @@
-package org.graylog.plugins.threatintel.pipelines.functions;
+package org.graylog.plugins.threatintel.providers.otx.domain;
 
+import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.expressions.Expression;
@@ -7,10 +8,9 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
-import org.graylog.plugins.threatintel.providers.otx.OTXDomainLookupProvider;
 import org.graylog.plugins.threatintel.providers.otx.OTXIntel;
+import org.graylog.plugins.threatintel.providers.otx.OTXLookupProvider;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupResult;
-import org.graylog2.plugin.LocalMetricRegistry;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,23 +24,18 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
 
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The domain to look up. Example: foo.example.org (A trailing dot ('.') will be ignored.)").build();
 
-    private final OTXDomainLookupProvider provider;
-
-    private final LocalMetricRegistry metrics;
+    private final OTXLookupProvider provider;
 
     @Inject
     public OTXDomainLookupFunction(final ClusterConfigService clusterConfigService,
-                                   final LocalMetricRegistry localRegistry) {
-        // meh meh meh
-        OTXDomainLookupProvider.getInstance().initialize(clusterConfigService, localRegistry);
+                                   final MetricRegistry metricRegistry) {
+        OTXDomainLookupProvider.getInstance().initialize(clusterConfigService, metricRegistry);
 
         this.provider = OTXDomainLookupProvider.getInstance();
-        this.metrics = localRegistry;
     }
 
     private OTXDomainLookupFunction() {
         this.provider = null;
-        this.metrics = null;
     }
 
     /**
