@@ -49,7 +49,7 @@ public abstract class OTXLookupProvider {
                 })
                 .build(new CacheLoader<String, OTXLookupResult>() {
                     public OTXLookupResult load(String key) throws ExecutionException {
-                        LOG.info("OTX threat intel cache MISS: [{}]", key); // TODO set debug
+                        LOG.debug("OTX threat intel cache MISS: [{}]", key);
                         OTXIntel intel = loadIntel(key);
 
                         if(intel == null) {
