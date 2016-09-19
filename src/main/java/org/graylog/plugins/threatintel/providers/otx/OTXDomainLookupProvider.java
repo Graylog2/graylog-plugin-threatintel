@@ -3,11 +3,6 @@ package org.graylog.plugins.threatintel.providers.otx;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
@@ -30,13 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
-public class OTXDomainLookupProvider {
+public class OTXDomainLookupProvider extends OTXLookupProvider {
 
-    /* TODO:
-     *   metrics. how many requests actually went to api, cache misses, ...
-     */
     private static final Logger LOG = LoggerFactory.getLogger(OTXDomainLookupProvider.class);
-
 
     private static OTXDomainLookupProvider INSTANCE = new OTXDomainLookupProvider();
 
@@ -44,42 +35,16 @@ public class OTXDomainLookupProvider {
         return INSTANCE;
     }
 
-    private final LoadingCache<String, OTXIntel> cache;
-
-    private ObjectMapper om;
     private boolean initialized = false;
     private ThreatIntelPluginConfiguration config;
-
-    private LocalMetricRegistry metrics;
 
     private Meter lookupCount;
     private Timer lookupTiming;
 
-    private OTXDomainLookupProvider() {
-        this.cache = CacheBuilder.newBuilder()
-                .expireAfterWrite(15, TimeUnit.MINUTES) // TODO make configurable. also add maximum # of entries
-                .removalListener(removalNotification -> {
-                    LOG.trace("Invalidating cached threat intel information for key [{}].", removalNotification.getKey());
-                })
-                .build(new CacheLoader<String, OTXIntel>() {
-                    public OTXIntel load(String domain) throws ExecutionException {
-                        LOG.trace("OTX threat intel cache MISS: [{}]", domain);
-                        try {
-                            return loadIntel(domain);
-                        } catch (IOException e) {
-                            throw new ExecutionException(e);
-                        }
-                    }
-                });
-
-        // TODO it should be possible to get this injected.
-        this.om = new ObjectMapper();
-        om.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
+    private OTXDomainLookupProvider() {}
 
     public void initialize(final ClusterConfigService clusterConfigService,
-                           final LocalMetricRegistry localRegistry) {
+                           final LocalMetricRegistry metrics) {
         if(initialized) {
             return;
         }
@@ -132,7 +97,8 @@ public class OTXDomainLookupProvider {
         return this.cache.get(domain);
     }
 
-    private OTXIntel loadIntel(String domain) throws IOException {
+    @Override
+    protected OTXIntel loadIntel(String domain) throws ExecutionException {
         LOG.debug("Loading OTX threat intel for domain [{}].", domain);
 
         this.lookupCount.mark();
@@ -161,26 +127,31 @@ public class OTXDomainLookupProvider {
                 .build()
         );
 
-        Timer.Context timer = this.lookupTiming.time();
-        Response response = request.execute();
-        timer.stop();
+        try {
+            Timer.Context timer = this.lookupTiming.time();
+            Response response = request.execute();
+            timer.stop();
 
-        if(response.code() != 200) {
-            throw new IOException("Expected OTX threat intel API HTTP status 200 but got [" + response.code() + "].");
-        }
-
-        // Parse response.
-        OTXDomainResponse otx = om.readValue(response.body().string(), OTXDomainResponse.class);
-        OTXIntel intel = new OTXIntel();
-        if(otx.pulseInfo != null && otx.pulseInfo.pulses != null) {
-            for (OTXPulseResponse pulse : otx.pulseInfo.pulses) {
-                intel.addPulse(new OTXPulse(pulse.id, pulse.name));
+            if(response.code() != 200) {
+                throw new ExecutionException("Expected OTX threat intel API HTTP status 200 but got [" + response.code() + "].", null);
             }
-        } else {
-            LOG.warn("Unexpected OTX domain threat intel lookup API response: {}", response.body().string().substring(0, 255));
+
+            // Parse response.
+            OTXIntel intel = new OTXIntel();
+            OTXDomainResponse otx = om.readValue(response.body().string(), OTXDomainResponse.class);
+            if (otx.pulseInfo != null && otx.pulseInfo.pulses != null) {
+                for (OTXPulseResponse pulse : otx.pulseInfo.pulses) {
+                    intel.addPulse(new OTXPulse(pulse.id, pulse.name));
+                }
+            } else {
+                LOG.warn("Unexpected OTX domain threat intel lookup API response: {}", response.body().string().substring(0, 255));
+            }
+
+            return intel;
+        } catch(IOException e) {
+            throw new ExecutionException("Could not load OTX response.", e);
         }
 
-        return intel;
     }
 
     public void setConfig(ThreatIntelPluginConfiguration config) {

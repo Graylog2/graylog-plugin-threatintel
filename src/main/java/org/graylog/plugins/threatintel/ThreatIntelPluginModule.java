@@ -8,6 +8,8 @@ import org.graylog.plugins.threatintel.providers.otx.OTXDomainLookupProvider;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Set;
