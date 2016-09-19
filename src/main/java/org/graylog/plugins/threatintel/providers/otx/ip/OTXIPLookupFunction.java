@@ -8,7 +8,6 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
-import org.graylog.plugins.threatintel.providers.otx.OTXIntel;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupProvider;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupResult;
 import org.graylog2.plugin.cluster.ClusterConfigService;
@@ -53,14 +52,7 @@ public class OTXIPLookupFunction implements Function<OTXLookupResult> {
         LOG.debug("Running OTX lookup for IP [{}].", ip);
 
         try {
-            OTXIntel result = provider.lookup(ip);
-
-            // It might return null in case of missing or invalid configuration.
-            if(result == null) {
-                return OTXLookupResult.EMPTY;
-            }
-
-            return OTXLookupResult.buildFromIntel(result);
+            return provider.lookup(ip);
         } catch (Exception e) {
             LOG.error("Could not lookup OTX threat intelligence for IP [{}].", ip, e);
             return null;

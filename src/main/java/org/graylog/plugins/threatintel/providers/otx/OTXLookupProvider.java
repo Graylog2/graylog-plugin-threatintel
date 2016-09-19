@@ -32,7 +32,7 @@ public abstract class OTXLookupProvider {
 
     protected static final Logger LOG = LoggerFactory.getLogger(OTXLookupProvider.class);
 
-    protected final LoadingCache<String, OTXIntel> cache;
+    protected final LoadingCache<String, OTXLookupResult> cache;
     protected final ObjectMapper om;
 
     protected Meter lookupCount;
@@ -47,10 +47,16 @@ public abstract class OTXLookupProvider {
                 .removalListener(removalNotification -> {
                     LOG.trace("Invalidating cached threat intel information for key [{}].", removalNotification.getKey());
                 })
-                .build(new CacheLoader<String, OTXIntel>() {
-                    public OTXIntel load(String key) throws ExecutionException {
+                .build(new CacheLoader<String, OTXLookupResult>() {
+                    public OTXLookupResult load(String key) throws ExecutionException {
                         LOG.info("OTX threat intel cache MISS: [{}]", key); // TODO set debug
-                        return loadIntel(key);
+                        OTXIntel intel = loadIntel(key);
+
+                        if(intel == null) {
+                            return OTXLookupResult.EMPTY;
+                        }
+
+                        return OTXLookupResult.buildFromIntel(intel);
                     }
                 });
 
@@ -95,7 +101,7 @@ public abstract class OTXLookupProvider {
         this.initialized = true;
     }
 
-    public OTXIntel lookup(String key) throws Exception {
+    public OTXLookupResult lookup(String key) throws Exception {
         if(!initialized) {
             throw new IllegalAccessException("Provider is not initialized.");
         }
