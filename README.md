@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-threatintel.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-threatintel)
 
-**Required Graylog version:** 2.1.1 and later
+**Required Graylog version:** 2.1.0 and later
 
 This plugin adds [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) functions to enrich log messages with threat intelligence data. 
 
