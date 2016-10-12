@@ -1,12 +1,30 @@
-# This plugin is in development. Do not use yet.
-
-# ThreatIntelPlugin Plugin for Graylog
+# Threat Intelligence Plugin for Graylog
 
 [![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-threatintel.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-threatintel)
 
-__Use this paragraph to enter a description of your plugin.__
+**Required Graylog version:** 2.1.1 and later
 
-**Required Graylog version:** 2.0 and later
+This plugin adds [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) functions to enrich log messages with threat intelligence data. 
+
+It currently supports the following data feeds:
+
+* [AlienVault Open Threat Exchange (OTX)](https://otx.alienvault.com/)
+  * IP addresses
+  * Hostnames
+* Tor exit nodes
+  * IP addresses
+
+```
+let intel = otx_lookup_ip(to_string($message.src_addr));
+
+set_field("threat_indicated", intel.otx_threat_indicated);
+set_field("threat_ids", intel.otx_threat_ids);
+set_field("threat_names", intel.otx_threat_names);
+```
+
+![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example.png)
+
+Please read the usage instructions below for more information.
 
 Installation
 ------------
