@@ -22,7 +22,7 @@ set_field("threat_ids", intel.otx_threat_ids);
 set_field("threat_names", intel.otx_threat_names);
 ```
 
-![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example.png)
+![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example.jpg)
 
 Please read the usage instructions below for more information.
 
