@@ -4,6 +4,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.expressions.Expression;
+import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
@@ -14,7 +15,7 @@ import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
+public class OTXDomainLookupFunction extends AbstractFunction<OTXLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OTXDomainLookupFunction.class);
 
@@ -44,11 +45,6 @@ public class OTXDomainLookupFunction implements Function<OTXLookupResult> {
      */
     public static OTXDomainLookupFunction buildStateless() {
         return new OTXDomainLookupFunction();
-    }
-
-    @Override
-    public Object preComputeConstantArgument(FunctionArgs args, String s, Expression arg) {
-        return arg.evaluateUnsafe(EvaluationContext.emptyContext());
     }
 
     @Override

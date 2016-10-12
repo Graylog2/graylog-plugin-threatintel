@@ -4,7 +4,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.expressions.Expression;
-import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
+import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
@@ -14,7 +14,7 @@ import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OTXIPLookupFunction implements Function<OTXLookupResult> {
+public class OTXIPLookupFunction extends AbstractFunction<OTXLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OTXIPLookupFunction.class);
 
@@ -52,7 +52,7 @@ public class OTXIPLookupFunction implements Function<OTXLookupResult> {
         LOG.debug("Running OTX lookup for IP [{}].", ip);
 
         try {
-            return provider.lookup(ip);
+            return provider.lookup(ip.trim());
         } catch (Exception e) {
             LOG.error("Could not lookup OTX threat intelligence for IP [{}].", ip, e);
             return null;
