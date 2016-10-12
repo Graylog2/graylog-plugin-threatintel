@@ -36,6 +36,11 @@ and can be configured in your `graylog.conf` file.
 
 Restart `graylog-server` and you are done.
 
+Usage
+-----
+
+__Use this paragraph to document the usage of your plugin__
+
 Development
 -----------
 
@@ -46,12 +51,6 @@ dramatically by making use of hot reloading. To do this, do the following:
 * `cd graylog2-server/graylog2-web-interface`
 * `ln -s $YOURPLUGIN plugin/`
 * `npm install && npm start`
-
-Usage
------
-
-__Use this paragraph to document the usage of your plugin__
-
 
 Getting started
 ---------------
