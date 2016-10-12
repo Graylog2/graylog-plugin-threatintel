@@ -5,6 +5,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
+import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
@@ -24,6 +25,9 @@ public class ThreatIntelPluginModule extends PluginModule {
         // AlienVault OTX threat intel lookup.
         addMessageProcessorFunction(OTXDomainLookupFunction.NAME, OTXDomainLookupFunction.class);
         addMessageProcessorFunction(OTXIPLookupFunction.NAME, OTXIPLookupFunction.class);
+
+        // Tor exit node lookup.
+        addMessageProcessorFunction(TorExitNodeLookupFunction.NAME, TorExitNodeLookupFunction.class);
     }
 
     protected void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {
