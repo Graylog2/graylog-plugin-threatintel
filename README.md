@@ -14,6 +14,8 @@ It currently supports the following data feeds:
 * Tor exit nodes
   * IP addresses
 
+[Processing Pipeline Rule](http://docs.graylog.org/en/latest/pages/pipelines/rules.html):
+
 ```
 let intel = otx_lookup_ip(to_string($message.src_addr));
 
