@@ -38,7 +38,7 @@ public class TorExitNodeLookupProvider {
     protected boolean initialized = false;
 
     protected Meter lookupCount;
-    protected Timer lookupTiming;
+    protected Timer refreshTiming;
 
     private TorExitNodeLookupProvider() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
@@ -68,7 +68,7 @@ public class TorExitNodeLookupProvider {
         }
 
         this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
-        this.lookupTiming = metrics.timer(name(this.getClass(), "lookupTime"));
+        this.refreshTiming = metrics.timer(name(this.getClass(), "lookupTime"));
 
         // Initially load exit node table. Doing this here because we need this blocking.
         try {
@@ -120,7 +120,7 @@ public class TorExitNodeLookupProvider {
                 .build());
 
         try {
-            Timer.Context timer = this.lookupTiming.time();
+            Timer.Context timer = this.refreshTiming.time();
             response = request.execute();
             timer.stop();
 
