@@ -68,7 +68,7 @@ public class TorExitNodeLookupProvider {
         }
 
         this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
-        this.refreshTiming = metrics.timer(name(this.getClass(), "lookupTime"));
+        this.refreshTiming = metrics.timer(name(this.getClass(), "refreshTime"));
 
         // Initially load exit node table. Doing this here because we need this blocking.
         try {
@@ -104,7 +104,7 @@ public class TorExitNodeLookupProvider {
 
         // TODO make timeouts configurable
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(15, TimeUnit.SECONDS)
                 .followSslRedirects(true)
                 .build();
