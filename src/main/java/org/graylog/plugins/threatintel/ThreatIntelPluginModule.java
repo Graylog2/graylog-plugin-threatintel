@@ -5,6 +5,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
+import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
@@ -28,6 +29,9 @@ public class ThreatIntelPluginModule extends PluginModule {
 
         // Tor exit node lookup.
         addMessageProcessorFunction(TorExitNodeLookupFunction.NAME, TorExitNodeLookupFunction.class);
+
+        // Spamhaus DROP and EDROP lookup.
+        addMessageProcessorFunction(SpamhausIpLookupFunction.NAME, SpamhausIpLookupFunction.class);
     }
 
     protected void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {
