@@ -43,7 +43,33 @@ Restart `graylog-server` and you are done.
 Usage
 -----
 
-__Use this paragraph to document the usage of your plugin__
+Example [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) rules are following:
+
+### OTX
+
+```
+let intel = otx_lookup_ip(to_string($message.src_addr));
+
+set_field("threat_indicated", intel.otx_threat_indicated);
+set_field("threat_ids", intel.otx_threat_ids);
+set_field("threat_names", intel.otx_threat_names);
+```
+
+### Tor exit nodes
+
+```
+  let intel = tor_lookup(to_string($message.src_addr));
+  set_field("src_addr_is_tor_exit_node", intel.exit_node_indicated);
+```
+
+### Spamhaus DROP/EDROP
+
+```
+  let intel = spamhaus_lookup_ip(to_string($message.src_addr));
+  set_field("threat_indicated", intel.threat_indicated);
+```
+
+Note that you can combine these and change field names as you wish.
 
 Development
 -----------
