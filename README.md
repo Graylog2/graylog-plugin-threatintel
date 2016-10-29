@@ -13,6 +13,8 @@ It currently supports the following data feeds:
   * Hostnames
 * Tor exit nodes
   * IP addresses
+* [Spamhaus DROP/EDROP lists](https://www.spamhaus.org/drop/)
+  * IP addresses
 
 [Processing Pipeline Rule](http://docs.graylog.org/en/latest/pages/pipelines/rules.html):
 
