@@ -16,7 +16,7 @@ It currently supports the following data feeds:
 * [Spamhaus DROP/EDROP lists](https://www.spamhaus.org/drop/)
   * IP addresses
 
-[Processing Pipeline Rule](http://docs.graylog.org/en/latest/pages/pipelines/rules.html):
+### Example
 
 ```
 let intel = otx_lookup_ip(to_string($message.src_addr));
@@ -28,7 +28,7 @@ set_field("threat_names", intel.otx_threat_names);
 
 ![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example.jpg)
 
-Please read the usage instructions below for more information.
+Please read the usage instructions below for more information and specific guides.
 
 Installation
 ------------
