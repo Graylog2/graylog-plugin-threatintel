@@ -8,7 +8,7 @@ This plugin adds [Processing Pipeline](http://docs.graylog.org/en/latest/pages/p
 
 It currently supports the following data feeds:
 
-* [AlienVault Open Threat Exchange (OTX)](https://otx.alienvault.com/)] (One API call per lookup but cached)
+* [AlienVault Open Threat Exchange / OTX](https://otx.alienvault.com/)] (One API call per lookup but cached)
   * IP addresses
   * Hostnames
 * Tor exit nodes
