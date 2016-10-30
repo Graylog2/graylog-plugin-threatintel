@@ -10,6 +10,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
+import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
-public class TorExitNodeLookupProvider {
+public class TorExitNodeLookupProvider extends ConfiguredProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(TorExitNodeLookupProvider.class);
 
@@ -67,6 +69,9 @@ public class TorExitNodeLookupProvider {
             return;
         }
 
+        // Set up config refresher and initial load.
+        initializeConfigRefresh(clusterConfigService);
+
         this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
         this.refreshTiming = metrics.timer(name(this.getClass(), "refreshTime"));
 
@@ -83,6 +88,12 @@ public class TorExitNodeLookupProvider {
     public TorExitNodeLookupResult lookup(String ip) throws Exception {
         if(!initialized) {
             throw new IllegalAccessException("Provider is not initialized.");
+        }
+
+        // See if we are supposed to run at all.
+        if(this.config == null || !this.config.torEnabled()) {
+            LOG.warn("Tor exit node lookup requested but not enabled in configuration. Please enable it first.");
+            return null;
         }
 
         LOG.debug("Loading Tor exit node intel for IP [{}].", ip);

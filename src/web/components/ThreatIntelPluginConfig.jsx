@@ -15,6 +15,8 @@ const ThreatIntelPluginConfig = React.createClass({
             config: {
                 otx_enabled: false,
                 otx_api_key: '',
+                tor_enabled: false,
+                spamhaus_enabled: false
             },
         };
     },
@@ -82,6 +84,12 @@ const ThreatIntelPluginConfig = React.createClass({
                 </p>
 
                 <dl className="deflist">
+                    <dt>Tor exit node lookups:</dt>
+                    <dd>{this.state.config.tor_enabled === true ? 'Enabled' : 'Disabled'}</dd>
+
+                    <dt>Spamhaus lookups:</dt>
+                    <dd>{this.state.config.spamhaus_enabled === true ? 'Enabled' : 'Disabled'}</dd>
+
                     <dt>AlienVault OTX lookups:</dt>
                     <dd>{this.state.config.otx_enabled === true ? 'Enabled' : 'Disabled'}</dd>
 
@@ -94,11 +102,27 @@ const ThreatIntelPluginConfig = React.createClass({
                 </IfPermitted>
 
                 <BootstrapModalForm ref="threatintelConfigModal"
-                                    title="Update AWS Plugin Configuration"
+                                    title="Update Threat Intelligence plugin Configuration"
                                     onSubmitForm={this._saveConfig}
                                     onModalClose={this._resetConfig}
                                     submitButtonText="Save">
                     <fieldset>
+                        <Input type="checkbox"
+                               ref="torEnabled"
+                               label="Allow Tor exit node lookups?"
+                               help={<span>When enabled, the Tor exit node lookup pipeline functions can be executed.</span>}
+                               name="tor_enabled"
+                               checked={this.state.config.tor_enabled}
+                               onChange={this._onCheckboxClick('tor_enabled', 'torEnabled')}/>
+
+                        <Input type="checkbox"
+                               ref="spamhausEnabled"
+                               label="Allow Spamhaus DROP/EDROP lookups?"
+                               help={<span>When enabled, the Spamhaus pipeline functions can be executed.</span>}
+                               name="tor_enabled"
+                               checked={this.state.config.spamhaus_enabled}
+                               onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')}/>
+
                         <Input type="checkbox"
                                ref="otxEnabled"
                                label="Allow AlienVault OTX lookups?"

@@ -14,6 +14,7 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
+import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
 import org.graylog.plugins.threatintel.providers.otx.json.OTXPulseResponse;
 import org.graylog.plugins.threatintel.providers.otx.json.OTXResponse;
 import org.graylog2.plugin.cluster.ClusterConfigService;
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.codahale.metrics.MetricRegistry.name;
 
-public abstract class OTXLookupProvider {
+public abstract class OTXLookupProvider extends ConfiguredProvider {
 
     protected static final Logger LOG = LoggerFactory.getLogger(OTXLookupProvider.class);
 
@@ -39,7 +40,6 @@ public abstract class OTXLookupProvider {
     protected Timer lookupTiming;
 
     protected boolean initialized = false;
-    protected ThreatIntelPluginConfiguration config;
 
     protected OTXLookupProvider() {
         this.cache = CacheBuilder.newBuilder()
@@ -73,22 +73,7 @@ public abstract class OTXLookupProvider {
         }
 
         // Set up config refresher and initial load.
-        Runnable refresh = () -> {
-            try {
-                setConfig(clusterConfigService.get(ThreatIntelPluginConfiguration.class));
-            } catch (Exception e) {
-                LOG.error("Could not refresh OTX provider configuration.", e);
-            }
-        };
-
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
-                new ThreadFactoryBuilder()
-                        .setDaemon(true)
-                        .setNameFormat("threatintel-configuration-refresher-%d")
-                        .build()
-        );
-
-        executor.scheduleWithFixedDelay(refresh, 0, 15, TimeUnit.SECONDS);
+        initializeConfigRefresh(clusterConfigService);
 
         // Metrics.
         this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
@@ -112,7 +97,7 @@ public abstract class OTXLookupProvider {
             return null;
         }
 
-        if(!this.config.isComplete()) {
+        if(!this.config.isOtxComplete()) {
             LOG.warn("OTX domain lookup requested but OTX is not fully configured. Please configure all required parameters.");
             return null;
         }
@@ -164,10 +149,6 @@ public abstract class OTXLookupProvider {
                 response.close();
             }
         }
-    }
-
-    public void setConfig(ThreatIntelPluginConfiguration config) {
-        this.config = config;
     }
 
     protected abstract OTXIntel loadIntel(String key) throws ExecutionException;

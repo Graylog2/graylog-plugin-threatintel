@@ -18,12 +18,22 @@ public abstract class ThreatIntelPluginConfiguration {
     @JsonProperty("otx_api_key")
     public abstract String otxApiKey();
 
+    @JsonProperty("tor_enabled")
+    public abstract boolean torEnabled();
+
+    @JsonProperty("spamhaus_enabled")
+    public abstract boolean spamhausEnabled();
+
     @JsonCreator
     public static ThreatIntelPluginConfiguration create(@JsonProperty("otx_enabled") boolean otxEnabled,
-                                                        @JsonProperty("otx_api_key") String otxApiKey) {
+                                                        @JsonProperty("otx_api_key") String otxApiKey,
+                                                        @JsonProperty("tor_enabled") boolean torEnabled,
+                                                        @JsonProperty("spamhaus_enabled") boolean spamhausEnabled) {
         return builder()
                 .otxEnabled(otxEnabled)
                 .otxApiKey(otxApiKey)
+                .torEnabled(torEnabled)
+                .spamhausEnabled(spamhausEnabled)
                 .build();
     }
 
@@ -32,7 +42,7 @@ public abstract class ThreatIntelPluginConfiguration {
     }
 
     @JsonIgnore
-    public boolean isComplete() {
+    public boolean isOtxComplete() {
         return otxApiKey() != null && !otxApiKey().isEmpty();
     }
 
@@ -42,6 +52,10 @@ public abstract class ThreatIntelPluginConfiguration {
         public abstract Builder otxEnabled(boolean otxEnabled);
 
         public abstract Builder otxApiKey(String otxApiKey);
+
+        public abstract Builder torEnabled(boolean torEnabled);
+
+        public abstract Builder spamhausEnabled(boolean spamhausEnabled);
 
         public abstract ThreatIntelPluginConfiguration build();
     }

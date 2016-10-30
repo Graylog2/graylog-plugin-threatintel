@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.commons.net.util.SubnetUtils;
+import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import static com.codahale.metrics.MetricRegistry.name;
 
 // TODO extract a lot of stuff here to a shared class with TorExitNodeLookupProvider
-public class SpamhausIpLookupProvider {
+public class SpamhausIpLookupProvider extends ConfiguredProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpamhausIpLookupProvider.class);
 
@@ -98,6 +99,9 @@ public class SpamhausIpLookupProvider {
             return;
         }
 
+        // Set up config refresher and initial load.
+        initializeConfigRefresh(clusterConfigService);
+
         this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
         this.refreshTiming = metrics.timer(name(this.getClass(), "refreshTime"));
         this.lookupTiming = metrics.timer(name(this.getClass(), "lookupTime"));
@@ -113,6 +117,18 @@ public class SpamhausIpLookupProvider {
     }
 
     public GenericLookupResult lookup(String ip) throws Exception {
+        if(!initialized) {
+            throw new IllegalAccessException("Provider is not initialized.");
+        }
+
+        // See if we are supposed to run at all.
+        if(this.config == null || !this.config.spamhausEnabled()) {
+            LOG.warn("Spamhaus IP lookup requested but not enabled in configuration. Please enable it first.");
+            return null;
+        }
+
+        LOG.debug("Loading Spamhaus intel for IP [{}].", ip);
+
         if(ip == null || ip.isEmpty()) {
             LOG.debug("IP string for Spamhaus intel is empty.");
             return GenericLookupResult.FALSE;
@@ -122,12 +138,6 @@ public class SpamhausIpLookupProvider {
     }
 
     private GenericLookupResult loadIntel(String ip) throws Exception {
-        if(!initialized) {
-            throw new IllegalAccessException("Provider is not initialized.");
-        }
-
-        LOG.debug("Loading Spamhaus intel for IP [{}].", ip);
-
         if(ip == null) {
             throw new ExecutionException("IP is NULL", new IllegalAccessException());
         }
