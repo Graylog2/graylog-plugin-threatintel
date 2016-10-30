@@ -7,7 +7,7 @@
     "url": "https://github.com/Graylog2/graylog-plugin-threatintel"
   },
   "scripts": {
-    "build": "webpack --bail"
+    "build": "./node_modules/.bin/webpack"
   },
   "keywords": [
     "graylog"
