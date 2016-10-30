@@ -33,7 +33,7 @@ public class ThreatIntelPluginMetaData implements PluginMetaData {
 
     @Override
     public Version getVersion() {
-        return Version.fromPluginProperties(getClass(), PLUGIN_PROPERTIES, "version", Version.from(0, 1, 0));
+        return Version.fromPluginProperties(getClass(), PLUGIN_PROPERTIES, "version", Version.from(0, 2, 0));
     }
 
     @Override
