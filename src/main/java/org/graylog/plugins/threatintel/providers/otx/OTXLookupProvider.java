@@ -9,11 +9,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
 import org.graylog.plugins.threatintel.providers.otx.json.OTXPulseResponse;
 import org.graylog.plugins.threatintel.providers.otx.json.OTXResponse;
@@ -23,8 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.codahale.metrics.MetricRegistry.name;

@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.graylog.plugins.threatintel.providers.otx.OTXIntel;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupProvider;
+import org.graylog.plugins.threatintel.tools.PrivateNet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +32,8 @@ public class OTXIPLookupProvider extends OTXLookupProvider {
     protected OTXIntel loadIntel(String ip) throws ExecutionException {
         LOG.debug("Loading OTX threat intel for IP [{}].", ip);
 
-        if(ip == null) {
-            throw new ExecutionException("IP is NULL", new IllegalAccessException());
+        if(ip == null || ip.isEmpty()) {
+            return null;
         }
 
         ip = ip.trim();
@@ -40,6 +41,13 @@ public class OTXIPLookupProvider extends OTXLookupProvider {
         // Detect if IPv4 or IPv6 address.
         IPVersion ipType = detectIpType(ip);
         LOG.debug("Decided that IP [{}] is of type [{}].", ip, ipType);
+
+        if(ipType == IPVersion.IPv4) {
+            if(PrivateNet.isInPrivateAddressSpace(ip)) {
+                LOG.debug("IP [{}] is in private net as defined in RFC1918. Skipping.", ip);
+                return null;
+            }
+        }
 
         this.lookupCount.mark();
 

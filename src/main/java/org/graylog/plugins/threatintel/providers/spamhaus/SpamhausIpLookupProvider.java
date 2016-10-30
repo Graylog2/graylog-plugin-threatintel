@@ -15,6 +15,7 @@ import okhttp3.Response;
 import org.apache.commons.net.util.SubnetUtils;
 import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
+import org.graylog.plugins.threatintel.tools.PrivateNet;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,8 +139,15 @@ public class SpamhausIpLookupProvider extends ConfiguredProvider {
     }
 
     private GenericLookupResult loadIntel(String ip) throws Exception {
-        if(ip == null) {
-            throw new ExecutionException("IP is NULL", new IllegalAccessException());
+        if(ip == null || ip.isEmpty()) {
+            return GenericLookupResult.FALSE;
+        }
+
+        ip = ip.trim();
+
+        if(PrivateNet.isInPrivateAddressSpace(ip)) {
+            LOG.debug("IP [{}] is in private net as defined in RFC1918. Skipping.", ip);
+            return GenericLookupResult.FALSE;
         }
 
         Timer.Context timer = this.lookupTiming.time();

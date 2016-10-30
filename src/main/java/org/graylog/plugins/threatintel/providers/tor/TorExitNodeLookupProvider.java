@@ -12,6 +12,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
+import org.graylog.plugins.threatintel.tools.PrivateNet;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,8 +99,13 @@ public class TorExitNodeLookupProvider extends ConfiguredProvider {
 
         LOG.debug("Loading Tor exit node intel for IP [{}].", ip);
 
-        if(ip == null) {
-            throw new ExecutionException("IP is NULL", new IllegalAccessException());
+        if(ip == null || ip.isEmpty()) {
+            return TorExitNodeLookupResult.FALSE;
+        }
+
+        if(PrivateNet.isInPrivateAddressSpace(ip)) {
+            LOG.debug("IP [{}] is in private net as defined in RFC1918. Skipping.", ip);
+            return TorExitNodeLookupResult.FALSE;
         }
 
         if(exitNodes.contains(ip.trim())) {
