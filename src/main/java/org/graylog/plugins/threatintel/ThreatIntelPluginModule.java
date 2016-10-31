@@ -3,6 +3,7 @@ package org.graylog.plugins.threatintel;
 import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
+import org.graylog.plugins.threatintel.misc.functions.PrivateNetLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
@@ -32,6 +33,9 @@ public class ThreatIntelPluginModule extends PluginModule {
 
         // Spamhaus DROP and EDROP lookup.
         addMessageProcessorFunction(SpamhausIpLookupFunction.NAME, SpamhausIpLookupFunction.class);
+
+        // Private network lookup.
+        addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
     }
 
     protected void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {
