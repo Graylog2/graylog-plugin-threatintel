@@ -71,6 +71,12 @@ set_field("threat_names", intel.otx_threat_names);
 
 Note that you can combine these and change field names as you wish.
 
+## Performance considerations
+
+* All lookups will automatically skip processing IPv4 addresses from private networks as defined in RFC 1918. (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
+  * Note that this plugin also ships a new function `in_private_net(ip_address) : Boolean` for any manual lookups of the same kind.
+* You can vastly improve performance by connecting pipelines that make use of the threat intelligence rules only to streams that contain data you want to run the lookups on.
+
 Development
 -----------
 
