@@ -11,7 +11,7 @@ It currently supports the following data feeds:
 * [AlienVault Open Threat Exchange (OTX)](https://otx.alienvault.com/) (One API call per lookup but cached)
   * IP addresses
   * Hostnames
-* Tor exit nodes
+* Tor exit nodes (You'll need at least Java 8 (u101) to make this work. More information below.)
   * IP addresses
 * [Spamhaus DROP/EDROP lists](https://www.spamhaus.org/drop/)
   * IP addresses
@@ -56,6 +56,8 @@ set_field("threat_names", intel.otx_threat_names);
 ```
 
 ### Tor exit nodes
+
+You'll need at least Java 8 (u101) to make this work. The exit node information is hosted on a Tor website that uses Let's Encrypt for SSL and only Java 8 (u101 or newer) supports it.
 
 ```
   let intel = tor_lookup(to_string($message.src_addr));
