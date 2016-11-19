@@ -39,6 +39,7 @@ public abstract class OTXLookupProvider extends ConfiguredProvider {
 
     protected OTXLookupProvider() {
         this.cache = CacheBuilder.newBuilder()
+                .recordStats()
                 .expireAfterWrite(15, TimeUnit.MINUTES) // TODO make configurable. also add maximum # of entries
                 .removalListener(removalNotification -> {
                     LOG.trace("Invalidating cached threat intel information for key [{}].", removalNotification.getKey());
@@ -74,10 +75,30 @@ public abstract class OTXLookupProvider extends ConfiguredProvider {
         // Metrics.
         this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
         this.lookupTiming = metrics.timer(name(this.getClass(), "lookupTime"));
-        metrics.register(name(this.getClass(), "cacheSize"), (Gauge<Long>) cache::size);
-        metrics.register(name(this.getClass(), "cacheHitRate"), (Gauge<Double>) () -> cache.stats().hitRate());
-        metrics.register(name(this.getClass(), "cacheMissRate"), (Gauge<Double>) () -> cache.stats().missRate());
-        metrics.register(name(this.getClass(), "cacheExceptionRate"), (Gauge<Double>) () -> cache.stats().loadExceptionRate());
+        metrics.register(name(this.getClass(), "cacheSize"), new Gauge<Long>() {
+            @Override
+            public Long getValue() {
+                return cache.size();
+            }
+        });
+        metrics.register(name(this.getClass(), "cacheHitCount"), new Gauge<Long>() {
+            @Override
+            public Long getValue() {
+                return cache.stats().hitCount();
+            }
+        });
+        metrics.register(name(this.getClass(), "cacheMissCount"), new Gauge<Long>() {
+            @Override
+            public Long getValue() {
+                return cache.stats().missCount();
+            }
+        });
+        metrics.register(name(this.getClass(), "cacheExceptionCount"), new Gauge<Long>() {
+            @Override
+            public Long getValue() {
+                return cache.stats().loadExceptionCount();
+            }
+        });
 
         this.initialized = true;
     }
@@ -88,15 +109,17 @@ public abstract class OTXLookupProvider extends ConfiguredProvider {
         }
 
         // See if we are supposed to run at all.
-        if(this.config == null || !this.config.otxEnabled()) {
+        if(this.getConfig() == null || !this.getConfig().otxEnabled()) {
             LOG.warn("OTX domain lookup requested but OTX is not enabled in configuration. Please enable it first.");
             return null;
         }
 
-        if(!this.config.isOtxComplete()) {
+        if(!this.getConfig().isOtxComplete()) {
             LOG.warn("OTX domain lookup requested but OTX is not fully configured. Please configure all required parameters.");
             return null;
         }
+
+        this.lookupCount.mark();
 
         return this.cache.get(key);
     }

@@ -10,33 +10,34 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ConfiguredProvider {
+public class ConfiguredProvider  {
 
     protected static final Logger LOG = LoggerFactory.getLogger(ConfiguredProvider.class);
 
     protected ThreatIntelPluginConfiguration config;
 
     protected void initializeConfigRefresh(final ClusterConfigService clusterConfigService) {
+        // Configuration refresh.
         Runnable refresh = () -> {
             try {
-                setConfig(clusterConfigService.get(ThreatIntelPluginConfiguration.class));
+                this.config = clusterConfigService.get(ThreatIntelPluginConfiguration.class);
             } catch (Exception e) {
-                LOG.error("Could not refresh OTX provider configuration.", e);
+                LOG.error("Could not refresh threat intel plugin configuration.", e);
             }
         };
 
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
+        ScheduledExecutorService configurationRefreshExecutor = Executors.newSingleThreadScheduledExecutor(
                 new ThreadFactoryBuilder()
                         .setDaemon(true)
                         .setNameFormat("threatintel-configuration-refresher-%d")
                         .build()
         );
 
-        executor.scheduleWithFixedDelay(refresh, 0, 15, TimeUnit.SECONDS);
+        configurationRefreshExecutor.scheduleWithFixedDelay(refresh, 0, 15, TimeUnit.SECONDS);
     }
 
-    public void setConfig(ThreatIntelPluginConfiguration config) {
-        this.config = config;
+    public ThreatIntelPluginConfiguration getConfig() {
+        return config;
     }
 
 }
