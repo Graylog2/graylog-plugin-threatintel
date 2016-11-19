@@ -1,36 +1,24 @@
 package org.graylog.plugins.threatintel.providers.spamhaus;
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.commons.net.util.SubnetUtils;
-import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
+import org.graylog.plugins.threatintel.providers.LocalCopyListProvider;
 import org.graylog.plugins.threatintel.tools.PrivateNet;
-import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.codahale.metrics.MetricRegistry.name;
-
-// TODO extract a lot of stuff here to a shared class with TorExitNodeLookupProvider
-public class SpamhausIpLookupProvider extends ConfiguredProvider {
+public class SpamhausIpLookupProvider extends LocalCopyListProvider<GenericLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpamhausIpLookupProvider.class);
 
@@ -40,8 +28,6 @@ public class SpamhausIpLookupProvider extends ConfiguredProvider {
         return INSTANCE;
     }
 
-    protected final LoadingCache<String, GenericLookupResult> cache;
-
     private static final String[] lists = {
             "https://www.spamhaus.org/drop/drop.txt",
             "https://www.spamhaus.org/drop/edrop.txt"
@@ -49,119 +35,36 @@ public class SpamhausIpLookupProvider extends ConfiguredProvider {
 
     private ImmutableList<SubnetUtils.SubnetInfo> subnets;
 
-    protected boolean initialized = false;
-
-    protected Meter lookupCount;
-    protected Timer refreshTiming;
-    protected Timer lookupTiming;
-
     private SpamhausIpLookupProvider() {
-        this.cache = CacheBuilder.newBuilder()
-                .expireAfterWrite(15, TimeUnit.MINUTES) // TODO make configurable. also add maximum # of entries
-                .removalListener(removalNotification -> {
-                    LOG.trace("Invalidating cached threat intel information for key [{}].", removalNotification.getKey());
-                })
-                .build(new CacheLoader<String, GenericLookupResult>() {
-                    public GenericLookupResult load(String key) throws ExecutionException {
-                        LOG.debug("Spamhaus threat intel cache MISS: [{}]", key);
-
-                        try {
-                            return loadIntel(key);
-                        }catch(Exception e) {
-                            throw new ExecutionException(e);
-                        }
-                    }
-                });
-
-
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
-                new ThreadFactoryBuilder()
-                        .setDaemon(true)
-                        .setNameFormat("threatintel-spamhaus-refresher-%d")
-                        .build()
-        );
-
-        // Automatically refresh local block list table.
-        executor.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    refreshTable();
-                } catch (Exception e) {
-                    LOG.error("Could not refresh local Spamhaus drop list table.", e);
-                }
-            }
-        }, 5, 5, TimeUnit.MINUTES); // First refresh happens in initialize(). #racyRaceConditions
+        super("Spamhaus");
     }
 
-    public void initialize(final ClusterConfigService clusterConfigService,
-                           final MetricRegistry metrics) {
-        if(initialized) {
-            return;
-        }
-
-        // Set up config refresher and initial load.
-        initializeConfigRefresh(clusterConfigService);
-
-        this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
-        this.refreshTiming = metrics.timer(name(this.getClass(), "refreshTime"));
-        this.lookupTiming = metrics.timer(name(this.getClass(), "lookupTime"));
-
-        // Initially load table. Doing this here because we need this blocking.
-        try {
-            refreshTable();
-        } catch (IOException | ExecutionException e) {
-            LOG.error("Could not refresh Spamhaus drop list table.", e);
-        }
-
-        this.initialized = true;
+    @Override
+    protected boolean isEnabled() {
+        return this.config != null && this.config.spamhausEnabled();
     }
 
-    public GenericLookupResult lookup(String ip) throws Exception {
-        if(!initialized) {
-            throw new IllegalAccessException("Provider is not initialized.");
-        }
-
-        // See if we are supposed to run at all.
-        if(this.config == null || !this.config.spamhausEnabled()) {
-            LOG.warn("Spamhaus IP lookup requested but not enabled in configuration. Please enable it first.");
-            return null;
-        }
-
-        LOG.debug("Loading Spamhaus intel for IP [{}].", ip);
-
-        if(ip == null || ip.isEmpty()) {
-            LOG.debug("IP string for Spamhaus intel is empty.");
-            return GenericLookupResult.FALSE;
-        }
-
-        return cache.get(ip);
-    }
-
-    private GenericLookupResult loadIntel(String ip) throws Exception {
-        if(ip == null || ip.isEmpty()) {
-            return GenericLookupResult.FALSE;
-        }
-
-        ip = ip.trim();
-
+    @Override
+    protected GenericLookupResult fetchIntel(String ip) throws Exception {
         if(PrivateNet.isInPrivateAddressSpace(ip)) {
             LOG.debug("IP [{}] is in private net as defined in RFC1918. Skipping.", ip);
             return GenericLookupResult.FALSE;
         }
 
+        GenericLookupResult result = GenericLookupResult.FALSE;
         Timer.Context timer = this.lookupTiming.time();
         for (SubnetUtils.SubnetInfo subnet : subnets) {
             if(subnet.isInRange(ip)) {
-                return GenericLookupResult.TRUE;
+                result = GenericLookupResult.TRUE;
+                break;
             }
         }
         timer.stop();
 
-        return GenericLookupResult.FALSE;
+        return result;
     }
 
-    public void refreshTable() throws IOException, ExecutionException {
+    protected void refreshTable() throws ExecutionException {
         LOG.info("Refreshing internal table of Spamhaus drop list IPs.");
         ImmutableList.Builder<SubnetUtils.SubnetInfo> list = new ImmutableList.Builder<>();
 
@@ -186,7 +89,7 @@ public class SpamhausIpLookupProvider extends ConfiguredProvider {
                 response = request.execute();
                 timer.stop();
 
-                if(response.code() != 200) {
+                if (response.code() != 200) {
                     throw new ExecutionException("Expected Spamhaus to respond with HTTP status 200 but got [" + response.code() + "].", null);
                 }
 
@@ -203,6 +106,8 @@ public class SpamhausIpLookupProvider extends ConfiguredProvider {
                     }
                 }
                 scanner.close();
+            } catch(IOException e) {
+                throw new ExecutionException("Could not refresh local source table.", e);
             } finally {
                 if(response != null) {
                     response.close();

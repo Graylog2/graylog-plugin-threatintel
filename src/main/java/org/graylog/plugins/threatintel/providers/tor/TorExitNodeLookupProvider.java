@@ -1,36 +1,31 @@
 package org.graylog.plugins.threatintel.providers.tor;
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.google.common.collect.ImmutableList;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
-import org.graylog.plugins.threatintel.providers.ConfiguredProvider;
+import org.graylog.plugins.threatintel.providers.LocalCopyListProvider;
 import org.graylog.plugins.threatintel.tools.PrivateNet;
-import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.codahale.metrics.MetricRegistry.name;
-
-public class TorExitNodeLookupProvider extends ConfiguredProvider {
+public class TorExitNodeLookupProvider extends LocalCopyListProvider<TorExitNodeLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TorExitNodeLookupProvider.class);
 
     private static TorExitNodeLookupProvider INSTANCE = new TorExitNodeLookupProvider();
+
+    private TorExitNodeLookupProvider() {
+        super("Tor exit nodes");
+    }
 
     public static TorExitNodeLookupProvider getInstance() {
         return INSTANCE;
@@ -38,84 +33,26 @@ public class TorExitNodeLookupProvider extends ConfiguredProvider {
 
     private ImmutableList<String> exitNodes;
 
-    protected boolean initialized = false;
-
-    protected Meter lookupCount;
-    protected Timer refreshTiming;
-
-    private TorExitNodeLookupProvider() {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
-                new ThreadFactoryBuilder()
-                        .setDaemon(true)
-                        .setNameFormat("threatintel-tor-exit-nodes-refresher-%d")
-                        .build()
-        );
-
-        // Automatically refresh local table of exit nodes.
-        executor.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    refreshTable();
-                } catch (Exception e) {
-                    LOG.error("Could not refresh list of Tor exit nodes.", e);
-                }
-            }
-        }, 5, 5, TimeUnit.MINUTES); // First refresh happens in initialize(). #racyRaceConditions
+    @Override
+    protected boolean isEnabled() {
+        return this.config != null && this.config.torEnabled();
     }
 
-    public void initialize(final ClusterConfigService clusterConfigService,
-                           final MetricRegistry metrics) {
-        if(initialized) {
-            return;
-        }
-
-        // Set up config refresher and initial load.
-        initializeConfigRefresh(clusterConfigService);
-
-        this.lookupCount = metrics.meter(name(this.getClass(), "lookupCount"));
-        this.refreshTiming = metrics.timer(name(this.getClass(), "refreshTime"));
-
-        // Initially load exit node table. Doing this here because we need this blocking.
-        try {
-            refreshTable();
-        } catch (IOException | ExecutionException e) {
-            LOG.error("Could not refresh list of Tor exit nodes.", e);
-        }
-
-        this.initialized = true;
-    }
-
-    public TorExitNodeLookupResult lookup(String ip) throws Exception {
-        if(!initialized) {
-            throw new IllegalAccessException("Provider is not initialized.");
-        }
-
-        // See if we are supposed to run at all.
-        if(this.config == null || !this.config.torEnabled()) {
-            LOG.warn("Tor exit node lookup requested but not enabled in configuration. Please enable it first.");
-            return null;
-        }
-
-        LOG.debug("Loading Tor exit node intel for IP [{}].", ip);
-
-        if(ip == null || ip.isEmpty()) {
-            return TorExitNodeLookupResult.FALSE;
-        }
-
+    @Override
+    protected TorExitNodeLookupResult fetchIntel(String ip) throws Exception {
         if(PrivateNet.isInPrivateAddressSpace(ip)) {
             LOG.debug("IP [{}] is in private net as defined in RFC1918. Skipping.", ip);
             return TorExitNodeLookupResult.FALSE;
         }
 
-        if(exitNodes.contains(ip.trim())) {
-            return TorExitNodeLookupResult.TRUE;
-        } else {
-            return TorExitNodeLookupResult.FALSE;
-        }
+        Timer.Context timer = this.lookupTiming.time();
+        boolean result = exitNodes.contains(ip);
+        timer.stop();
+
+        return result ? TorExitNodeLookupResult.TRUE : TorExitNodeLookupResult.FALSE;
     }
 
-    public void refreshTable() throws IOException, ExecutionException {
+    public void refreshTable() throws ExecutionException {
         LOG.info("Refreshing internal table of known Tor exit nodes.");
         Response response = null;
 
@@ -168,6 +105,8 @@ public class TorExitNodeLookupProvider extends ConfiguredProvider {
 
             // Le overwrite.
             this.exitNodes = list.build();
+        } catch(IOException e) {
+            throw new ExecutionException("Could not refresh local source table.", e);
         } finally {
             if(response != null) {
                 response.close();

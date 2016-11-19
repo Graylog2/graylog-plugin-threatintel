@@ -34,7 +34,7 @@ public class PrivateNetLookupFunction extends AbstractFunction<Boolean> {
     public Boolean evaluate(FunctionArgs args, EvaluationContext context) {
         String ip = valueParam.required(args, context);
         if (ip == null || ip.isEmpty()) {
-            LOG.error("NULL or empty parameter passed to private network lookup.");
+            LOG.debug("NULL or empty parameter passed to private network lookup.");
             return null;
         }
 
