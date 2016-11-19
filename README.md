@@ -15,7 +15,10 @@ It currently supports the following data feeds:
   * IP addresses
 * [Spamhaus DROP/EDROP lists](https://www.spamhaus.org/drop/)
   * IP addresses
-
+* [Abuse.ch Ransomware Tracker blocklists](https://ransomwaretracker.abuse.ch/blocklist/)
+  * IP addresses
+  * Hostnames
+  
 ### Example
 
 ```
@@ -69,6 +72,14 @@ You'll need at least Java 8 (u101) to make this work. The exit node information 
 ```
   let intel = spamhaus_lookup_ip(to_string($message.src_addr));
   set_field("threat_indicated", intel.threat_indicated);
+```
+
+### Abuse.ch Ransomware tracker
+
+```
+  let intel = abusech_ransom_lookup_domain(to_string($message.dns_domain));
+  // let intel = abusech_ransom_lookup_ip(to_string($message.src_addr));
+  set_field("request_domain_is_ransomware", intel.threat_indicated);
 ```
 
 Note that you can combine these and change field names as you wish.
