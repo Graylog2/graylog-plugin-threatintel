@@ -1,5 +1,6 @@
 package org.graylog.plugins.threatintel.tools;
 
+import com.google.common.net.InetAddresses;
 import org.apache.commons.net.util.SubnetUtils;
 
 public class PrivateNet {
@@ -15,6 +16,10 @@ public class PrivateNet {
      * @return
      */
     public static boolean isInPrivateAddressSpace(String ip) {
+        if(!InetAddresses.isInetAddress(ip)) {
+            return false;
+        }
+
         return ONE_HUNDRED_SEVENTY_TWO.isInRange(ip) || TEN.isInRange(ip) || ONE_HUNDRED_NINETY_TWO.isInRange(ip);
     }
 

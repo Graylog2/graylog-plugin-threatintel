@@ -33,7 +33,7 @@ public class SpamhausIpLookupProvider extends LocalCopyListProvider<GenericLooku
             "https://www.spamhaus.org/drop/edrop.txt"
     };
 
-    private ImmutableList<SubnetUtils.SubnetInfo> subnets;
+    private ImmutableList<SubnetUtils.SubnetInfo> subnets = new ImmutableList.Builder<SubnetUtils.SubnetInfo>().build();
 
     private SpamhausIpLookupProvider() {
         super("Spamhaus");

@@ -31,7 +31,7 @@ public class TorExitNodeLookupProvider extends LocalCopyListProvider<TorExitNode
         return INSTANCE;
     }
 
-    private ImmutableList<String> exitNodes;
+    private ImmutableList<String> exitNodes = new ImmutableList.Builder<String>().build();
 
     @Override
     protected boolean isEnabled() {
