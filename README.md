@@ -52,6 +52,7 @@ Example [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.
 
 ```
 let intel = otx_lookup_ip(to_string($message.src_addr));
+// let intel = otx_lookup_domain(to_string($message.dns_domain))
 
 set_field("threat_indicated", intel.otx_threat_indicated);
 set_field("threat_ids", intel.otx_threat_ids);
