@@ -48,7 +48,7 @@ Example [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.
 ### Global/combined lookup
 
 This is the recommended way to use this plugin. The `threat_intel_lookup_*` function will run an indicator like
-an IP address or domain name against all enabled threat intel sources and return a combined result.
+an IP address or domain name against all enabled threat intel sources and return a combined result. (Except OTX lookups)
 
 ```
 let src_addr_intel = threat_intel_lookup_ip(to_string($message.src_addr), "src_addr");
