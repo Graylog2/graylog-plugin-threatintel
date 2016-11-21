@@ -68,7 +68,7 @@ to allow easier queries for all messages that indicated any kind of threat:
 ```
 rule "inflate threat intel results"
 when
-  to_bool($message.src_threat_indicated)  || to_bool($message.dst_threat_indicated)
+  to_bool($message.src_threat_indicated) || to_bool($message.dst_threat_indicated)
 then
   set_field("threat_indicated", true);
 end
