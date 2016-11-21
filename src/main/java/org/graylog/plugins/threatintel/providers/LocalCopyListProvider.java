@@ -119,7 +119,7 @@ public abstract class LocalCopyListProvider<T> extends ConfiguredProvider {
         this.initialized = true;
     }
 
-    public T lookup(String key) throws Exception {
+    public T lookup(String key, boolean silentOnDisabled) throws Exception {
         if(!initialized) {
             throw new IllegalAccessException("Provider is not initialized.");
         }
@@ -130,7 +130,9 @@ public abstract class LocalCopyListProvider<T> extends ConfiguredProvider {
         }
 
         if(!isEnabled()) {
-            LOG.error("{} threat intel lookup requested but not enabled in configuration. Please enable it first in the web interface at System -> Configurations.", sourceName);
+            if(!silentOnDisabled) {
+                LOG.error("{} threat intel lookup requested but not enabled in configuration. Please enable it first in the web interface at System -> Configurations.", sourceName);
+            }
             return null;
         }
 

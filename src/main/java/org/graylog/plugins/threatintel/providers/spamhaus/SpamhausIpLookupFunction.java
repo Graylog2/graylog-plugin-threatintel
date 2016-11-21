@@ -42,9 +42,9 @@ public class SpamhausIpLookupFunction extends AbstractFunction<GenericLookupResu
         LOG.debug("Running Spamhaus lookup for IP [{}].", ip);
 
         try {
-            return provider.lookup(ip.trim());
+            return provider.lookup(ip.trim(), false);
         } catch (Exception e) {
-            LOG.error("Could not run Spamhaus lookup lookup for IP [{}].", ip, e);
+            LOG.error("Could not run Spamhaus lookup for IP [{}].", ip, e);
             return null;
         }
     }

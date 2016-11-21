@@ -7,6 +7,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.graylog.plugins.threatintel.providers.GenericLookupResult;
+import org.graylog.plugins.threatintel.providers.GlobalIncludedProvider;
 import org.graylog.plugins.threatintel.providers.LocalCopyListProvider;
 import org.graylog.plugins.threatintel.tools.PrivateNet;
 import org.slf4j.Logger;
@@ -17,14 +19,17 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class TorExitNodeLookupProvider extends LocalCopyListProvider<TorExitNodeLookupResult> {
+public class TorExitNodeLookupProvider extends LocalCopyListProvider<GenericLookupResult> implements GlobalIncludedProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(TorExitNodeLookupProvider.class);
 
     private static TorExitNodeLookupProvider INSTANCE = new TorExitNodeLookupProvider();
 
+    public static final String NAME = "Tor exit nodes";
+    public static final String IDENTIFIER = "tor";
+
     private TorExitNodeLookupProvider() {
-        super("Tor exit nodes");
+        super(NAME);
     }
 
     public static TorExitNodeLookupProvider getInstance() {
@@ -39,17 +44,22 @@ public class TorExitNodeLookupProvider extends LocalCopyListProvider<TorExitNode
     }
 
     @Override
-    protected TorExitNodeLookupResult fetchIntel(String ip) throws Exception {
+    public String getIdentifier() {
+        return IDENTIFIER;
+    }
+
+    @Override
+    protected GenericLookupResult fetchIntel(String ip) throws Exception {
         if(PrivateNet.isInPrivateAddressSpace(ip)) {
             LOG.debug("IP [{}] is in private net as defined in RFC1918. Skipping.", ip);
-            return TorExitNodeLookupResult.FALSE;
+            return GenericLookupResult.FALSE;
         }
 
         Timer.Context timer = this.lookupTiming.time();
         boolean result = exitNodes.contains(ip);
         timer.stop();
 
-        return result ? TorExitNodeLookupResult.TRUE : TorExitNodeLookupResult.FALSE;
+        return result ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
     }
 
     public void refreshTable() throws ExecutionException {

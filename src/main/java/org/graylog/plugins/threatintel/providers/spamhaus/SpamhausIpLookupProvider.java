@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.commons.net.util.SubnetUtils;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
+import org.graylog.plugins.threatintel.providers.GlobalIncludedProvider;
 import org.graylog.plugins.threatintel.providers.LocalCopyListProvider;
 import org.graylog.plugins.threatintel.tools.PrivateNet;
 import org.slf4j.Logger;
@@ -18,11 +19,14 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class SpamhausIpLookupProvider extends LocalCopyListProvider<GenericLookupResult> {
+public class SpamhausIpLookupProvider extends LocalCopyListProvider<GenericLookupResult> implements GlobalIncludedProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(SpamhausIpLookupProvider.class);
 
     private static SpamhausIpLookupProvider INSTANCE = new SpamhausIpLookupProvider();
+
+    public static final String NAME = "Spamhaus";
+    public static final String IDENTIFIER = "spamhaus";
 
     public static SpamhausIpLookupProvider getInstance() {
         return INSTANCE;
@@ -36,12 +40,17 @@ public class SpamhausIpLookupProvider extends LocalCopyListProvider<GenericLooku
     private ImmutableList<SubnetUtils.SubnetInfo> subnets = new ImmutableList.Builder<SubnetUtils.SubnetInfo>().build();
 
     private SpamhausIpLookupProvider() {
-        super("Spamhaus");
+        super(NAME);
     }
 
     @Override
     protected boolean isEnabled() {
         return this.config != null && this.config.spamhausEnabled();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
     }
 
     @Override

@@ -4,7 +4,7 @@
 
 **Required Graylog version:** 2.1.0 and later
 
-This plugin adds [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) functions to enrich log messages with threat intelligence data. 
+This plugin adds [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) functions to enrich log messages with threat intelligence data.
 
 It currently supports the following data feeds:
 
@@ -18,15 +18,12 @@ It currently supports the following data feeds:
 * [Abuse.ch Ransomware Tracker blocklists](https://ransomwaretracker.abuse.ch/blocklist/)
   * IP addresses
   * Hostnames
-  
+
 ### Example
 
 ```
-let intel = otx_lookup_ip(to_string($message.src_addr));
-
-set_field("threat_indicated", intel.otx_threat_indicated);
-set_field("threat_ids", intel.otx_threat_ids);
-set_field("threat_names", intel.otx_threat_names);
+let src_addr_intel = threat_intel_lookup_ip(to_string($message.src_addr), "src_addr");
+set_fields(src_addr_intel);
 ```
 
 ![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example.jpg)
@@ -48,11 +45,31 @@ Usage
 
 Example [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) rules are following:
 
+### Global/combined lookup
+
+This is the recommended way to use this plugin. The `threat_intel_lookup_*` function will run an indicator like
+an IP address or domain name against all enabled threat intel sources and return a combined result.
+
+```
+let src_addr_intel = threat_intel_lookup_ip(to_string($message.src_addr), "src_addr");
+set_fields(src_addr_intel);
+
+let dns_question_intel = threat_intel_lookup_domain(to_string($message.dns_question), "dns_question");
+set_fields(dns_question_intel);
+```
+
+This will lead to the fields `src_addr_threat_indicated:true|false` and `dns_question_threat_indicated:true|false`
+being added to the processed message. It will also add fields like `testing_threat_indicated_abusech_ransomware:true`
+(Abuse.ch Ransomware tracker OSINT) to indicate threat intel sources returned matches.
+
+Add a second pipeline step that adds the field `threat_indicated:true` if either of the above fields was true
+to allow easier queries for all messages that indicated any kind of threat.
+
 ### OTX
 
 ```
 let intel = otx_lookup_ip(to_string($message.src_addr));
-// let intel = otx_lookup_domain(to_string($message.dns_domain))
+// let intel = otx_lookup_domain(to_string($message.dns_question))
 
 set_field("threat_indicated", intel.otx_threat_indicated);
 set_field("threat_ids", intel.otx_threat_ids);

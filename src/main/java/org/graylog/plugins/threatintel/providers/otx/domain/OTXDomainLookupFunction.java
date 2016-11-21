@@ -9,6 +9,7 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupProvider;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupResult;
+import org.graylog.plugins.threatintel.tools.Domain;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class OTXDomainLookupFunction extends AbstractFunction<OTXLookupResult> {
             return null;
         }
 
-        domain = prepareDomain(domain);
+        domain = Domain.prepareDomain(domain);
 
         LOG.debug("Running OTX lookup for domain [{}].", domain);
 
@@ -63,18 +64,6 @@ public class OTXDomainLookupFunction extends AbstractFunction<OTXLookupResult> {
             LOG.error("Could not lookup OTX threat intelligence for domain [{}].", domain, e);
             return null;
         }
-    }
-
-    public String prepareDomain(String domain) {
-        // A typical issue is regular expressions that also capture a whitespace at the beginning or the end.
-        domain = domain.trim();
-
-        // Some systems will capture DNS requests with a trailing '.'. Remove that for the lookup.
-        if(domain.endsWith(".")) {
-            domain = domain.substring(0, domain.length()-1);
-        }
-
-        return domain;
     }
 
     @Override

@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class GenericLookupResult extends ForwardingMap<String, Object> {
 
+    public static final String RESULTS_KEY = "threat_indicated";
+
     private final ImmutableMap<String, Object> results;
 
     public static final GenericLookupResult FALSE = new FalseGenericLookupResult();
@@ -20,6 +22,10 @@ public class GenericLookupResult extends ForwardingMap<String, Object> {
         return results;
     }
 
+    public boolean isMatch() {
+        return ((boolean) getResults().get(RESULTS_KEY));
+    }
+
     @Override
     protected Map<String, Object> delegate() {
         return getResults();
@@ -27,7 +33,7 @@ public class GenericLookupResult extends ForwardingMap<String, Object> {
 
     private static class FalseGenericLookupResult extends GenericLookupResult {
         private static final ImmutableMap<String, Object> FALSE = ImmutableMap.<String, Object>builder()
-                .put("threat_indicated", false)
+                .put(RESULTS_KEY, false)
                 .build();
 
         private FalseGenericLookupResult() {
@@ -37,7 +43,7 @@ public class GenericLookupResult extends ForwardingMap<String, Object> {
 
     private static class TrueGenericLookupResult extends GenericLookupResult {
         private static final ImmutableMap<String, Object> TRUE = ImmutableMap.<String, Object>builder()
-                .put("threat_indicated", true)
+                .put(RESULTS_KEY, true)
                 .build();
 
         private TrueGenericLookupResult() {

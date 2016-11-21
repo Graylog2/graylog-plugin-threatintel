@@ -6,6 +6,8 @@ import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.threatintel.misc.functions.PrivateNetLookupFunction;
 import org.graylog.plugins.threatintel.providers.abusech.domain.AbuseChRansomDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.abusech.ip.AbuseChRansomIpLookupFunction;
+import org.graylog.plugins.threatintel.providers.global.domain.GlobalDomainLookupFunction;
+import org.graylog.plugins.threatintel.providers.global.ip.GlobalIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
@@ -39,6 +41,10 @@ public class ThreatIntelPluginModule extends PluginModule {
         // abuse.ch Ransomware
         addMessageProcessorFunction(AbuseChRansomDomainLookupFunction.NAME, AbuseChRansomDomainLookupFunction.class);
         addMessageProcessorFunction(AbuseChRansomIpLookupFunction.NAME, AbuseChRansomIpLookupFunction.class);
+
+        // Global/combined lookup
+        addMessageProcessorFunction(GlobalIpLookupFunction.NAME, GlobalIpLookupFunction.class);
+        addMessageProcessorFunction(GlobalDomainLookupFunction.NAME, GlobalDomainLookupFunction.class);
 
         // Private network lookup.
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);

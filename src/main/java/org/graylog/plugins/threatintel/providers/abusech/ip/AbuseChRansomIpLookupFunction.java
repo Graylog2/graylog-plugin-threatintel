@@ -43,7 +43,7 @@ public class AbuseChRansomIpLookupFunction extends AbstractFunction<GenericLooku
         LOG.debug("Running abuse.ch Ransomware lookup for IP [{}].", ip);
 
         try {
-            return provider.lookup(ip.trim());
+            return provider.lookup(ip.trim(), false);
         } catch (Exception e) {
             LOG.error("Could not run abuse.ch Ransomware lookup lookup for IP [{}].", ip, e);
             return null;

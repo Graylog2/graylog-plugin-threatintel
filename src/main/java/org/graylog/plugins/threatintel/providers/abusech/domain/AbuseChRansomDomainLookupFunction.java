@@ -9,6 +9,7 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
 import org.graylog.plugins.threatintel.providers.abusech.AbuseChRansomLookupProvider;
+import org.graylog.plugins.threatintel.tools.Domain;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +41,12 @@ public class AbuseChRansomDomainLookupFunction extends AbstractFunction<GenericL
             return null;
         }
 
+        domain = Domain.prepareDomain(domain);
+
         LOG.debug("Running abuse.ch Ransomware lookup for domain [{}].", domain);
 
         try {
-            return provider.lookup(domain.trim());
+            return provider.lookup(domain.trim(), false);
         } catch (Exception e) {
             LOG.error("Could not run abuse.ch Ransomware lookup lookup for domain [{}].", domain, e);
             return null;
