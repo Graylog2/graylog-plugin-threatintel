@@ -63,7 +63,16 @@ being added to the processed message. It will also add fields like `testing_thre
 (Abuse.ch Ransomware tracker OSINT) to indicate threat intel sources returned matches.
 
 Add a second pipeline step that adds the field `threat_indicated:true` if either of the above fields was true
-to allow easier queries for all messages that indicated any kind of threat.
+to allow easier queries for all messages that indicated any kind of threat:
+
+```
+rule "inflate threat intel results"
+when
+  to_bool($message.src_threat_indicated)  || to_bool($message.dst_threat_indicated)
+then
+  set_field("threat_indicated", true);
+end
+```
 
 ### OTX
 
