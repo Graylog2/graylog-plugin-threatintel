@@ -69,7 +69,7 @@ public class WhoisIpLookupProvider {
 
         this.cache = CacheBuilder.newBuilder()
                 .recordStats()
-                .expireAfterWrite(15, TimeUnit.MINUTES) // TODO make configurable. also add maximum # of entries
+                .expireAfterWrite(12, TimeUnit.HOURS) // TODO make configurable. also add maximum # of entries
                 .removalListener(removalNotification -> {
                     LOG.trace("Invalidating cached IP WHOIS information for key [{}].", removalNotification.getKey());
                 })
