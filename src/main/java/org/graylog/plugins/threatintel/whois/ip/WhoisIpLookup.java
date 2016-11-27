@@ -28,11 +28,11 @@ public class WhoisIpLookup {
      * In the future we'll get rid of this and make the initial registry configurable.
      * European Graylog deployments will want to query RIPE NCC first.
      */
-    public WhoisIpLookupResult run(String ip) {
+    public WhoisIpLookupResult run(String ip) throws Exception {
         return run(InternetRegistry.ARIN, ip);
     }
 
-    public WhoisIpLookupResult run(InternetRegistry registry, String ip) {
+    public WhoisIpLookupResult run(InternetRegistry registry, String ip) throws Exception {
         // Figure out the right response parser for the registry we are asking.
         WhoisParser parser;
         switch(registry) {
@@ -94,16 +94,15 @@ public class WhoisIpLookup {
                 return run(parser.getRegistryRedirect(), ip);
             }
 
-            /////////////// TODO log IP when any field is missing
-
-            HashMap<String, String> result = Maps.newHashMap();
+            // Build result.
+            HashMap<String, Object> result = Maps.newHashMap();
             result.put("whois_organization", parser.getOrganization());
             result.put("whois_country_code", parser.getCountryCode());
 
             return new WhoisIpLookupResult(result);
         } catch (IOException e) {
             LOG.error("Could not lookup WHOIS information for [{}] at [{}].", ip, registry.toString());
-            return null;
+            throw e;
         } finally {
             if (socket != null) {
                 try {

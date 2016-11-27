@@ -4,20 +4,20 @@ import com.google.common.collect.ForwardingMap;
 
 import java.util.Map;
 
-public class WhoisIpLookupResult extends ForwardingMap<String, String> {
+public class WhoisIpLookupResult extends ForwardingMap<String, Object> {
 
-    private final Map<String, String> results;
+    private final Map<String, Object> results;
 
-    public WhoisIpLookupResult(Map<String, String> fields) {
+    public WhoisIpLookupResult(Map<String, Object> fields) {
         this.results = fields;
     }
 
-    public Map<String, String> getResults() {
+    public Map<String, Object> getResults() {
         return results;
     }
 
     @Override
-    protected Map<String, String> delegate() {
+    protected Map<String, Object> delegate() {
         return getResults();
     }
 

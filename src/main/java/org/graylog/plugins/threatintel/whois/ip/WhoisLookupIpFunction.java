@@ -17,8 +17,10 @@ public class WhoisLookupIpFunction extends AbstractFunction<WhoisIpLookupResult>
 
     public static final String NAME = "whois_lookup_ip";
     private static final String VALUE = "ip_address";
+    private static final String PREFIX = "prefix";
 
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IPv4 or IPv6 address to look up.").build();
+    private final ParameterDescriptor<String, String> prefixParam = ParameterDescriptor.string(PREFIX).description("A prefix for results. For example \"src_addr\" will result in fields called \"src_addr_whois_org\".").build();
 
     private WhoisIpLookupProvider provider = WhoisIpLookupProvider.getInstance();
 
@@ -31,17 +33,24 @@ public class WhoisLookupIpFunction extends AbstractFunction<WhoisIpLookupResult>
     @Override
     public WhoisIpLookupResult evaluate(FunctionArgs args, EvaluationContext context) {
         String ip = valueParam.required(args, context);
+        String prefix = prefixParam.required(args, context);
+
         if (ip == null) {
             LOG.error("NULL parameter passed to WHOIS IP lookup.");
             return null;
         }
 
-        LOG.debug("Running WHOIS lookup for IP [{}].", ip);
+        if (prefix == null) {
+            LOG.error("NULL prefix parameter passed to global IP lookup.");
+            return null;
+        }
+
+        LOG.debug("Running WHOIS lookup for IP [{}] with prefix [{}].", ip, prefix);
 
         try {
-            return provider.lookup(ip);
+            return provider.lookup(ip, prefix.trim());
         } catch (Exception e) {
-            LOG.error("Could not run WHOIS lookup for IP [{}].", ip, e);
+            LOG.error("Could not run WHOIS lookup for IP [{}] with prefix [{}].", ip, prefix, e);
             return null;
         }
     }
@@ -51,7 +60,7 @@ public class WhoisLookupIpFunction extends AbstractFunction<WhoisIpLookupResult>
         return FunctionDescriptor.<WhoisIpLookupResult>builder()
                 .name(NAME)
                 .description("Get WHOIS information of an IP address")
-                .params(valueParam)
+                .params(valueParam, prefixParam)
                 .returnType(WhoisIpLookupResult.class)
                 .build();
     }
