@@ -45,7 +45,7 @@ Restart `graylog-server` and you are done.
 
 Example [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) rules are following:
 
-#### Global/combined lookup
+#### Global/combined threat feed lookup
 
 This is the recommended way to use this plugin. The `threat_intel_lookup_*` function will run an indicator like
 an IP address or domain name against all enabled threat intel sources and return a combined result. (Except OTX lookups)
