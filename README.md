@@ -6,7 +6,7 @@
 
 This plugin adds [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) functions to enrich log messages with threat intelligence data.
 
-It currently supports the following data feeds:
+## Supported data feeds
 
 * [AlienVault Open Threat Exchange (OTX)](https://otx.alienvault.com/) (One API call per lookup but cached)
   * IP addresses
@@ -21,7 +21,7 @@ It currently supports the following data feeds:
 * WHOIS information
   * IP addresses
 
-# Example
+## Example
 
 ```
 let src_addr_intel = threat_intel_lookup_ip(to_string($message.src_addr), "src_addr");
