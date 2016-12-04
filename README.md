@@ -107,38 +107,3 @@ Note that you can combine these and change field names as you wish.
 * All lookups will automatically skip processing IPv4 addresses from private networks as defined in RFC 1918. (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
   * Note that this plugin also ships a new function `in_private_net(ip_address) : Boolean` for any manual lookups of the same kind.
 * You can vastly improve performance by connecting pipelines that make use of the threat intelligence rules only to streams that contain data you want to run the lookups on.
-
-Development
------------
-
-You can improve your development experience for the web interface part of your plugin
-dramatically by making use of hot reloading. To do this, do the following:
-
-* `git clone https://github.com/Graylog2/graylog2-server.git`
-* `cd graylog2-server/graylog2-web-interface`
-* `ln -s $YOURPLUGIN plugin/`
-* `npm install && npm start`
-
-Getting started
----------------
-
-This project is using Maven 3 and requires Java 8 or higher.
-
-* Clone this repository.
-* Run `mvn package` to build a JAR file.
-* Optional: Run `mvn jdeb:jdeb` and `mvn rpm:rpm` to create a DEB and RPM package respectively.
-* Copy generated JAR file in target directory to your Graylog plugin directory.
-* Restart the Graylog.
-
-Plugin Release
---------------
-
-We are using the maven release plugin:
-
-```
-$ mvn release:prepare
-[...]
-$ mvn release:perform
-```
-
-This sets the version numbers, creates a tag and pushes to GitHub. Travis CI will build the release artifacts and upload to GitHub automatically.
