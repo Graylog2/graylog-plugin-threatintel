@@ -18,6 +18,8 @@ It currently supports the following data feeds:
 * [Abuse.ch Ransomware Tracker blocklists](https://ransomwaretracker.abuse.ch/blocklist/)
   * IP addresses
   * Hostnames
+* WHOIS information
+  * IP addresses
 
 # Example
 
@@ -62,6 +64,17 @@ being added to the processed message. It will also add fields like `testing_thre
 
 Add a second pipeline step that adds the field `threat_indicated:true` if either of the above fields was true
 to allow easier queries for all messages that indicated any kind of threat.
+
+#### WHOIS lookups
+
+You can look up WHOIS information about IP addresses. The method will return the registered owner and country code. The lookup results are heavily cached and invalidated after 12 hours or when the `graylog-server` process restarts.
+
+```
+let whois_intel = whois_lookup_ip(to_string($message.src_addr), "src_addr")
+set_fields(whois_intel);
+```
+
+**Note**: The plugin will use the ARIN WHOIS servers for the first lookup because they have the best redirect to other registries in case they are not responsible for the block of the requested IP address. Graylog will follow the redirect to other registries like RIPE-NCC, AFRINI, APNIC or LACNIC. Future versions will support initial lookups in other registries, but for now, you might experience longer latencies if your Graylog cluster is not located in Nort America.
 
 #### OTX
 
