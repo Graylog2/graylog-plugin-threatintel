@@ -22,7 +22,7 @@ public class GlobalIpLookupFunction extends AbstractFunction<GlobalLookupResult>
     private static final String PREFIX = "prefix";
 
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IPv4 or IPv6 address to look up.").build();
-    private final ParameterDescriptor<String, String> prefixParam = ParameterDescriptor.string(PREFIX).description("A prefix for results. For example \"src\" will result in fields called \"src_threat_indicated\".").build();
+    private final ParameterDescriptor<String, String> prefixParam = ParameterDescriptor.string(PREFIX).description("A prefix for results. For example \"src_addr\" will result in fields called \"src_addr_threat_indicated\".").build();
 
     private final GlobalLookupProvider provider = GlobalLookupProvider.getInstance();
 
