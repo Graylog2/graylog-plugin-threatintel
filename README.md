@@ -19,7 +19,7 @@ It currently supports the following data feeds:
   * IP addresses
   * Hostnames
 
-### Example
+# Example
 
 ```
 let src_addr_intel = threat_intel_lookup_ip(to_string($message.src_addr), "src_addr");
@@ -30,8 +30,7 @@ set_fields(src_addr_intel);
 
 Please read the usage instructions below for more information and specific guides.
 
-Installation
-------------
+## Installation
 
 [Download the plugin](https://github.com/Graylog2/graylog-plugin-threatintel/releases)
 and place the `.jar` file in your Graylog plugin directory. The plugin directory
@@ -40,12 +39,11 @@ and can be configured in your `graylog.conf` file.
 
 Restart `graylog-server` and you are done.
 
-Usage
------
+## Usage
 
 Example [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) rules are following:
 
-### Global/combined lookup
+#### Global/combined lookup
 
 This is the recommended way to use this plugin. The `threat_intel_lookup_*` function will run an indicator like
 an IP address or domain name against all enabled threat intel sources and return a combined result. (Except OTX lookups)
@@ -65,7 +63,7 @@ being added to the processed message. It will also add fields like `testing_thre
 Add a second pipeline step that adds the field `threat_indicated:true` if either of the above fields was true
 to allow easier queries for all messages that indicated any kind of threat.
 
-### OTX
+#### OTX
 
 ```
 let intel = otx_lookup_ip(to_string($message.src_addr));
@@ -76,7 +74,7 @@ set_field("threat_ids", intel.otx_threat_ids);
 set_field("threat_names", intel.otx_threat_names);
 ```
 
-### Tor exit nodes
+#### Tor exit nodes
 
 You'll need at least Java 8 (u101) to make this work. The exit node information is hosted on a Tor website that uses Let's Encrypt for SSL and only Java 8 (u101 or newer) supports it.
 
@@ -85,14 +83,14 @@ You'll need at least Java 8 (u101) to make this work. The exit node information 
   set_field("src_addr_is_tor_exit_node", intel.exit_node_indicated);
 ```
 
-### Spamhaus DROP/EDROP
+#### Spamhaus DROP/EDROP
 
 ```
   let intel = spamhaus_lookup_ip(to_string($message.src_addr));
   set_field("threat_indicated", intel.threat_indicated);
 ```
 
-### Abuse.ch Ransomware tracker
+#### Abuse.ch Ransomware tracker
 
 ```
   let intel = abusech_ransom_lookup_domain(to_string($message.dns_domain));
