@@ -30,6 +30,8 @@ set_fields(src_addr_intel);
 
 ![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example.jpg)
 
+![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example_2.jpg)
+
 Please read the usage instructions below for more information and specific guides.
 
 ## Installation
