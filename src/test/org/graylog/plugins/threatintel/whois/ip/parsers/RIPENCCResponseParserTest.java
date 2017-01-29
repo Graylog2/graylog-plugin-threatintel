@@ -72,6 +72,41 @@ public class RIPENCCResponseParserTest {
             "\n" +
             "% This query was served by the RIPE Database Query Service version 1.88 (HEREFORD)\n";
 
+    private static final String MATCH_WITH_SHORT_RESULT = "% Note: this output has been filtered.\n" +
+            "%       To receive output for a database update, use the \"-B\" flag.\n" +
+            "\n" +
+            "% Information related to '31.13.74.0 - 31.13.74.255'\n" +
+            "\n" +
+            "% Abuse contact for '31.13.74.0 - 31.13.74.255' is 'domain@fb.com'\n" +
+            "\n" +
+            "inetnum:        31.13.74.0 - 31.13.74.255\n" +
+            "netname:        ORD1\n" +
+            "descr:          Facebook\n" +
+            "country:        US\n" +
+            "admin-c:        RD4299-RIPE\n" +
+            "tech-c:         RD4299-RIPE\n" +
+            "status:         ASSIGNED PA\n" +
+            "mnt-by:         fb-neteng\n" +
+            "mnt-lower:      fb-neteng\n" +
+            "mnt-routes:     fb-neteng\n" +
+            "created:        2014-06-11T18:51:02Z\n" +
+            "last-modified:  2014-06-11T18:51:02Z\n" +
+            "source:         RIPE\n" +
+            "\n" +
+            "role:           RIPE DBM\n" +
+            "address:        1601 Willow Rd.\n" +
+            "address:        Menlo Park, CA, 94025\n" +
+            "admin-c:        PH4972-RIPE\n" +
+            "tech-c:         PH4972-RIPE\n" +
+            "nic-hdl:        RD4299-RIPE\n" +
+            "mnt-by:         fb-neteng\n" +
+            "created:        2011-04-11T18:49:50Z\n" +
+            "last-modified:  2013-08-14T15:49:58Z\n" +
+            "source:         RIPE # Filtered\n" +
+            "abuse-mailbox:  domain@fb.com\n" +
+            "\n" +
+            "% This query was served by the RIPE Database Query Service version 1.88 (ANGUS)\n";
+
     @Test
     public void testRunDirectMatch() throws Exception {
         RIPENCCResponseParser parser = new RIPENCCResponseParser();
@@ -81,6 +116,17 @@ public class RIPENCCResponseParserTest {
 
         assertEquals("DE", parser.getCountryCode());
         assertEquals("HEG Managed", parser.getOrganization());
+    }
+
+    @Test
+    public void testRunDirectMatchWithShortResultFormat() throws Exception {
+        RIPENCCResponseParser parser = new RIPENCCResponseParser();
+        for (String line : MATCH_WITH_SHORT_RESULT.split("\n")) {
+            parser.readLine(line);
+        }
+
+        assertEquals("US", parser.getCountryCode());
+        assertEquals("Facebook", parser.getOrganization());
     }
 
 }

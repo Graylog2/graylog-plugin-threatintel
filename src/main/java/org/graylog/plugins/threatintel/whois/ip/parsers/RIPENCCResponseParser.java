@@ -10,7 +10,12 @@ public class RIPENCCResponseParser extends WhoisParser {
             return;
         }
 
-        if(line.startsWith("org-name:") && this.organization == null) {
+        if(line.startsWith("descr") && this.organization == null) {
+            this.organization = lineValue(line);
+        }
+
+        // Some responses have an org-name. Let this always overwrite the organization parsed from "descr" field.
+        if(line.startsWith("org-name:")) {
             this.organization = lineValue(line);
         }
 
