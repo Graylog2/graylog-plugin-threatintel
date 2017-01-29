@@ -1,6 +1,7 @@
 package org.graylog.plugins.threatintel;
 
 import com.google.inject.Binder;
+import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.threatintel.misc.functions.PrivateNetLookupFunction;
@@ -12,6 +13,8 @@ import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunct
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
+import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
+import org.graylog.plugins.threatintel.whois.cache.mongodb.MongoDBWhoisCacheService;
 import org.graylog.plugins.threatintel.whois.ip.WhoisLookupIpFunction;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
@@ -29,6 +32,9 @@ public class ThreatIntelPluginModule extends PluginModule {
 
     @Override
     protected void configure() {
+        // Setup DI.
+        bind(WhoisCacheService.class).to(MongoDBWhoisCacheService.class).in(Scopes.SINGLETON);
+
         // AlienVault OTX threat intel lookup.
         addMessageProcessorFunction(OTXDomainLookupFunction.NAME, OTXDomainLookupFunction.class);
         addMessageProcessorFunction(OTXIPLookupFunction.NAME, OTXIPLookupFunction.class);

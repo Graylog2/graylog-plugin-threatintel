@@ -7,6 +7,7 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
+import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,9 @@ public class WhoisLookupIpFunction extends AbstractFunction<WhoisIpLookupResult>
 
     @Inject
     public WhoisLookupIpFunction(final ClusterConfigService clusterConfigService,
-                                    final MetricRegistry metricRegistry) {
-        provider.initialize(metricRegistry);
+                                 final MetricRegistry metricRegistry,
+                                 final WhoisCacheService whoisCacheService) {
+        provider.initialize(metricRegistry, whoisCacheService);
     }
 
     @Override
@@ -48,7 +50,15 @@ public class WhoisLookupIpFunction extends AbstractFunction<WhoisIpLookupResult>
         LOG.debug("Running WHOIS lookup for IP [{}] with prefix [{}].", ip, prefix);
 
         try {
-            return provider.lookup(ip, prefix.trim());
+            WhoisIpLookupResult result = provider.lookup(ip);
+
+            if(result == null) {
+                // NULL can be returned in case of invalid IP or an IP in private net.
+                return null;
+            }
+
+            result.setPrefix(prefix.trim());
+            return result;
         } catch (Exception e) {
             LOG.error("Could not run WHOIS lookup for IP [{}] with prefix [{}].", ip, prefix, e);
             return null;

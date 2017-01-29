@@ -94,12 +94,7 @@ public class WhoisIpLookup {
                 return run(parser.getRegistryRedirect(), ip);
             }
 
-            // Build result.
-            HashMap<String, Object> result = Maps.newHashMap();
-            result.put("whois_organization", parser.getOrganization());
-            result.put("whois_country_code", parser.getCountryCode());
-
-            return new WhoisIpLookupResult(result);
+            return new WhoisIpLookupResult(parser.getOrganization(), parser.getCountryCode());
         } catch (IOException e) {
             LOG.error("Could not lookup WHOIS information for [{}] at [{}].", ip, registry.toString());
             throw e;
