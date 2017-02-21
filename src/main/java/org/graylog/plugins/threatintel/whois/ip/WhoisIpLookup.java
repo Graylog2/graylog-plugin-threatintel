@@ -1,6 +1,5 @@
 package org.graylog.plugins.threatintel.whois.ip;
 
-import autovalue.shaded.com.google.common.common.collect.Maps;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.graylog.plugins.threatintel.whois.ip.parsers.AFRINICResponseParser;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 
 public class WhoisIpLookup {
 
