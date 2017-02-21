@@ -81,6 +81,7 @@ public abstract class LocalCopyListProvider<T> extends ConfiguredProvider {
                     LOG.trace("Invalidating cached [{}] information for key [{}].", sourceName, removalNotification.getKey());
                 })
                 .build(new CacheLoader<String, T>() {
+                    @Override
                     public T load(String key) throws ExecutionException {
                         LOG.debug("{} cache MISS: [{}]", sourceName, key);
 

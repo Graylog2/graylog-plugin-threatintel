@@ -62,6 +62,7 @@ public class TorExitNodeLookupProvider extends LocalCopyListProvider<GenericLook
         return result ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
     }
 
+    @Override
     public void refreshTable() throws ExecutionException {
         LOG.info("Refreshing internal table of known Tor exit nodes.");
         Response response = null;

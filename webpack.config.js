@@ -3,10 +3,5 @@ const loadBuildConfig = require('graylog-web-plugin').loadBuildConfig;
 const path = require('path');
 
 module.exports = new PluginWebpackConfig('org.graylog.plugins.threatintel.ThreatIntelPlugin', loadBuildConfig(path.resolve(__dirname, './build.config')), {
-    loaders: [
-        { test: /\.ts$/, loader: 'babel-loader!ts-loader', exclude: /node_modules|\.node_cache/ },
-    ],
-    resolve: {
-        extensions: ['.ts'],
-    },
+  // Here goes your additional webpack configuration.
 });

@@ -45,6 +45,7 @@ public abstract class OTXLookupProvider extends ConfiguredProvider {
                     LOG.trace("Invalidating cached threat intel information for key [{}].", removalNotification.getKey());
                 })
                 .build(new CacheLoader<String, OTXLookupResult>() {
+                    @Override
                     public OTXLookupResult load(String key) throws ExecutionException {
                         LOG.debug("OTX threat intel cache MISS: [{}]", key);
                         OTXIntel intel = loadIntel(key);

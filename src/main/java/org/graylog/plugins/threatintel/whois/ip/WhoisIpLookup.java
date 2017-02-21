@@ -1,6 +1,5 @@
 package org.graylog.plugins.threatintel.whois.ip;
 
-import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.graylog.plugins.threatintel.whois.ip.parsers.AFRINICResponseParser;
 import org.graylog.plugins.threatintel.whois.ip.parsers.APNICResponseParser;
@@ -15,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class WhoisIpLookup {
 
@@ -59,9 +59,9 @@ public class WhoisIpLookup {
             OutputStream out = socket.getOutputStream();
             InputStream in = socket.getInputStream();
 
-            out.write((ip + "\n").getBytes());
+            out.write((ip + "\n").getBytes(StandardCharsets.UTF_8));
 
-            IOUtils.readLines(in, Charsets.UTF_8).forEach(parser::readLine);
+            IOUtils.readLines(in, StandardCharsets.UTF_8).forEach(parser::readLine);
 
             // Handle registry redirect.
             if(parser.isRedirect()) {

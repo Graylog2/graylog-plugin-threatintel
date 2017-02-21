@@ -33,7 +33,7 @@ public class ThreatIntelPluginMetaData implements PluginMetaData {
 
     @Override
     public Version getVersion() {
-        return Version.fromPluginProperties(getClass(), PLUGIN_PROPERTIES, "version", Version.from(0, 9, 0));
+        return Version.fromPluginProperties(getClass(), PLUGIN_PROPERTIES, "version", Version.from(0, 10, 0));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ThreatIntelPluginMetaData implements PluginMetaData {
 
     @Override
     public Version getRequiredVersion() {
-        return Version.fromPluginProperties(getClass(), PLUGIN_PROPERTIES, "graylog.version", Version.from(2, 1, 0));
+        return Version.fromPluginProperties(getClass(), PLUGIN_PROPERTIES, "graylog.version", Version.from(2, 2, 0));
     }
 
     @Override

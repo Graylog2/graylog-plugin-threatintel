@@ -90,6 +90,7 @@ public class WhoisIpLookupProvider {
                     LOG.trace("Invalidating cached IP WHOIS information for key [{}].", removalNotification.getKey());
                 })
                 .build(new CacheLoader<String, WhoisIpLookupResult>() {
+                    @Override
                     public WhoisIpLookupResult load(String ip) throws ExecutionException {
                         LOG.debug("WHOIS IP cache MISS: [{}]", ip);
 
