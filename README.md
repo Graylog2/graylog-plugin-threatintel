@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-threatintel.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-threatintel)
 
-**Required Graylog version:** 2.1.2
+**Required Graylog version:** 2.1.3
 
-**Does currently not work with Graylog 2.1.3 and Graylog 2.2.x**
+**Does currently not work with Graylog 2.2.x**
 
 **This Plugin is currently in testing - do not use this for production**
 
