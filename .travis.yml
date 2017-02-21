@@ -1,8 +1,7 @@
-sudo: required
+sudo: false
 dist: trusty
 language: java
-jdk:
-- oraclejdk8
+jdk: oraclejdk8
 install:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dskip.web.build=true -B -V
 script:
@@ -12,22 +11,5 @@ addons:
     packages:
     - rpm
 before_deploy:
-- mvn jdeb:jdeb && export RELEASE_DEB_FILE=$(ls target/*.deb)
-- mvn rpm:rpm && export RELEASE_RPM_FILE=$(find target/ -name '*.rpm' | tail -1)
-- rm -f target/original-*.jar
-- export RELEASE_PKG_FILE=$(ls target/*.jar)
-- echo "Deploying release to GitHub releases"
-deploy:
-  provider: releases
-  api_key:
-    secure: W6QCyIVC3VQ+QasTxbPi5NBZDipu5YRIcPtAP3en8hDlkwyvKpXKpg0m40PreUWXZ67DxG9uYqQd0bidvOPvRP8O2EcxJo5G+EhNH+7i9b0IXy5BhnknA2IVGw1YQggctaZVsyTbtXj10i+jcG0wO/FAynM0jzD834nwpYBCwR7n2UuhBGlBKAZzheEoYnI49ayeO8yPSC5ZzZt96q1FD7K+VUnWqKtduWAC2MAt793uAZXSp18PLgT0Tz9ncmIsAIwNVPfS98k7hhbq9l8Ahlz42CH6267g1PCAtmFDr8qF1UtADKBr60pOJqgcAE3VDC7tX0AOCx9VbBnLrsybN1wD137BipjTvzpM4JjPAwtwA+OMq+NsoguCIJulFbDjMJhtUgLZadqDmTBitkt6LmZCKCbRXlP7m9NPMdCbwc3lCaTCs1fqqYATbXvfJpI5W+qp/Hslpfs/8uGgEV6rgo/iRV4T1oBqrZQTmg5st9f1hjxqoG2gYgmDVgYfCQ5j8OrWCqfhKVGUj3/qGx8mhrwO+Iwg8zp+Z9zaakiW8UiduXi6jGf6uTcxYkHxd88e0TcZ041iuWfKJ3JHqPZN7JH2VemGCCTaqhwjT/QOfSRbdlae7tAUD3yLrHcuNxNU8yjtXGG7iSCECVJ1XTap+lHPYCDAK4KDzFQQdKTHCPQ=
-  file_glob: true
-  file:
-    - "**/target/*.jar"
-    - "**/target/*.deb"
-    - "**/target/**/*.rpm"
-  skip_cleanup: true
-  on:
-    repo: Graylog2/graylog-plugin-threatintel
-    tags: true
-    jdk: oraclejdk8
+  - mvn jdeb:jdeb
+  - mvn rpm:rpm
