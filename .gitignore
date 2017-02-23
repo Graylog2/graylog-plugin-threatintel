@@ -2,13 +2,16 @@
 *.iml
 *.ipr
 *.iws
+
 .classpath
 .project
 .settings/
+
 target/
 dependency-reduced-pom.xml
+pom.xml.versionsBackup
+
 node_modules
 node
 build
 build.config.js.sample
-
