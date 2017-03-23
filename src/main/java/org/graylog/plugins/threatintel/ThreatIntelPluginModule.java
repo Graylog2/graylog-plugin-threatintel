@@ -12,6 +12,7 @@ import org.graylog.plugins.threatintel.providers.global.ip.GlobalIpLookupFunctio
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
+import org.graylog.plugins.threatintel.providers.emerging_threatsIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
 import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
 import org.graylog.plugins.threatintel.whois.cache.mongodb.MongoDBWhoisCacheService;
@@ -44,6 +45,9 @@ public class ThreatIntelPluginModule extends PluginModule {
 
         // Spamhaus DROP and EDROP lookup.
         addMessageProcessorFunction(SpamhausIpLookupFunction.NAME, SpamhausIpLookupFunction.class);
+
+        // Emerging Threats lookup.
+        addMessageProcessorFunction(emerging_threatsIpLookupFunction.NAME, emerging_threatsIpLookupFunction.class);
 
         // abuse.ch Ransomware
         addMessageProcessorFunction(AbuseChRansomDomainLookupFunction.NAME, AbuseChRansomDomainLookupFunction.class);

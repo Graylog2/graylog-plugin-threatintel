@@ -27,17 +27,22 @@ public abstract class ThreatIntelPluginConfiguration {
     @JsonProperty("abusech_ransom_enabled")
     public abstract boolean abusechRansomEnabled();
 
+    @JsonProperty("emerging_threats_enabled")
+    public abstract boolean emergingThreatsEnabled();
+
     @JsonCreator
     public static ThreatIntelPluginConfiguration create(@JsonProperty("otx_enabled") boolean otxEnabled,
                                                         @JsonProperty("otx_api_key") String otxApiKey,
                                                         @JsonProperty("tor_enabled") boolean torEnabled,
                                                         @JsonProperty("spamhaus_enabled") boolean spamhausEnabled,
+                                                        @JsonProperty("emerging_threats_enabled") boolean emergingThreatsEnabled,
                                                         @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled) {
         return builder()
                 .otxEnabled(otxEnabled)
                 .otxApiKey(otxApiKey)
                 .torEnabled(torEnabled)
                 .spamhausEnabled(spamhausEnabled)
+                .emergingThreatsEnabled(emergingThreatsEnabled)
                 .abusechRansomEnabled(abusechRansomEnabled)
                 .build();
     }
@@ -60,6 +65,8 @@ public abstract class ThreatIntelPluginConfiguration {
         public abstract Builder torEnabled(boolean torEnabled);
 
         public abstract Builder spamhausEnabled(boolean spamhausEnabled);
+
+        public abstract Builder emergingThreatsEnabled(boolean emergingThreatsEnabled);
 
         public abstract Builder abusechRansomEnabled(boolean abusechRansomEnabled);
 
