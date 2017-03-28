@@ -9,6 +9,7 @@ import org.graylog.plugins.threatintel.providers.abusech.domain.AbuseChRansomDom
 import org.graylog.plugins.threatintel.providers.abusech.ip.AbuseChRansomIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.global.domain.GlobalDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.global.ip.GlobalIpLookupFunction;
+import org.graylog.plugins.threatintel.providers.graylog.classification.ip.GraylogIPClassificationFunction;
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
@@ -45,11 +46,14 @@ public class ThreatIntelPluginModule extends PluginModule {
         // Spamhaus DROP and EDROP lookup.
         addMessageProcessorFunction(SpamhausIpLookupFunction.NAME, SpamhausIpLookupFunction.class);
 
-        // abuse.ch Ransomware
+        // abuse.ch Ransomware.
         addMessageProcessorFunction(AbuseChRansomDomainLookupFunction.NAME, AbuseChRansomDomainLookupFunction.class);
         addMessageProcessorFunction(AbuseChRansomIpLookupFunction.NAME, AbuseChRansomIpLookupFunction.class);
 
-        // Global/combined lookup
+        // Graylog classifications.
+        addMessageProcessorFunction(GraylogIPClassificationFunction.NAME, GraylogIPClassificationFunction.class);
+
+        // Global/combined lookup.
         addMessageProcessorFunction(GlobalIpLookupFunction.NAME, GlobalIpLookupFunction.class);
         addMessageProcessorFunction(GlobalDomainLookupFunction.NAME, GlobalDomainLookupFunction.class);
 

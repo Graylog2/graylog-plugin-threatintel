@@ -27,18 +27,23 @@ public abstract class ThreatIntelPluginConfiguration {
     @JsonProperty("abusech_ransom_enabled")
     public abstract boolean abusechRansomEnabled();
 
+    @JsonProperty("graylog_ip_classifications_enabled")
+    public abstract boolean graylogIPClassificationsEnabled();
+
     @JsonCreator
     public static ThreatIntelPluginConfiguration create(@JsonProperty("otx_enabled") boolean otxEnabled,
                                                         @JsonProperty("otx_api_key") String otxApiKey,
                                                         @JsonProperty("tor_enabled") boolean torEnabled,
                                                         @JsonProperty("spamhaus_enabled") boolean spamhausEnabled,
-                                                        @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled) {
+                                                        @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled,
+                                                        @JsonProperty("graylog_ip_classifications_enabled") boolean graylogIPClassificationsEnabled) {
         return builder()
                 .otxEnabled(otxEnabled)
                 .otxApiKey(otxApiKey)
                 .torEnabled(torEnabled)
                 .spamhausEnabled(spamhausEnabled)
                 .abusechRansomEnabled(abusechRansomEnabled)
+                .graylogIPClassificationsEnabled(graylogIPClassificationsEnabled)
                 .build();
     }
 
@@ -62,6 +67,8 @@ public abstract class ThreatIntelPluginConfiguration {
         public abstract Builder spamhausEnabled(boolean spamhausEnabled);
 
         public abstract Builder abusechRansomEnabled(boolean abusechRansomEnabled);
+
+        public abstract Builder graylogIPClassificationsEnabled(boolean graylogIPClassificationsEnabled);
 
         public abstract ThreatIntelPluginConfiguration build();
     }

@@ -17,7 +17,8 @@ const ThreatIntelPluginConfig = React.createClass({
                 otx_api_key: '',
                 tor_enabled: false,
                 spamhaus_enabled: false,
-                abusech_ransom_enabled: false
+                abusech_ransom_enabled: false,
+                graylog_ip_classifications_enabled: false
             },
         };
     },
@@ -97,6 +98,9 @@ const ThreatIntelPluginConfig = React.createClass({
                     <dt>AlienVault OTX:</dt>
                     <dd>{this.state.config.otx_enabled === true ? 'Enabled' : 'Disabled'}</dd>
 
+                    <dt>Graylog IP classifications:</dt>
+                    <dd>{this.state.config.graylog_ip_classifications_enabled === true ? 'Enabled' : 'Disabled'}</dd>
+
                     <dt>AlienVault OTX API key:</dt>
                     <dd>{this.state.config.otx_api_key ? "***********" : "[not set]" }</dd>
                 </dl>
@@ -134,6 +138,14 @@ const ThreatIntelPluginConfig = React.createClass({
                                name="tor_enabled"
                                checked={this.state.config.abusech_ransom_enabled}
                                onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>
+
+                        <Input type="checkbox"
+                               ref="graylogIpClassificationsEnabled"
+                               label="Allow Graylog IP classifications?"
+                               help={<span>When enabled, the Graylog IP classification pipeline functions can be executed.</span>}
+                               name="tor_enabled"
+                               checked={this.state.config.graylog_ip_classifications_enabled}
+                               onChange={this._onCheckboxClick('graylog_ip_classifications_enabled', 'graylogIpClassificationsEnabled')}/>
 
                         <Input type="checkbox"
                                ref="otxEnabled"
