@@ -47,6 +47,8 @@ and can be configured in your `graylog.conf` file.
 
 Restart `graylog-server` and you are done.
 
+Make sure you configure which sources you wish to use under 'configurations' using the tick boxes/Alienvault OTX API key
+
 ## Usage
 
 Example [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) rules are following:
