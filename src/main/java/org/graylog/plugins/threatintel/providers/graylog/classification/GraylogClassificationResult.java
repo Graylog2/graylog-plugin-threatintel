@@ -11,7 +11,7 @@ public class GraylogClassificationResult extends ForwardingMap<String, Object> {
 
     private static final String HIT_KEY = "classification_match";
 
-    public static final GraylogClassificationResult FALSE = new GraylogClassificationResult.FalseOTXLookupResult();
+    public static final GraylogClassificationResult FALSE = new GraylogClassificationResult.NoMatchResult();
 
     public static GraylogClassificationResult buildFromClassification(GraylogIPClassification classification) {
         ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
@@ -39,12 +39,12 @@ public class GraylogClassificationResult extends ForwardingMap<String, Object> {
         return getResults();
     }
 
-    private static class FalseOTXLookupResult extends GraylogClassificationResult {
+    private static class NoMatchResult extends GraylogClassificationResult {
         private static final ImmutableMap<String, Object> EMPTY = ImmutableMap.<String, Object>builder()
                 .put(HIT_KEY, false)
                 .build();
 
-        private FalseOTXLookupResult() {
+        private NoMatchResult() {
             super(EMPTY);
         }
     }
