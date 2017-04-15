@@ -12,6 +12,7 @@ import org.graylog.plugins.threatintel.providers.global.ip.GlobalIpLookupFunctio
 import org.graylog.plugins.threatintel.providers.graylog.classification.ip.GraylogIPClassificationFunction;
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
+import org.graylog.plugins.threatintel.providers.reversedns.ReverseDNSLookupFunction;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
 import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
@@ -59,6 +60,9 @@ public class ThreatIntelPluginModule extends PluginModule {
 
         // WHOIS IP lookup.
         addMessageProcessorFunction(WhoisLookupIpFunction.NAME, WhoisLookupIpFunction.class);
+
+        // Reverse DNS lookup.
+        addMessageProcessorFunction(ReverseDNSLookupFunction.NAME, ReverseDNSLookupFunction.class);
 
         // Private network lookup.
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
