@@ -4,6 +4,7 @@ import com.google.inject.Binder;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
+import org.graylog.plugins.threatintel.adapters.DSVHTTPDataAdapter;
 import org.graylog.plugins.threatintel.misc.functions.PrivateNetLookupFunction;
 import org.graylog.plugins.threatintel.providers.abusech.domain.AbuseChRansomDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.abusech.ip.AbuseChRansomIpLookupFunction;
@@ -58,6 +59,8 @@ public class ThreatIntelPluginModule extends PluginModule {
 
         // Private network lookup.
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
+
+        installLookupDataAdapter(DSVHTTPDataAdapter.NAME, DSVHTTPDataAdapter.class, DSVHTTPDataAdapter.Factory.class, DSVHTTPDataAdapter.Config.class);
     }
 
     protected void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {

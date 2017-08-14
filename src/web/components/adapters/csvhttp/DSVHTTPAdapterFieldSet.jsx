@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Input } from 'components/bootstrap';
 
-const CSVHTTPAdapterFieldSet = ({ handleFormEvent, validationState, validationMessage, config}) => {
+const DSVHTTPAdapterFieldSet = ({ handleFormEvent, validationState, validationMessage, config}) => {
   return (<fieldset>
     <Input type="text"
            id="url"
@@ -11,7 +11,7 @@ const CSVHTTPAdapterFieldSet = ({ handleFormEvent, validationState, validationMe
            autoFocus
            required
            onChange={handleFormEvent}
-           help={validationMessage('url', 'The URL of the CSV file.')}
+           help={validationMessage('url', 'The URL of the DSV file.')}
            bsStyle={validationState('url')}
            value={config.url}
            labelClassName="col-sm-3"
@@ -22,7 +22,7 @@ const CSVHTTPAdapterFieldSet = ({ handleFormEvent, validationState, validationMe
            label="Refresh interval"
            required
            onChange={handleFormEvent}
-           help="The interval to check if the CSV file needs a reload. (in seconds)"
+           help="The interval to check if the DSV file needs a reload. (in seconds)"
            value={config.refresh_interval}
            labelClassName="col-sm-3"
            wrapperClassName="col-sm-9" />
@@ -95,4 +95,4 @@ const CSVHTTPAdapterFieldSet = ({ handleFormEvent, validationState, validationMe
   </fieldset>);
 };
 
-export default CSVHTTPAdapterFieldSet;
+export default DSVHTTPAdapterFieldSet;

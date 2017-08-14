@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CSVHTTPAdapterSummary = ({ dataAdapter }) => {
+const DSVHTTPAdapterSummary = ({ dataAdapter }) => {
   const { config } = dataAdapter;
 
   return (<dl>
@@ -23,4 +23,4 @@ const CSVHTTPAdapterSummary = ({ dataAdapter }) => {
   </dl>);
 };
 
-export default CSVHTTPAdapterSummary;
+export default DSVHTTPAdapterSummary;

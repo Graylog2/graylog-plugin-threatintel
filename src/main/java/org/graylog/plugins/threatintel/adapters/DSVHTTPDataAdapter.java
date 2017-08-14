@@ -41,28 +41,28 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-public class CSVHTTPDataAdapter extends LookupDataAdapter {
-    private static final Logger LOG = LoggerFactory.getLogger(CSVHTTPDataAdapter.class);
+public class DSVHTTPDataAdapter extends LookupDataAdapter {
+    private static final Logger LOG = LoggerFactory.getLogger(DSVHTTPDataAdapter.class);
 
-    public static final String NAME = "csvhttp";
+    public static final String NAME = "dsvhttp";
 
-    private final CSVHTTPDataAdapter.Config config;
+    private final DSVHTTPDataAdapter.Config config;
     private final AtomicReference<Map<String, String>> lookupRef = new AtomicReference<>(ImmutableMap.of());
     private final AtomicReference<String> lastLastModified = new AtomicReference<>();
     private OkHttpClient client;
 
     @Inject
-    public CSVHTTPDataAdapter(@Assisted("id") String id,
+    public DSVHTTPDataAdapter(@Assisted("id") String id,
                               @Assisted("name") String name,
                               @Assisted LookupDataAdapterConfiguration config,
                               MetricRegistry metricRegistry) {
         super(id, name, config, metricRegistry);
-        this.config = (CSVHTTPDataAdapter.Config) config;
+        this.config = (DSVHTTPDataAdapter.Config) config;
     }
 
     @Override
     public void doStart() throws Exception {
-        LOG.debug("Starting HTTP CSV data adapter for URL: {}", config.url());
+        LOG.debug("Starting HTTP DSV data adapter for URL: {}", config.url());
         if (isNullOrEmpty(config.url())) {
             throw new IllegalStateException("File path needs to be set");
         }
@@ -76,8 +76,8 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
                 .followSslRedirects(true)
                 .followRedirects(true)
                 .build();
-        final Response response = fetchCsvFile(config.url());
-        lookupRef.set(parseCSVBody(response));
+        final Response response = fetchDSVFile(config.url());
+        lookupRef.set(parseDSVBody(response));
     }
 
     @Override
@@ -88,24 +88,24 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
     @Override
     protected void doRefresh(LookupCachePurge cachePurge) throws Exception {
         try {
-            final Response response = fetchCsvFile(config.url());
+            final Response response = fetchDSVFile(config.url());
 
             final String lastModifiedHeader = response.header("Last-Modified", DateTime.now(DateTimeZone.UTC).toString());
 
             if (response.code() == 200) {
-                LOG.debug("CSV file {} has changed, updating data", config.url());
-                lookupRef.set(parseCSVBody(response));
+                LOG.debug("DSV file {} has changed, updating data", config.url());
+                lookupRef.set(parseDSVBody(response));
                 this.lastLastModified.set(lastModifiedHeader);
                 cachePurge.purgeAll();
                 clearError();
             }
         } catch (IOException e) {
-            LOG.error("Couldn't check data adapter <{}> CSV file {} for updates: {} {}", name(), config.url(), e.getClass().getCanonicalName(), e.getMessage());
+            LOG.error("Couldn't check data adapter <{}> DSV file {} for updates: {} {}", name(), config.url(), e.getClass().getCanonicalName(), e.getMessage());
             setError(e);
         }
     }
 
-    private Response fetchCsvFile(String url) throws IOException {
+    private Response fetchDSVFile(String url) throws IOException {
         final Request.Builder requestBuilder = new Request.Builder()
                 .get()
                 .url(url)
@@ -124,7 +124,7 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
         return response;
     }
 
-    private Map<String, String> parseCSVBody(Response response) throws IOException {
+    private Map<String, String> parseDSVBody(Response response) throws IOException {
         if (response.body() == null) {
             throw new IOException("HTTP request returned empty body.");
         }
@@ -138,15 +138,15 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
                     continue;
                 }
                 final String[] values = line.split(config.separator());
-                final String key = config.isCaseInsensitiveLookup() ? values[0].toLowerCase(Locale.ENGLISH) : values[0];
-                if (values.length >= 1 && config.isCheckPresenceOnly()) {
-                    newLookupBuilder.put(key.trim(), "");
-                } else if (values.length > 1 && !config.isCheckPresenceOnly()) {
-                    newLookupBuilder.put(key.trim(), values[1].trim());
+                if (values.length == 0 || (!config.isCheckPresenceOnly() && values.length == 1)) {
+                    continue;
                 }
+                final String key = config.isCaseInsensitiveLookup() ? values[0].toLowerCase(Locale.ENGLISH) : values[0];
+                final String value = config.isCheckPresenceOnly() ? "" : values[1].trim();
+                newLookupBuilder.put(key.trim(), value);
             }
         } catch (Exception e) {
-            LOG.error("Couldn't parse CSV file {} (settings separator=<{}> quotechar=<{}> key_column=<{}> value_column=<{}>)", config.url(),
+            LOG.error("Couldn't parse DSV file {} (settings separator=<{}> quotechar=<{}> key_column=<{}> value_column=<{}>)", config.url(),
                     config.separator(), config.quotechar(), config.keyColumn(), config.valueColumn(), e);
             setError(e);
         }
@@ -156,7 +156,7 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
 
     @Override
     public void doStop() throws Exception {
-        LOG.debug("Stopping HTTP CSV data adapter for url: {}", config.url());
+        LOG.debug("Stopping HTTP DSV data adapter for url: {}", config.url());
     }
 
     @Override
@@ -181,24 +181,24 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
 
     }
 
-    public interface Factory extends LookupDataAdapter.Factory<CSVHTTPDataAdapter> {
+    public interface Factory extends LookupDataAdapter.Factory<DSVHTTPDataAdapter> {
         @Override
-        CSVHTTPDataAdapter create(@Assisted("id") String id,
+        DSVHTTPDataAdapter create(@Assisted("id") String id,
                                   @Assisted("name") String name,
                                   LookupDataAdapterConfiguration configuration);
 
         @Override
-        CSVHTTPDataAdapter.Descriptor getDescriptor();
+        DSVHTTPDataAdapter.Descriptor getDescriptor();
     }
 
-    public static class Descriptor extends LookupDataAdapter.Descriptor<CSVHTTPDataAdapter.Config> {
+    public static class Descriptor extends LookupDataAdapter.Descriptor<DSVHTTPDataAdapter.Config> {
         public Descriptor() {
-            super(NAME, CSVHTTPDataAdapter.Config.class);
+            super(NAME, DSVHTTPDataAdapter.Config.class);
         }
 
         @Override
-        public CSVHTTPDataAdapter.Config defaultConfiguration() {
-            return CSVHTTPDataAdapter.Config.builder()
+        public DSVHTTPDataAdapter.Config defaultConfiguration() {
+            return DSVHTTPDataAdapter.Config.builder()
                     .type(NAME)
                     .url("https://example.org/table.csv")
                     .separator(",")
@@ -216,7 +216,7 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
     @AutoValue
     @WithBeanGetter
     @JsonAutoDetect
-    @JsonDeserialize(builder = AutoValue_CSVHTTPDataAdapter_Config.Builder.class)
+    @JsonDeserialize(builder = AutoValue_DSVHTTPDataAdapter_Config.Builder.class)
     @JsonTypeName(NAME)
     public static abstract class Config implements LookupDataAdapterConfiguration {
 
@@ -283,8 +283,8 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
             return checkPresenceOnly().orElse(false);
         }
 
-        public static CSVHTTPDataAdapter.Config.Builder builder() {
-            return new AutoValue_CSVHTTPDataAdapter_Config.Builder();
+        public static DSVHTTPDataAdapter.Config.Builder builder() {
+            return new AutoValue_DSVHTTPDataAdapter_Config.Builder();
         }
 
         @Override
@@ -301,36 +301,36 @@ public class CSVHTTPDataAdapter extends LookupDataAdapter {
         @AutoValue.Builder
         public abstract static class Builder {
             @JsonProperty(TYPE_FIELD)
-            public abstract CSVHTTPDataAdapter.Config.Builder type(String type);
+            public abstract DSVHTTPDataAdapter.Config.Builder type(String type);
 
             @JsonProperty("url")
-            public abstract CSVHTTPDataAdapter.Config.Builder url(String url);
+            public abstract DSVHTTPDataAdapter.Config.Builder url(String url);
 
             @JsonProperty("separator")
-            public abstract CSVHTTPDataAdapter.Config.Builder separator(String separator);
+            public abstract DSVHTTPDataAdapter.Config.Builder separator(String separator);
 
             @JsonProperty("quotechar")
-            public abstract CSVHTTPDataAdapter.Config.Builder quotechar(String quotechar);
+            public abstract DSVHTTPDataAdapter.Config.Builder quotechar(String quotechar);
 
             @JsonProperty("ignorechar")
-            public abstract CSVHTTPDataAdapter.Config.Builder ignorechar(String ignorechar);
+            public abstract DSVHTTPDataAdapter.Config.Builder ignorechar(String ignorechar);
 
             @JsonProperty("key_column")
-            public abstract CSVHTTPDataAdapter.Config.Builder keyColumn(String keyColumn);
+            public abstract DSVHTTPDataAdapter.Config.Builder keyColumn(String keyColumn);
 
             @JsonProperty("value_column")
-            public abstract CSVHTTPDataAdapter.Config.Builder valueColumn(String valueColumn);
+            public abstract DSVHTTPDataAdapter.Config.Builder valueColumn(String valueColumn);
 
             @JsonProperty("refresh_interval")
-            public abstract CSVHTTPDataAdapter.Config.Builder refreshInterval(long refreshInterval);
+            public abstract DSVHTTPDataAdapter.Config.Builder refreshInterval(long refreshInterval);
 
             @JsonProperty("case_insensitive_lookup")
-            public abstract CSVHTTPDataAdapter.Config.Builder caseInsensitiveLookup(Boolean caseInsensitiveLookup);
+            public abstract DSVHTTPDataAdapter.Config.Builder caseInsensitiveLookup(Boolean caseInsensitiveLookup);
 
             @JsonProperty("check_presence_only")
-            public abstract CSVHTTPDataAdapter.Config.Builder checkPresenceOnly(Boolean checkPresenceOnly);
+            public abstract DSVHTTPDataAdapter.Config.Builder checkPresenceOnly(Boolean checkPresenceOnly);
 
-            public abstract CSVHTTPDataAdapter.Config build();
+            public abstract DSVHTTPDataAdapter.Config build();
         }
     }
 }
