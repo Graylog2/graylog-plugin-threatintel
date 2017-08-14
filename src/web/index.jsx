@@ -6,6 +6,7 @@ import ThreatIntelPluginConfig from 'components/ThreatIntelPluginConfig';
 
 import { DSVHTTPAdapterDocumentation, DSVHTTPAdapterFieldSet, DSVHTTPAdapterSummary } from 'components/adapters/dsvhttp';
 import { TorExitNodeAdapterDocumentation, TorExitNodeAdapterFieldSet, TorExitNodeAdapterSummary } from 'components/adapters/torexitnode';
+import { WhoisAdapterDocumentation, WhoisAdapterFieldSet, WhoisAdapterSummary } from 'components/adapters/whois/index';
 
 import packageJson from '../../package.json';
 
@@ -30,6 +31,13 @@ PluginStore.register(new PluginManifest(packageJson, {
       formComponent: TorExitNodeAdapterFieldSet,
       summaryComponent: TorExitNodeAdapterSummary,
       documentationComponent: TorExitNodeAdapterDocumentation,
+    },
+    {
+      type: 'whois',
+      displayName: 'Whois for IPs',
+      formComponent: WhoisAdapterFieldSet,
+      summaryComponent: WhoisAdapterSummary,
+      documentationComponent: WhoisAdapterDocumentation,
     },
   ],
 }));
