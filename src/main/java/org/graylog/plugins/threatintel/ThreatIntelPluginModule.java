@@ -13,6 +13,7 @@ import org.graylog.plugins.threatintel.providers.global.ip.GlobalIpLookupFunctio
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
+import org.graylog.plugins.threatintel.providers.tor.TorExitNodeDataAdapter;
 import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
 import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
 import org.graylog.plugins.threatintel.whois.cache.mongodb.MongoDBWhoisCacheService;
@@ -61,6 +62,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
 
         installLookupDataAdapter(DSVHTTPDataAdapter.NAME, DSVHTTPDataAdapter.class, DSVHTTPDataAdapter.Factory.class, DSVHTTPDataAdapter.Config.class);
+        installLookupDataAdapter(TorExitNodeDataAdapter.NAME, TorExitNodeDataAdapter.class, TorExitNodeDataAdapter.Factory.class, TorExitNodeDataAdapter.Config.class);
     }
 
     protected void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {
