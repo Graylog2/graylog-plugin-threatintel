@@ -178,7 +178,7 @@ public class DSVHTTPDataAdapter extends LookupDataAdapter {
 
     @Override
     public void set(Object key, Object value) {
-
+        throw new UnsupportedOperationException();
     }
 
     public interface Factory extends LookupDataAdapter.Factory<DSVHTTPDataAdapter> {
