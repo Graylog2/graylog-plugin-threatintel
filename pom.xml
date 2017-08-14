@@ -40,8 +40,8 @@
         <maven.install.skip>true</maven.install.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.site.skip>true</maven.site.skip>
-        <graylog.version>2.2.1</graylog.version>
-        <graylog-pipelines.version>2.2.1</graylog-pipelines.version>
+        <graylog.version>2.4.0-SNAPSHOT</graylog.version>
+        <graylog-pipelines.version>2.4.0-SNAPSHOT</graylog-pipelines.version>
     </properties>
 
     <dependencies>
@@ -55,6 +55,12 @@
             <groupId>org.graylog.plugins</groupId>
             <artifactId>graylog-plugin-pipeline-processor</artifactId>
             <version>${graylog-pipelines.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graylog.autovalue</groupId>
+            <artifactId>auto-value-javabean</artifactId>
+            <version>${graylog.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
