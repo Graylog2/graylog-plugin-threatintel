@@ -22,6 +22,8 @@ import java.util.Optional;
 
 public class WhoisDataAdapter extends LookupDataAdapter {
     public static final String NAME = "whois";
+    public static final String ORGANIZATION_FIELD = "organization";
+    public static final String COUNTRY_CODE_FIELD = "country_code";
 
     private final WhoisIpLookup whoisIpLookup;
 
@@ -55,10 +57,10 @@ public class WhoisDataAdapter extends LookupDataAdapter {
     protected LookupResult doGet(Object key) {
         try {
             final WhoisIpLookupResult result = this.whoisIpLookup.run(key.toString());
-            if (result != WhoisIpLookupResult.EMPTY) {
+            if (result != WhoisIpLookupResult.empty()) {
                 final Map<Object, Object> fields = ImmutableMap.of(
-                        "organization", result.getOrganization(),
-                        "country_code", result.getCountryCode()
+                        ORGANIZATION_FIELD, result.getOrganization(),
+                        COUNTRY_CODE_FIELD, result.getCountryCode()
                 );
                 return LookupResult.multi(result.getOrganization() + "/" + result.getCountryCode(), fields);
             } else {

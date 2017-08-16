@@ -1,6 +1,5 @@
 package org.graylog.plugins.threatintel.providers.abusech.domain;
 
-import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
@@ -8,9 +7,9 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
-import org.graylog.plugins.threatintel.providers.abusech.AbuseChRansomLookupProvider;
 import org.graylog.plugins.threatintel.tools.Domain;
-import org.graylog2.plugin.cluster.ClusterConfigService;
+import org.graylog2.lookup.LookupTableService;
+import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,17 +19,15 @@ public class AbuseChRansomDomainLookupFunction extends AbstractFunction<GenericL
 
     public static final String NAME = "abusech_ransom_lookup_domain";
     private static final String VALUE = "domain_name";
-
-    private final AbuseChRansomLookupProvider provider;
+    private static final String LOOKUP_TABLE_NAME = "abuse-ch-ransomware-domains";
 
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The domain to look up. Example: foo.example.org (A trailing dot ('.') will be ignored.)").build();
 
-    @Inject
-    public AbuseChRansomDomainLookupFunction(final ClusterConfigService clusterConfigService,
-                                    final MetricRegistry metricRegistry) {
-        AbuseChRansomLookupProvider.getInstance().initialize(clusterConfigService, metricRegistry);
+    private final LookupTableService.Function lookupFunction;
 
-        this.provider = AbuseChRansomLookupProvider.getInstance();
+    @Inject
+    public AbuseChRansomDomainLookupFunction(final LookupTableService lookupTableService) {
+        this.lookupFunction = lookupTableService.newBuilder().lookupTable(LOOKUP_TABLE_NAME).build();
     }
 
     @Override
@@ -45,12 +42,17 @@ public class AbuseChRansomDomainLookupFunction extends AbstractFunction<GenericL
 
         LOG.debug("Running abuse.ch Ransomware lookup for domain [{}].", domain);
 
-        try {
-            return provider.lookup(domain.trim(), false);
-        } catch (Exception e) {
-            LOG.error("Could not run abuse.ch Ransomware lookup lookup for domain [{}].", domain, e);
-            return null;
+        final LookupResult lookupResult = this.lookupFunction.lookup(domain.trim());
+        if (lookupResult != null && !lookupResult.isEmpty() && lookupResult.singleValue() != null) {
+            if (lookupResult.singleValue() instanceof Boolean) {
+                return (Boolean)lookupResult.singleValue() ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
+            }
+            if (lookupResult.singleValue() instanceof String) {
+                return Boolean.valueOf((String) lookupResult.singleValue()) ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
+            }
         }
+
+        return GenericLookupResult.FALSE;
     }
 
     @Override

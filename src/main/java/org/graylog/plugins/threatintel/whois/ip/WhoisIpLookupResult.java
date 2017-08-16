@@ -1,29 +1,33 @@
 package org.graylog.plugins.threatintel.whois.ip;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ForwardingMap;
-import org.apache.commons.collections.map.HashedMap;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class WhoisIpLookupResult extends ForwardingMap<String, Object> {
 
-    public static final String NA = "N/A";
+    private static final String NA = "N/A";
 
-    public static WhoisIpLookupResult EMPTY = new WhoisIpLookupResult(NA, NA);
+    private static WhoisIpLookupResult EMPTY = new WhoisIpLookupResult(NA, NA);
 
     private final String organization;
     private final String countryCode;
 
     private String prefix;
 
-    public WhoisIpLookupResult(String organization, String countryCode) {
+    WhoisIpLookupResult(String organization, String countryCode) {
         this.organization = organization;
         this.countryCode = countryCode;
     }
 
+    static WhoisIpLookupResult empty() {
+        return EMPTY;
+    }
+
     public String getOrganization() {
-        if(organization == null || organization.isEmpty()) {
+        if(Strings.isNullOrEmpty(organization)) {
             return NA;
         } else {
             return organization;
@@ -31,7 +35,7 @@ public class WhoisIpLookupResult extends ForwardingMap<String, Object> {
     }
 
     public String getCountryCode() {
-        if(countryCode == null || countryCode.isEmpty()) {
+        if(Strings.isNullOrEmpty(countryCode)) {
             return NA;
         } else {
             return countryCode;

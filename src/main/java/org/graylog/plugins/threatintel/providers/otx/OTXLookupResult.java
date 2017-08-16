@@ -17,7 +17,7 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
         if(intel.getPulseCount() > 0) {
             ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
 
-            // Indicator that we threat intelligence was returned for the query.
+            // Indicator that threat intelligence was returned for the query.
             builder.put("otx_threat_indicated", true);
 
             // Add metadata.
@@ -31,7 +31,7 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
         }
     }
 
-    private OTXLookupResult(ImmutableMap<String, Object> fields) {
+    public OTXLookupResult(ImmutableMap<String, Object> fields) {
         this.results = fields;
     }
 

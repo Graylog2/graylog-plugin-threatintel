@@ -1,6 +1,5 @@
 package org.graylog.plugins.threatintel.providers.tor;
 
-import com.codahale.metrics.MetricRegistry;
 import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
@@ -8,7 +7,8 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
-import org.graylog2.plugin.cluster.ClusterConfigService;
+import org.graylog2.lookup.LookupTableService;
+import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,17 +18,15 @@ public class TorExitNodeLookupFunction extends AbstractFunction<GenericLookupRes
 
     public static final String NAME = "tor_lookup";
     private static final String VALUE = "ip_address";
-
-    private final TorExitNodeLookupProvider provider;
+    private static final String LOOKUP_TABLE_NAME = "abuse-ch-ransomware-domains";
 
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IP to look up.").build();
 
-    @Inject
-    public TorExitNodeLookupFunction(final ClusterConfigService clusterConfigService,
-                                   final MetricRegistry metricRegistry) {
-        TorExitNodeLookupProvider.getInstance().initialize(clusterConfigService, metricRegistry);
+    private final LookupTableService.Function lookupFunction;
 
-        this.provider = TorExitNodeLookupProvider.getInstance();
+    @Inject
+    public TorExitNodeLookupFunction(final LookupTableService lookupTableService) {
+        this.lookupFunction = lookupTableService.newBuilder().lookupTable(LOOKUP_TABLE_NAME).build();
     }
 
     @Override
@@ -41,12 +39,17 @@ public class TorExitNodeLookupFunction extends AbstractFunction<GenericLookupRes
 
         LOG.debug("Running Tor exit node lookup for IP [{}].", ip);
 
-        try {
-            return provider.lookup(ip.trim(), false);
-        } catch (Exception e) {
-            LOG.error("Could not run Tor exit node lookup for IP [{}].", ip, e);
-            return null;
+        final LookupResult lookupResult = this.lookupFunction.lookup(ip.trim());
+        if (lookupResult != null && !lookupResult.isEmpty() && lookupResult.singleValue() != null) {
+            if (lookupResult.singleValue() instanceof Boolean) {
+                return (Boolean)lookupResult.singleValue() ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
+            }
+            if (lookupResult.singleValue() instanceof String) {
+                return Boolean.valueOf((String) lookupResult.singleValue()) ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
+            }
         }
+
+        return GenericLookupResult.FALSE;
     }
 
     @Override

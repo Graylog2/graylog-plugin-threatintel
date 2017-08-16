@@ -137,7 +137,7 @@ public class WhoisIpLookupProvider {
             result = lookup.run(ip);
         } catch(Exception e) {
             LOG.error("Could not run WHOIS lookup for IP [{}]", ip);
-            result = WhoisIpLookupResult.EMPTY;
+            result = WhoisIpLookupResult.empty();
         } finally {
             time.stop();
         }
