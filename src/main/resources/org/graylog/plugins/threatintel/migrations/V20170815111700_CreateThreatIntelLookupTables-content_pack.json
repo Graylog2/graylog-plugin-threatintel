@@ -1,0 +1,230 @@
+{
+  "name": "Threat Intel Plugin Shipped Content",
+  "description": "This content pack is part of the [Graylog Threat Intel Plugin](http://github.com/graylog-labs/graylog-plugin-threatintel).\n\n*Please do not delete it manually if you consider to use the Threat Intel Plugin's functions. It contains important resources required by the plugin.*",
+  "category": "Graylog",
+  "inputs": [],
+  "streams": [],
+  "outputs": [],
+  "dashboards": [],
+  "grok_patterns": [],
+  "lookup_tables": [
+    {
+      "title": "AlienVault Open Thread Exchange IP",
+      "description": "This is the lookup table for AlienVault's Open Thread Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "alienvault-otx-ip",
+      "cache_name": "otx-ip-cache",
+      "data_adapter_name": "otx-ip",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    },
+    {
+      "title": "abuse.ch Ransomware Domains",
+      "description": "This is the lookup table for the abuse.ch ransomware Domain Tracker, listing infrastructure by domain names which are used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "abuse-ch-ransomware-domains",
+      "cache_name": "abuse-ch-ransomware-cache",
+      "data_adapter_name": "abuse-ch-ransomware-domains",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    },
+    {
+      "title": "Whois",
+      "description": "This is the lookup table for the WHOIS database, listing registered users of Internet resources like IPs, Netblocks or Domain Names. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "whois",
+      "cache_name": "whois-cache",
+      "data_adapter_name": "whois",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    },
+    {
+      "title": "abuse.ch Ransomware IP",
+      "description": "This is the lookup table for the abuse.ch ransomware IP Tracker, listing infrastructure by IP which is used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "abuse-ch-ransomware-ip",
+      "cache_name": "abuse-ch-ransomware-cache",
+      "data_adapter_name": "abuse-ch-ransomware-ip",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    },
+    {
+      "title": "Spamhaus DROP",
+      "description": "This is the lookup table for Spamhaus' DROP (Don't Route Or Peer) list, containing netblocks which are \"hijacked\" or leased by professional spam or cyber-crime operations. For more information see https://www.spamhaus.org/drop. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "spamhaus-drop",
+      "cache_name": "spamhaus-e-drop-cache",
+      "data_adapter_name": "spamhaus-drop",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    },
+    {
+      "title": "Tor Exit Node List",
+      "description": "This is the lookup table for the TOR (The Onion Router) Exit Node List, listing Exit Nodes of the TOR Network . This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "tor-exit-node-list",
+      "cache_name": "tor-exit-node-list-cache",
+      "data_adapter_name": "tor-exit-node",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    }
+  ],
+  "lookup_caches": [
+    {
+      "title": "AlienVault Open Threat Exchange IP Cache",
+      "description": "This is the cache for AlienVault's Open Thread Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "otx-ip-cache",
+      "config": {
+        "type": "guava_cache",
+        "max_size": 1000,
+        "expire_after_access": 0,
+        "expire_after_access_unit": "SECONDS",
+        "expire_after_write": 60,
+        "expire_after_write_unit": "SECONDS"
+      }
+    },
+    {
+      "title": "abuse.ch ransomware Cache",
+      "description": "This is the cache for the abuse.ch ransomware Tracker, listing infrastructure which is used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "abuse-ch-ransomware-cache",
+      "config": {
+        "type": "guava_cache",
+        "max_size": 1000,
+        "expire_after_access": 0,
+        "expire_after_access_unit": "SECONDS",
+        "expire_after_write": 150,
+        "expire_after_write_unit": "SECONDS"
+      }
+    },
+    {
+      "title": "Tor Exit Node List Cache",
+      "description": "This is the cache for the TOR (The Onion Router) Exit Node List, listing Exit Nodes of the TOR Network . This cache used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "tor-exit-node-list-cache",
+      "config": {
+        "type": "guava_cache",
+        "max_size": 1000,
+        "expire_after_access": 0,
+        "expire_after_access_unit": "SECONDS",
+        "expire_after_write": 2,
+        "expire_after_write_unit": "MINUTES"
+      }
+    },
+    {
+      "title": "Spamhaus (E)DROP Cache",
+      "description": "This is the cache for Spamhaus' (E)DROP (Don't Route Or Peer) list, containing netblocks which are \"hijacked\" or leased by professional spam or cyber-crime operations. For more information see https://www.spamhaus.org/drop. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "spamhaus-e-drop-cache",
+      "config": {
+        "type": "guava_cache",
+        "max_size": 1000,
+        "expire_after_access": 0,
+        "expire_after_access_unit": "SECONDS",
+        "expire_after_write": 1,
+        "expire_after_write_unit": "DAYS"
+      }
+    },
+    {
+      "title": "Whois Cache",
+      "description": "This is the cache for the WHOIS database, listing registered users of Internet resources like IPs, Netblocks or Domain Names. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "whois-cache",
+      "config": {
+        "type": "guava_cache",
+        "max_size": 1000,
+        "expire_after_access": 0,
+        "expire_after_access_unit": "DAYS",
+        "expire_after_write": 1,
+        "expire_after_write_unit": "DAYS"
+      }
+    }
+  ],
+  "lookup_data_adapters": [
+    {
+      "title": "AlienVault Open Thread Exchange IP",
+      "description": "This is the data adapter for AlienVault's Open Thread Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "otx-ip",
+      "config": {
+        "type": "httpjsonpath",
+        "url": "https://otx.alienvault.com/api/v1/indicators/${key}/general",
+        "single_value_jsonpath": "$.reputation",
+        "multi_value_jsonpath": "$",
+        "user_agent": "Graylog Lookup - https://www.graylog.org/",
+        "headers": {
+          "X-OTX-API-KEY": "<Enter your API key here>"
+        }
+      }
+    },
+    {
+      "title": "Spamhaus DROP",
+      "description": "This is the data adapter for Spamhaus' DROP (Don't Route Or Peer) list, containing netblocks which are \"hijacked\" or leased by professional spam or cyber-crime operations. For more information see https://www.spamhaus.org/drop. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "spamhaus-drop",
+      "config": {
+        "type": "dsvhttp",
+        "url": "https://www.spamhaus.org/drop/drop.txt",
+        "separator": ";",
+        "quotechar": "\"",
+        "ignorechar": ";",
+        "key_column": "key",
+        "check_presence_only": true,
+        "value_column": "value",
+        "refresh_interval": 60,
+        "case_insensitive_lookup": false
+      }
+    },
+    {
+      "title": "Whois",
+      "description": "This is the data adapter for the WHOIS database, listing registered users of Internet resources like IPs, Netblocks or Domain Names. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "whois",
+      "config": {
+        "type": "whois",
+        "registry": "ARIN"
+      }
+    },
+    {
+      "title": "abuse.ch ransomware Domains",
+      "description": "This is the data adapter for the abuse.ch ransomware Domain Tracker, listing infrastructure by domain names which are used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "abuse-ch-ransomware-domains",
+      "config": {
+        "type": "dsvhttp",
+        "url": "https://ransomwaretracker.abuse.ch/downloads/RW_DOMBL.txt",
+        "separator": ",",
+        "quotechar": "\"",
+        "ignorechar": "#",
+        "key_column": "key",
+        "check_presence_only": true,
+        "value_column": "value",
+        "refresh_interval": 60,
+        "case_insensitive_lookup": true
+      }
+    },
+    {
+      "title": "Tor Exit Node",
+      "description": "This is the data adapter for the TOR (The Onion Router) Exit Node List, listing Exit Nodes of the TOR Network . This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "tor-exit-node",
+      "config": {
+        "type": "torexitnode"
+      }
+    },
+    {
+      "title": "abuse.ch ransomware IP",
+      "description": "This is the data adapter for the abuse.ch ransomware IP Tracker, listing infrastructure by IP which is used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "abuse-ch-ransomware-ip",
+      "config": {
+        "type": "dsvhttp",
+        "url": "https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt",
+        "separator": ",",
+        "quotechar": "\"",
+        "ignorechar": "#",
+        "key_column": "key",
+        "check_presence_only": true,
+        "value_column": "value",
+        "refresh_interval": 60,
+        "case_insensitive_lookup": false
+      }
+    }
+  ]
+}
