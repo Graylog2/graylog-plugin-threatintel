@@ -2,7 +2,6 @@ package org.graylog.plugins.threatintel.adapters;
 
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -76,7 +75,11 @@ public class DSVHTTPDataAdapter extends LookupDataAdapter {
                 .followSslRedirects(true)
                 .followRedirects(true)
                 .build();
+
         final Response response = fetchDSVFile(config.url());
+        if (!response.isSuccessful()) {
+            throw new IOException(response.message());
+        }
         lookupRef.set(parseDSVBody(response));
     }
 
@@ -90,12 +93,9 @@ public class DSVHTTPDataAdapter extends LookupDataAdapter {
         try {
             final Response response = fetchDSVFile(config.url());
 
-            final String lastModifiedHeader = response.header("Last-Modified", DateTime.now(DateTimeZone.UTC).toString());
-
-            if (response.code() == 200) {
+            if (response.isSuccessful()) {
                 LOG.debug("DSV file {} has changed, updating data", config.url());
                 lookupRef.set(parseDSVBody(response));
-                this.lastLastModified.set(lastModifiedHeader);
                 cachePurge.purgeAll();
                 clearError();
             }
@@ -117,8 +117,10 @@ public class DSVHTTPDataAdapter extends LookupDataAdapter {
         final Call request = client.newCall(requestBuilder.build());
 
         final Response response = request.execute();
-        if (!response.isSuccessful()) {
-            throw new IOException(response.message());
+
+        if (response.isSuccessful()) {
+            final String lastModifiedHeader = response.header("Last-Modified", DateTime.now(DateTimeZone.UTC).toString());
+            this.lastLastModified.set(lastModifiedHeader);
         }
 
         return response;
@@ -235,11 +237,6 @@ public class DSVHTTPDataAdapter extends LookupDataAdapter {
         @NotEmpty
         public abstract String separator();
 
-        @JsonIgnore
-        public char separatorAsChar() {
-            return separator().charAt(0);
-        }
-
         // Using String here instead of char to allow deserialization of a longer (invalid) string to get proper
         // validation error messages
         @JsonProperty("quotechar")
@@ -251,11 +248,6 @@ public class DSVHTTPDataAdapter extends LookupDataAdapter {
         @Size(min = 1)
         @NotEmpty
         public abstract String ignorechar();
-
-        @JsonIgnore
-        public char quotecharAsChar() {
-            return quotechar().charAt(0);
-        }
 
         @JsonProperty("key_column")
         @NotEmpty
