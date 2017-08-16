@@ -4,7 +4,7 @@ import com.google.inject.Binder;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
-import org.graylog.plugins.threatintel.adapters.DSVHTTPDataAdapter;
+import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.threatintel.migrations.V20170815111700_CreateThreatIntelLookupTables;
 import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
 import org.graylog.plugins.threatintel.misc.functions.PrivateNetLookupFunction;
@@ -24,7 +24,6 @@ import org.graylog.plugins.threatintel.whois.ip.WhoisDataAdapter;
 import org.graylog.plugins.threatintel.whois.ip.WhoisLookupIpFunction;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
-import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 
 import java.util.Collections;
 import java.util.Set;
@@ -65,7 +64,6 @@ public class ThreatIntelPluginModule extends PluginModule {
         // Private network lookup.
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
 
-        installLookupDataAdapter(DSVHTTPDataAdapter.NAME, DSVHTTPDataAdapter.class, DSVHTTPDataAdapter.Factory.class, DSVHTTPDataAdapter.Config.class);
         installLookupDataAdapter(TorExitNodeDataAdapter.NAME, TorExitNodeDataAdapter.class, TorExitNodeDataAdapter.Factory.class, TorExitNodeDataAdapter.Config.class);
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);
 
