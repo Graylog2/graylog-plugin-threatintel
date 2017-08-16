@@ -4,7 +4,6 @@ import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import com.google.inject.Inject;
 import com.mongodb.BasicDBObject;
 import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
 import org.graylog2.bindings.providers.MongoJackObjectMapperProvider;
@@ -13,6 +12,8 @@ import org.graylog2.database.NotFoundException;
 import org.mongojack.DBSort;
 import org.mongojack.JacksonDBCollection;
 import org.mongojack.WriteResult;
+
+import javax.inject.Inject;
 
 import static com.codahale.metrics.MetricRegistry.name;
 

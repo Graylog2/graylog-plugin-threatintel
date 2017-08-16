@@ -1,10 +1,10 @@
 package org.graylog.plugins.threatintel.whois.ip;
 
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
-import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
+import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
 import org.graylog2.lookup.LookupTableService;
 import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.Map;
 
-public class WhoisLookupIpFunction extends AbstractFunction<WhoisIpLookupResult> {
+public class WhoisLookupIpFunction extends LookupTableFunction<WhoisIpLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(WhoisLookupIpFunction.class);
 

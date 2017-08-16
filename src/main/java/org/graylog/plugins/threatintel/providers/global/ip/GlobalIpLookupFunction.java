@@ -1,17 +1,22 @@
 package org.graylog.plugins.threatintel.providers.global.ip;
 
-import com.codahale.metrics.MetricRegistry;
-import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
-import org.graylog.plugins.threatintel.providers.global.GlobalLookupProvider;
+import org.graylog.plugins.threatintel.IPFunctions;
+import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
+import org.graylog.plugins.threatintel.providers.GenericLookupResult;
 import org.graylog.plugins.threatintel.providers.global.GlobalLookupResult;
-import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GlobalIpLookupFunction extends AbstractFunction<GlobalLookupResult> {
 
@@ -24,12 +29,11 @@ public class GlobalIpLookupFunction extends AbstractFunction<GlobalLookupResult>
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IPv4 or IPv6 address to look up.").build();
     private final ParameterDescriptor<String, String> prefixParam = ParameterDescriptor.string(PREFIX).description("A prefix for results. For example \"src_addr\" will result in fields called \"src_addr_threat_indicated\".").build();
 
-    private final GlobalLookupProvider provider = GlobalLookupProvider.getInstance();
+    private Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions;
 
     @Inject
-    public GlobalIpLookupFunction(final ClusterConfigService clusterConfigService,
-                                  final MetricRegistry metricRegistry) {
-        provider.initialize(metricRegistry);
+    public GlobalIpLookupFunction(@IPFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions) {
+        this.ipFunctions = ipFunctions;
     }
 
     @Override
@@ -49,13 +53,16 @@ public class GlobalIpLookupFunction extends AbstractFunction<GlobalLookupResult>
 
         LOG.debug("Running global lookup for IP [{}] with prefix [{}].", ip, prefix);
 
-        try {
-            return provider.lookupIp(ip.trim(), prefix.trim());
-        } catch (Exception e) {
-            LOG.error("Could not run global lookup for IP [{}] with prefix [{}].", ip, prefix, e);
-            return null;
-        }
-    }
+        final List<String> matches = this.ipFunctions.entrySet()
+                .stream()
+                .map(entry -> {
+                    final GenericLookupResult result = entry.getValue().evaluate(args, context);
+                    return result.isMatch() ? entry.getKey() : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        return GlobalLookupResult.fromMatches(matches, prefix.trim());
+   }
 
     @Override
     public FunctionDescriptor<GlobalLookupResult> descriptor() {

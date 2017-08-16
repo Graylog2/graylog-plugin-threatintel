@@ -1,18 +1,23 @@
 package org.graylog.plugins.threatintel.providers.global.domain;
 
-import com.codahale.metrics.MetricRegistry;
-import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
-import org.graylog.plugins.threatintel.providers.global.GlobalLookupProvider;
+import org.graylog.plugins.threatintel.DomainFunctions;
+import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
+import org.graylog.plugins.threatintel.providers.GenericLookupResult;
 import org.graylog.plugins.threatintel.providers.global.GlobalLookupResult;
 import org.graylog.plugins.threatintel.tools.Domain;
-import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GlobalDomainLookupFunction extends AbstractFunction<GlobalLookupResult> {
 
@@ -25,12 +30,11 @@ public class GlobalDomainLookupFunction extends AbstractFunction<GlobalLookupRes
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The domain to look up. Example: foo.example.org (A trailing dot ('.') will be ignored.)").build();
     private final ParameterDescriptor<String, String> prefixParam = ParameterDescriptor.string(PREFIX).description("A prefix for results. For example \"src\" will result in fields called \"src_threat_indicated\".").build();
 
-    private final GlobalLookupProvider provider = GlobalLookupProvider.getInstance();
+    private Map<String, LookupTableFunction<? extends GenericLookupResult>> domainFunctions;
 
     @Inject
-    public GlobalDomainLookupFunction(final ClusterConfigService clusterConfigService,
-                                  final MetricRegistry metricRegistry) {
-        provider.initialize(metricRegistry);
+    public GlobalDomainLookupFunction(@DomainFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> domainFunctions) {
+        this.domainFunctions = domainFunctions;
     }
 
     @Override
@@ -52,12 +56,16 @@ public class GlobalDomainLookupFunction extends AbstractFunction<GlobalLookupRes
 
         LOG.debug("Running global lookup for domain [{}] with prefix [{}].", domain, prefix);
 
-        try {
-            return provider.lookupDomain(domain.trim(), prefix.trim());
-        } catch (Exception e) {
-            LOG.error("Could not run global lookup for domain [{}] with prefix [{}].", domain, prefix, e);
-            return null;
-        }
+        final List<String> matches = this.domainFunctions.entrySet()
+                .stream()
+                .map(entry -> {
+                    final GenericLookupResult result = entry.getValue().evaluate(args, context);
+                    return result.isMatch() ? entry.getKey() : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return GlobalLookupResult.fromMatches(matches, prefix.trim());
     }
 
     @Override

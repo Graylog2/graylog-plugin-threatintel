@@ -1,12 +1,11 @@
 package org.graylog.plugins.threatintel.providers.otx.domain;
 
 import com.codahale.metrics.MetricRegistry;
-import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
-import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
+import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupProvider;
 import org.graylog.plugins.threatintel.providers.otx.OTXLookupResult;
 import org.graylog.plugins.threatintel.tools.Domain;
@@ -14,7 +13,9 @@ import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OTXDomainLookupFunction extends AbstractFunction<OTXLookupResult> {
+import javax.inject.Inject;
+
+public class OTXDomainLookupFunction extends LookupTableFunction<OTXLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OTXDomainLookupFunction.class);
 

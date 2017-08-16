@@ -1,11 +1,10 @@
 package org.graylog.plugins.threatintel.providers.abusech.domain;
 
-import com.google.inject.Inject;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
-import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
+import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
 import org.graylog.plugins.threatintel.providers.GenericLookupResult;
 import org.graylog.plugins.threatintel.tools.Domain;
 import org.graylog2.lookup.LookupTableService;
@@ -13,7 +12,9 @@ import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbuseChRansomDomainLookupFunction extends AbstractFunction<GenericLookupResult> {
+import javax.inject.Inject;
+
+public class AbuseChRansomDomainLookupFunction extends LookupTableFunction<GenericLookupResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbuseChRansomDomainLookupFunction.class);
 

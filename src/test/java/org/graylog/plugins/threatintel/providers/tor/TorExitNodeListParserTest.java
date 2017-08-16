@@ -34,9 +34,7 @@ public class TorExitNodeListParserTest {
         assertThat(result)
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(873);
-
-        assertThat(result)
+                .hasSize(873)
                 .contains(new AbstractMap.SimpleEntry<String, List<String>>("51.15.79.107", Lists.newArrayList("5D5006E4992F2F97DF4F8B926C3688870EB52BD8")))
                 .contains(new AbstractMap.SimpleEntry<String, List<String>>("104.223.123.98", Lists.newArrayList(
                         "02A627FA195809A3ABE031B7864CCA7A310F1D44",

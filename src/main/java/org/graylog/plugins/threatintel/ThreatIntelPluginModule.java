@@ -6,7 +6,9 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.threatintel.adapters.DSVHTTPDataAdapter;
 import org.graylog.plugins.threatintel.migrations.V20170815111700_CreateThreatIntelLookupTables;
+import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
 import org.graylog.plugins.threatintel.misc.functions.PrivateNetLookupFunction;
+import org.graylog.plugins.threatintel.providers.GenericLookupResult;
 import org.graylog.plugins.threatintel.providers.abusech.domain.AbuseChRansomDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.abusech.ip.AbuseChRansomIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.global.domain.GlobalDomainLookupFunction;
@@ -19,7 +21,6 @@ import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
 import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
 import org.graylog.plugins.threatintel.whois.cache.mongodb.MongoDBWhoisCacheService;
 import org.graylog.plugins.threatintel.whois.ip.WhoisDataAdapter;
-import org.graylog.plugins.threatintel.whois.ip.WhoisIpLookup;
 import org.graylog.plugins.threatintel.whois.ip.WhoisLookupIpFunction;
 import org.graylog2.plugin.PluginConfigBean;
 import org.graylog2.plugin.PluginModule;
@@ -69,19 +70,39 @@ public class ThreatIntelPluginModule extends PluginModule {
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);
 
         addMigration(V20170815111700_CreateThreatIntelLookupTables.class);
+
+        addDomainFunction("abusech_ransomware", AbuseChRansomDomainLookupFunction.class);
+        addIPFunction("abusech_ransomware", AbuseChRansomIpLookupFunction.class);
+        addIPFunction("spamhaus", SpamhausIpLookupFunction.class);
+        addIPFunction("tor", TorExitNodeLookupFunction.class);
     }
 
-    protected void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {
+    private void addMessageProcessorFunction(String name, Class<? extends Function<?>> functionClass) {
         addMessageProcessorFunction(binder(), name, functionClass);
     }
 
-    public static MapBinder<String, Function<?>> processorFunctionBinder(Binder binder) {
+    private MapBinder<String, Function<?>> processorFunctionBinder(Binder binder) {
         return MapBinder.newMapBinder(binder, TypeLiteral.get(String.class), new TypeLiteral<Function<?>>() {});
     }
 
-    public static void addMessageProcessorFunction(Binder binder, String name, Class<? extends Function<?>> functionClass) {
+    private void addMessageProcessorFunction(Binder binder, String name, Class<? extends Function<?>> functionClass) {
         processorFunctionBinder(binder).addBinding(name).to(functionClass);
 
     }
 
+    private MapBinder<String, LookupTableFunction<? extends GenericLookupResult>> domainFunctionBinder() {
+        return MapBinder.newMapBinder(binder(), TypeLiteral.get(String.class), new TypeLiteral<LookupTableFunction<? extends GenericLookupResult>>() {}, DomainFunctions.class);
+    }
+
+    private MapBinder<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctionBinder() {
+        return MapBinder.newMapBinder(binder(), TypeLiteral.get(String.class), new TypeLiteral<LookupTableFunction<? extends GenericLookupResult>>() {}, IPFunctions.class);
+    }
+
+    private void addDomainFunction(String id, Class<? extends LookupTableFunction<? extends GenericLookupResult>> functionClass) {
+        domainFunctionBinder().addBinding(id).to(functionClass);
+    }
+
+    private void addIPFunction(String id, Class<? extends LookupTableFunction<? extends GenericLookupResult>> functionClass) {
+        ipFunctionBinder().addBinding(id).to(functionClass);
+    }
 }
