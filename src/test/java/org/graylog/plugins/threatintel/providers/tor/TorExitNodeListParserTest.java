@@ -1,6 +1,7 @@
 package org.graylog.plugins.threatintel.providers.tor;
 
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URL;
@@ -15,13 +16,18 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TorExitNodeListParserTest {
+    private TorExitNodeListParser parser;
+
+    @Before
+    public void setUp() throws Exception {
+        this.parser = new TorExitNodeListParser();
+    }
+
     @Test
     public void parseValidExitNodeList() throws Exception {
         final URL torExitNodeListURL = TorExitNodeListParser.class.getResource("TorExitNodeList-20170814133408.txt");
         final Path torExitNodeListPath = Paths.get(torExitNodeListURL.toURI());
         final String torExitNodeList = new String(Files.readAllBytes(torExitNodeListPath), StandardCharsets.UTF_8);
-
-        final TorExitNodeListParser parser = new TorExitNodeListParser();
 
         final Map<String, List<String>> result = parser.parse(torExitNodeList);
 
@@ -39,5 +45,23 @@ public class TorExitNodeListParserTest {
                         "D4010FAD096CFB59278015F711776D8CCB2735EC"
                 )))
                 .doesNotContainKey("1.2.3.4");
+    }
+
+    @Test
+    public void parseNullList() throws Exception {
+        final Map<String, List<String>> result = parser.parse(null);
+
+        assertThat(result)
+                .isNotNull()
+                .isEmpty();
+    }
+
+    @Test
+    public void parseEmptyList() throws Exception {
+        final Map<String, List<String>> result = parser.parse("");
+
+        assertThat(result)
+                .isNotNull()
+                .isEmpty();
     }
 }
