@@ -163,16 +163,8 @@
       "description": "This is the data adapter for Spamhaus' DROP (Don't Route Or Peer) list, containing netblocks which are \"hijacked\" or leased by professional spam or cyber-crime operations. For more information see https://www.spamhaus.org/drop. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "spamhaus-drop",
       "config": {
-        "type": "dsvhttp",
-        "url": "https://www.spamhaus.org/drop/drop.txt",
-        "separator": ";",
-        "quotechar": "\"",
-        "ignorechar": ";",
-        "key_column": "key",
-        "check_presence_only": true,
-        "value_column": "value",
-        "refresh_interval": 60,
-        "case_insensitive_lookup": false
+        "type": "spamhaus-edrop",
+        "refresh_interval": 43200
       }
     },
     {
@@ -197,7 +189,7 @@
         "key_column": "key",
         "check_presence_only": true,
         "value_column": "value",
-        "refresh_interval": 60,
+        "refresh_interval": 150,
         "case_insensitive_lookup": true
       }
     },
@@ -222,7 +214,7 @@
         "key_column": "key",
         "check_presence_only": true,
         "value_column": "value",
-        "refresh_interval": 60,
+        "refresh_interval": 150,
         "case_insensitive_lookup": false
       }
     }

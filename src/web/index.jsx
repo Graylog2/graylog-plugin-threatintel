@@ -4,6 +4,7 @@ import webpackEntry from 'webpack-entry';
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
 import ThreatIntelPluginConfig from 'components/ThreatIntelPluginConfig';
 
+import { SpamhausEDROPAdapterDocumentation, SpamhausEDROPAdapterFieldSet, SpamhausEDROPAdapterSummary } from 'components/adapters/spamhaus-edrop';
 import { TorExitNodeAdapterDocumentation, TorExitNodeAdapterFieldSet, TorExitNodeAdapterSummary } from 'components/adapters/torexitnode';
 import { WhoisAdapterDocumentation, WhoisAdapterFieldSet, WhoisAdapterSummary } from 'components/adapters/whois/index';
 
@@ -17,6 +18,13 @@ PluginStore.register(new PluginManifest(packageJson, {
     },
   ],
   lookupTableAdapters: [
+    {
+      type: 'spamhaus-edrop',
+      displayName: 'Spamhaus (E)DROP',
+      formComponent: SpamhausEDROPAdapterFieldSet,
+      summaryComponent: SpamhausEDROPAdapterSummary,
+      documentationComponent: SpamhausEDROPAdapterDocumentation,
+    },
     {
       type: 'torexitnode',
       displayName: 'Tor Exit Node',

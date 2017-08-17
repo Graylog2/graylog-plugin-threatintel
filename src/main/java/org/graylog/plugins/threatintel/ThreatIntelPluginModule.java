@@ -15,6 +15,7 @@ import org.graylog.plugins.threatintel.providers.global.domain.GlobalDomainLooku
 import org.graylog.plugins.threatintel.providers.global.ip.GlobalIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
 import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
+import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausEDROPDataAdapter;
 import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
 import org.graylog.plugins.threatintel.providers.tor.TorExitNodeDataAdapter;
 import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
@@ -64,6 +65,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         // Private network lookup.
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
 
+        installLookupDataAdapter(SpamhausEDROPDataAdapter.NAME, SpamhausEDROPDataAdapter.class, SpamhausEDROPDataAdapter.Factory.class, SpamhausEDROPDataAdapter.Config.class);
         installLookupDataAdapter(TorExitNodeDataAdapter.NAME, TorExitNodeDataAdapter.class, TorExitNodeDataAdapter.Factory.class, TorExitNodeDataAdapter.Config.class);
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);
 
