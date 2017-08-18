@@ -46,9 +46,13 @@ public abstract class ThreatIntelPluginConfiguration {
         return new AutoValue_ThreatIntelPluginConfiguration.Builder();
     }
 
-    @JsonIgnore
-    public boolean isOtxComplete() {
-        return otxApiKey() != null && !otxApiKey().isEmpty();
+    public static ThreatIntelPluginConfiguration defaults() {
+        return builder()
+                .otxEnabled(false)
+                .torEnabled(true)
+                .spamhausEnabled(true)
+                .abusechRansomEnabled(true)
+                .build();
     }
 
     @AutoValue.Builder

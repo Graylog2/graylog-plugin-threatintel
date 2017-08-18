@@ -1,23 +1,26 @@
 package org.graylog.plugins.threatintel.functions.global;
 
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
-import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
-import org.graylog.plugins.threatintel.functions.IPFunctions;
-import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
+import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
+import org.graylog.plugins.threatintel.functions.IPFunctions;
+import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomIpLookupFunction;
+import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
+import org.graylog.plugins.threatintel.functions.otx.OTXIPLookupFunction;
+import org.graylog.plugins.threatintel.functions.spamhaus.SpamhausIpLookupFunction;
+import org.graylog.plugins.threatintel.functions.tor.TorExitNodeLookupFunction;
+import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
-public class GlobalIpLookupFunction extends AbstractFunction<GlobalLookupResult> {
+public class GlobalIpLookupFunction extends AbstractGlobalLookupFunction {
 
     private static final Logger LOG = LoggerFactory.getLogger(GlobalIpLookupFunction.class);
 
@@ -29,16 +32,19 @@ public class GlobalIpLookupFunction extends AbstractFunction<GlobalLookupResult>
     private final ParameterDescriptor<String, String> prefixParam = ParameterDescriptor.string(PREFIX).description("A prefix for results. For example \"src_addr\" will result in fields called \"src_addr_threat_indicated\".").build();
 
     private Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions;
+    private final AtomicReference<ThreatIntelPluginConfiguration> config = new AtomicReference<>();
 
     @Inject
-    public GlobalIpLookupFunction(@IPFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions) {
+    public GlobalIpLookupFunction(@IPFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions,
+                                  final ClusterConfigService clusterConfigService) {
+        super(clusterConfigService);
         this.ipFunctions = ipFunctions;
     }
 
     @Override
     public GlobalLookupResult evaluate(FunctionArgs args, EvaluationContext context) {
-        String ip = valueParam.required(args, context);
-        String prefix = prefixParam.required(args, context);
+        final String ip = valueParam.required(args, context);
+        final String prefix = prefixParam.required(args, context);
 
         if (ip == null) {
             LOG.error("NULL value parameter passed to global IP lookup.");
@@ -52,16 +58,26 @@ public class GlobalIpLookupFunction extends AbstractFunction<GlobalLookupResult>
 
         LOG.debug("Running global lookup for IP [{}] with prefix [{}].", ip, prefix);
 
-        final List<String> matches = this.ipFunctions.entrySet()
-                .stream()
-                .map(entry -> {
-                    final GenericLookupResult result = entry.getValue().evaluate(args, context);
-                    return result.isMatch() ? entry.getKey() : null;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        return GlobalLookupResult.fromMatches(matches, prefix.trim());
+        return matchEntityAgainstFunctions(this.ipFunctions, args, context, prefix);
    }
+
+   @Override
+   boolean isEnabled(LookupTableFunction<? extends GenericLookupResult> function) {
+        final ThreatIntelPluginConfiguration configuration = this.config.get();
+        if (function.getClass().equals(TorExitNodeLookupFunction.class)) {
+            return configuration.torEnabled();
+        }
+        if (function.getClass().equals(SpamhausIpLookupFunction.class)) {
+            return configuration.spamhausEnabled();
+        }
+        if (function.getClass().equals(AbuseChRansomIpLookupFunction.class)) {
+            return configuration.abusechRansomEnabled();
+        }
+        if (function.getClass().equals(OTXIPLookupFunction.class)) {
+            return configuration.otxEnabled();
+        }
+        return true;
+    }
 
     @Override
     public FunctionDescriptor<GlobalLookupResult> descriptor() {

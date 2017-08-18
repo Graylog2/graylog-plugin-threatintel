@@ -1,9 +1,11 @@
 import React from 'react';
-import { Input, Button } from 'react-bootstrap';
+import { Alert, Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
-import BootstrapModalForm from 'components/bootstrap/BootstrapModalForm';
+import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { IfPermitted } from 'components/common';
 import ObjectUtils from 'util/ObjectUtils';
+import Routes from 'routing/Routes';
 
 const ThreatIntelPluginConfig = React.createClass({
   propTypes: {
@@ -15,10 +17,9 @@ const ThreatIntelPluginConfig = React.createClass({
     return {
       config: {
         otx_enabled: false,
-        otx_api_key: '',
-        tor_enabled: false,
-        spamhaus_enabled: false,
-        abusech_ransom_enabled: false
+        tor_enabled: true,
+        spamhaus_enabled: true,
+        abusech_ransom_enabled: true,
       },
     };
   },
@@ -30,13 +31,13 @@ const ThreatIntelPluginConfig = React.createClass({
   },
 
   componentWillReceiveProps(newProps) {
-    this.setState({config: ObjectUtils.clone(newProps.config)});
+    this.setState({ config: ObjectUtils.clone(newProps.config) });
   },
 
   _updateConfigField(field, value) {
     const update = ObjectUtils.clone(this.state.config);
     update[field] = value;
-    this.setState({config: update});
+    this.setState({ config: update });
   },
 
   _onCheckboxClick(field, ref) {
@@ -58,11 +59,11 @@ const ThreatIntelPluginConfig = React.createClass({
   },
 
   _openModal() {
-    this.refs.threatintelConfigModal.open();
+    this.threatintelConfigModal.open();
   },
 
   _closeModal() {
-    this.refs.threatintelConfigModal.close();
+    this.threatintelConfigModal.close();
   },
 
   _resetConfig() {
@@ -97,16 +98,13 @@ const ThreatIntelPluginConfig = React.createClass({
 
           <dt>AlienVault OTX:</dt>
           <dd>{this.state.config.otx_enabled === true ? 'Enabled' : 'Disabled'}</dd>
-
-          <dt>AlienVault OTX API key:</dt>
-          <dd>{this.state.config.otx_api_key ? "***********" : "[not set]"}</dd>
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
           <Button bsStyle="info" bsSize="xs" onClick={this._openModal}>Configure</Button>
         </IfPermitted>
 
-        <BootstrapModalForm ref="threatintelConfigModal"
+        <BootstrapModalForm ref={(ref) => { this.threatintelConfigModal = ref; }}
                             title="Update Threat Intelligence plugin Configuration"
                             onSubmitForm={this._saveConfig}
                             onModalClose={this._resetConfig}
@@ -115,7 +113,7 @@ const ThreatIntelPluginConfig = React.createClass({
             <Input type="checkbox"
                    ref="torEnabled"
                    label="Allow Tor exit node lookups?"
-                   help={<span>When enabled, the Tor exit node lookup pipeline functions can be executed.</span>}
+                   help="Enable to include Tor exit node lookup in global pipeline function."
                    name="tor_enabled"
                    checked={this.state.config.tor_enabled}
                    onChange={this._onCheckboxClick('tor_enabled', 'torEnabled')}/>
@@ -123,7 +121,7 @@ const ThreatIntelPluginConfig = React.createClass({
             <Input type="checkbox"
                    ref="spamhausEnabled"
                    label="Allow Spamhaus DROP/EDROP lookups?"
-                   help={<span>When enabled, the Spamhaus pipeline functions can be executed.</span>}
+                   help="Enable to include Spamhaus lookup in global pipeline function."
                    name="tor_enabled"
                    checked={this.state.config.spamhaus_enabled}
                    onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')}/>
@@ -131,7 +129,7 @@ const ThreatIntelPluginConfig = React.createClass({
             <Input type="checkbox"
                    ref="abusechRansomEnabled"
                    label="Allow Abuse.ch Ransomware tracker lookups?"
-                   help={<span>When enabled, the Abuse.ch Ransomware tracker pipeline functions can be executed.</span>}
+                   help="Enable to include Abuse.ch Ransomware tracker lookup in global pipeline function."
                    name="tor_enabled"
                    checked={this.state.config.abusech_ransom_enabled}
                    onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>
@@ -139,18 +137,16 @@ const ThreatIntelPluginConfig = React.createClass({
             <Input type="checkbox"
                    ref="otxEnabled"
                    label="Allow AlienVault OTX lookups?"
-                   help={<span>When enabled, the AlienVault OTX pipeline functions can be executed.</span>}
+                   help="Enable to include AlienVault OTX lookup in global pipeline function."
                    name="otx_enabled"
                    checked={this.state.config.otx_enabled}
                    onChange={this._onCheckboxClick('otx_enabled', 'otxEnabled')}/>
 
-            <Input type="text"
-                   label="AlienVault OTX API key"
-                   help={
-                     <span>Note that this will only be used in encrypted connections but stored in plaintext.</span>}
-                   name="otx_api_key"
-                   value={this.state.config.otx_api_key}
-                   onChange={this._onUpdate('otx_api_key')}/>
+            <Alert>
+              Please take note that the <i>AlienVault OTX API token</i> is not managed on this page anymore.
+              Instead you have to add an <code>X-OTX-API-KEY</code> header containing your personal API token for the
+              corresponding data adapter over <LinkContainer to={Routes.SYSTEM.LOOKUPTABLES.DATA_ADAPTERS.edit('otx-ip')}><span>here</span></LinkContainer>.
+            </Alert>
           </fieldset>
         </BootstrapModalForm>
       </div>

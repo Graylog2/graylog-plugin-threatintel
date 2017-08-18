@@ -1,24 +1,22 @@
 package org.graylog.plugins.threatintel.functions.global;
 
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
-import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
+import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.functions.DomainFunctions;
-import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
-import org.graylog.plugins.threatintel.tools.Domain;
+import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomDomainLookupFunction;
+import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
+import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class GlobalDomainLookupFunction extends AbstractFunction<GlobalLookupResult> {
+public class GlobalDomainLookupFunction extends AbstractGlobalLookupFunction {
 
     private static final Logger LOG = LoggerFactory.getLogger(GlobalDomainLookupFunction.class);
 
@@ -32,14 +30,16 @@ public class GlobalDomainLookupFunction extends AbstractFunction<GlobalLookupRes
     private Map<String, LookupTableFunction<? extends GenericLookupResult>> domainFunctions;
 
     @Inject
-    public GlobalDomainLookupFunction(@DomainFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> domainFunctions) {
+    public GlobalDomainLookupFunction(@DomainFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> domainFunctions,
+                                      final ClusterConfigService clusterConfigService) {
+        super(clusterConfigService);
         this.domainFunctions = domainFunctions;
     }
 
     @Override
     public GlobalLookupResult evaluate(FunctionArgs args, EvaluationContext context) {
-        String domain = valueParam.required(args, context);
-        String prefix = prefixParam.required(args, context);
+        final String domain = valueParam.required(args, context);
+        final String prefix = prefixParam.required(args, context);
 
         if (domain == null) {
             LOG.error("NULL value parameter passed to global domain lookup.");
@@ -51,20 +51,18 @@ public class GlobalDomainLookupFunction extends AbstractFunction<GlobalLookupRes
             return null;
         }
 
-        domain = Domain.prepareDomain(domain);
-
         LOG.debug("Running global lookup for domain [{}] with prefix [{}].", domain, prefix);
 
-        final List<String> matches = this.domainFunctions.entrySet()
-                .stream()
-                .map(entry -> {
-                    final GenericLookupResult result = entry.getValue().evaluate(args, context);
-                    return result.isMatch() ? entry.getKey() : null;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return matchEntityAgainstFunctions(this.domainFunctions, args, context, prefix);
+    }
 
-        return GlobalLookupResult.fromMatches(matches, prefix.trim());
+    @Override
+    boolean isEnabled(LookupTableFunction<? extends GenericLookupResult> function) {
+        final ThreatIntelPluginConfiguration configuration = this.config.get();
+        if (function.getClass().equals(AbuseChRansomDomainLookupFunction.class)) {
+            return configuration.abusechRansomEnabled();
+        }
+        return true;
     }
 
     @Override
