@@ -30,7 +30,7 @@ public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
 
     @Override
     public OTXLookupResult evaluate(FunctionArgs args, EvaluationContext context) {
-        String ip = valueParam.required(args, context);
+        final String ip = valueParam.required(args, context);
         if (ip == null) {
             LOG.error("NULL parameter passed to OTX threat intel lookup.");
             return null;
@@ -38,7 +38,7 @@ public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
 
         LOG.debug("Running OTX lookup for IP [{}].", ip);
 
-        return lookupIntel(ip.trim(), "IPv4");
+        return lookupIntel(ip.trim(), detectIpType(ip.trim()));
     }
 
     @Override
@@ -51,4 +51,20 @@ public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
                 .build();
     }
 
+    private String detectIpType(String ip) {
+        /*
+         * This is gonna be super stupid but the user can pass anything in here and trying to recognize IPv4 by a
+         * regular expression just costs a lot of CPU cycles. We trust the user to pass in either IPv4 or IPv6 and
+         * if he/she puts something else in here, it's not our problem. ¯\_(ツ)_/¯
+         */
+        if(ip.contains(".")) {
+            return "IPv4";
+        }
+
+        /*
+         * If it's not IPv4, we just expect it to be IPv6. OTX API will return
+         * simply no results if its any artificial string.
+         */
+        return "IPv6";
+    }
 }
