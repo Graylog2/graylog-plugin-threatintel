@@ -24,10 +24,6 @@ public class WhoisIpLookup {
 
     private final InternetRegistry defaultRegistry;
 
-    public WhoisIpLookup() {
-        this(InternetRegistry.ARIN);
-    }
-
     public WhoisIpLookup(InternetRegistry defaultRegistry) {
         this.defaultRegistry = defaultRegistry;
     }

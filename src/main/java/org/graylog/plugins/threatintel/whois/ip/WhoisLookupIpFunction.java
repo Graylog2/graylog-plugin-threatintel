@@ -4,7 +4,7 @@ import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
-import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
+import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog2.lookup.LookupTableService;
 import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;

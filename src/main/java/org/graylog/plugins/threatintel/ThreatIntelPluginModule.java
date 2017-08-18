@@ -1,26 +1,25 @@
 package org.graylog.plugins.threatintel;
 
 import com.google.inject.Binder;
-import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
+import org.graylog.plugins.threatintel.functions.DomainFunctions;
+import org.graylog.plugins.threatintel.functions.IPFunctions;
 import org.graylog.plugins.threatintel.migrations.V20170815111700_CreateThreatIntelLookupTables;
-import org.graylog.plugins.threatintel.misc.functions.LookupTableFunction;
-import org.graylog.plugins.threatintel.misc.functions.PrivateNetLookupFunction;
-import org.graylog.plugins.threatintel.providers.GenericLookupResult;
-import org.graylog.plugins.threatintel.providers.abusech.domain.AbuseChRansomDomainLookupFunction;
-import org.graylog.plugins.threatintel.providers.abusech.ip.AbuseChRansomIpLookupFunction;
-import org.graylog.plugins.threatintel.providers.global.domain.GlobalDomainLookupFunction;
-import org.graylog.plugins.threatintel.providers.global.ip.GlobalIpLookupFunction;
-import org.graylog.plugins.threatintel.providers.otx.domain.OTXDomainLookupFunction;
-import org.graylog.plugins.threatintel.providers.otx.ip.OTXIPLookupFunction;
-import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausEDROPDataAdapter;
-import org.graylog.plugins.threatintel.providers.spamhaus.SpamhausIpLookupFunction;
-import org.graylog.plugins.threatintel.providers.tor.TorExitNodeDataAdapter;
-import org.graylog.plugins.threatintel.providers.tor.TorExitNodeLookupFunction;
-import org.graylog.plugins.threatintel.whois.cache.WhoisCacheService;
-import org.graylog.plugins.threatintel.whois.cache.mongodb.MongoDBWhoisCacheService;
+import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
+import org.graylog.plugins.threatintel.functions.misc.PrivateNetLookupFunction;
+import org.graylog.plugins.threatintel.functions.GenericLookupResult;
+import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomDomainLookupFunction;
+import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomIpLookupFunction;
+import org.graylog.plugins.threatintel.functions.global.GlobalDomainLookupFunction;
+import org.graylog.plugins.threatintel.functions.global.GlobalIpLookupFunction;
+import org.graylog.plugins.threatintel.functions.otx.OTXDomainLookupFunction;
+import org.graylog.plugins.threatintel.functions.otx.OTXIPLookupFunction;
+import org.graylog.plugins.threatintel.adapters.spamhaus.SpamhausEDROPDataAdapter;
+import org.graylog.plugins.threatintel.functions.spamhaus.SpamhausIpLookupFunction;
+import org.graylog.plugins.threatintel.adapters.tor.TorExitNodeDataAdapter;
+import org.graylog.plugins.threatintel.functions.tor.TorExitNodeLookupFunction;
 import org.graylog.plugins.threatintel.whois.ip.WhoisDataAdapter;
 import org.graylog.plugins.threatintel.whois.ip.WhoisLookupIpFunction;
 import org.graylog2.plugin.PluginConfigBean;
@@ -38,9 +37,6 @@ public class ThreatIntelPluginModule extends PluginModule {
 
     @Override
     protected void configure() {
-        // Setup DI.
-        bind(WhoisCacheService.class).to(MongoDBWhoisCacheService.class).in(Scopes.SINGLETON);
-
         // AlienVault OTX threat intel lookup.
         addMessageProcessorFunction(OTXDomainLookupFunction.NAME, OTXDomainLookupFunction.class);
         addMessageProcessorFunction(OTXIPLookupFunction.NAME, OTXIPLookupFunction.class);
