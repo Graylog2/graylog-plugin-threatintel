@@ -26,7 +26,7 @@ public class TorExitNodeListParserTest {
 
     @Test
     public void parseValidExitNodeList() throws Exception {
-        final URL torExitNodeListURL = TorExitNodeListParser.class.getResource("TorExitNodeList-20170814133408.txt");
+        final URL torExitNodeListURL = getClass().getResource("TorExitNodeList-20170814133408.txt");
         final Path torExitNodeListPath = Paths.get(torExitNodeListURL.toURI());
         final String torExitNodeList = new String(Files.readAllBytes(torExitNodeListPath), StandardCharsets.UTF_8);
 
