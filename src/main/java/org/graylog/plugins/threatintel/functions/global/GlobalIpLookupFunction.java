@@ -12,6 +12,7 @@ import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog.plugins.threatintel.functions.otx.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.functions.spamhaus.SpamhausIpLookupFunction;
 import org.graylog.plugins.threatintel.functions.tor.TorExitNodeLookupFunction;
+import org.graylog2.events.ClusterEventBus;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +37,9 @@ public class GlobalIpLookupFunction extends AbstractGlobalLookupFunction {
 
     @Inject
     public GlobalIpLookupFunction(@IPFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions,
-                                  final ClusterConfigService clusterConfigService) {
-        super(clusterConfigService);
+                                  final ClusterConfigService clusterConfigService,
+                                  final ClusterEventBus clusterEventBus) {
+        super(clusterConfigService, clusterEventBus);
         this.ipFunctions = ipFunctions;
     }
 
