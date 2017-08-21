@@ -20,6 +20,7 @@ import org.graylog.plugins.threatintel.adapters.spamhaus.SpamhausEDROPDataAdapte
 import org.graylog.plugins.threatintel.functions.spamhaus.SpamhausIpLookupFunction;
 import org.graylog.plugins.threatintel.adapters.tor.TorExitNodeDataAdapter;
 import org.graylog.plugins.threatintel.functions.tor.TorExitNodeLookupFunction;
+import org.graylog.plugins.threatintel.migrations.V20170821100300_MigrateOTXAPIToken;
 import org.graylog.plugins.threatintel.whois.ip.WhoisDataAdapter;
 import org.graylog.plugins.threatintel.whois.ip.WhoisLookupIpFunction;
 import org.graylog2.plugin.PluginConfigBean;
@@ -66,6 +67,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);
 
         addMigration(V20170815111700_CreateThreatIntelLookupTables.class);
+        addMigration(V20170821100300_MigrateOTXAPIToken.class);
 
         addDomainFunction("abusech_ransomware", AbuseChRansomDomainLookupFunction.class);
         addIPFunction("abusech_ransomware", AbuseChRansomIpLookupFunction.class);
