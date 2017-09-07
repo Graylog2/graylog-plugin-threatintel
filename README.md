@@ -2,7 +2,7 @@
 
 [![Github Downloads](https://img.shields.io/github/downloads/Graylog2/graylog-plugin-threatintel/total.svg)](https://github.com/Graylog2/graylog-plugin-threatintel/releases)
 [![GitHub Release](https://img.shields.io/github/release/Graylog2/graylog-plugin-threatintel.svg)](https://github.com/Graylog2/graylog-plugin-threatintel/releases)
-[![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-threatintel.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-threatintel)
+[![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-threatintel.svg?branch=0.10)](https://travis-ci.org/Graylog2/graylog-plugin-threatintel)
 
 **Required Graylog version:** 2.2.1
 
@@ -32,9 +32,9 @@ let src_addr_intel = threat_intel_lookup_ip(to_string($message.src_addr), "src_a
 set_fields(src_addr_intel);
 ```
 
-![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example.jpg)
+![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/0.10/threatintel_example.jpg)
 
-![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/master/threatintel_example_2.jpg)
+![](https://github.com/Graylog2/graylog-plugin-threatintel/blob/0.10/threatintel_example_2.jpg)
 
 Please read the usage instructions below for more information and specific guides.
 
