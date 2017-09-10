@@ -17,6 +17,7 @@ const ThreatIntelPluginConfig = React.createClass({
                 otx_api_key: '',
                 tor_enabled: false,
                 spamhaus_enabled: false,
+                emerging_threats_enabled: false,
                 abusech_ransom_enabled: false
             },
         };
@@ -91,6 +92,9 @@ const ThreatIntelPluginConfig = React.createClass({
                     <dt>Spamhaus:</dt>
                     <dd>{this.state.config.spamhaus_enabled === true ? 'Enabled' : 'Disabled'}</dd>
 
+                    <dt>Emerging Threats:</dt>
+                    <dd>{this.state.config.emerging_threats_enabled === true ? 'Enabled' : 'Disabled'}</dd>
+
                     <dt>Abuse.ch Ransomware:</dt>
                     <dd>{this.state.config.abusech_ransom_enabled === true ? 'Enabled' : 'Disabled'}</dd>
 
@@ -126,6 +130,14 @@ const ThreatIntelPluginConfig = React.createClass({
                                name="tor_enabled"
                                checked={this.state.config.spamhaus_enabled}
                                onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')}/>
+
+                      <Input type="checkbox"
+                              ref="emergingThreatsEnabled"
+                              label="Allow Emerging Threats lookups?"
+                              help={<span>When enabled, the Emerging Threats pipeline functions can be executed.</span>}
+                              name="tor_enabled"
+                              checked={this.state.config.spamhaus_enabled}
+                              onChange={this._onCheckboxClick('emerging_threats_enabled', 'emergingThreatsEnabled')}/>
 
                         <Input type="checkbox"
                                ref="abusechRansomEnabled"
