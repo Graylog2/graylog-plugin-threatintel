@@ -4,7 +4,7 @@
 [![GitHub Release](https://img.shields.io/github/release/Graylog2/graylog-plugin-threatintel.svg)](https://github.com/Graylog2/graylog-plugin-threatintel/releases)
 [![Build Status](https://travis-ci.org/Graylog2/graylog-plugin-threatintel.svg?branch=master)](https://travis-ci.org/Graylog2/graylog-plugin-threatintel)
 
-**Required Graylog version:** 2.2.1
+**Required Graylog version:** 2.4.0
 
 **This Plugin is currently in testing - do not use this for production**
 
