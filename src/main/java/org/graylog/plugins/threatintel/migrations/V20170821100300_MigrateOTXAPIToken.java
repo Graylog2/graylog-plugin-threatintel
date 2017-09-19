@@ -1,5 +1,10 @@
 package org.graylog.plugins.threatintel.migrations;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+import org.graylog.autovalue.WithBeanGetter;
 import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog2.events.ClusterEventBus;
 import org.graylog2.lookup.adapters.HTTPJSONPathDataAdapter;
@@ -8,7 +13,10 @@ import org.graylog2.lookup.dto.DataAdapterDto;
 import org.graylog2.lookup.events.DataAdaptersUpdated;
 import org.graylog2.migrations.Migration;
 import org.graylog2.plugin.cluster.ClusterConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -16,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class V20170821100300_MigrateOTXAPIToken extends Migration {
+    private static final Logger LOG = LoggerFactory.getLogger(V20170821100300_MigrateOTXAPIToken.class);
     private static final String OTX_DATA_ADAPTER_NAME = "otx-ip";
 
     private final ClusterConfigService clusterConfigService;
@@ -38,8 +47,14 @@ public class V20170821100300_MigrateOTXAPIToken extends Migration {
 
     @Override
     public void upgrade() {
+        if (clusterConfigService.get(MigrationCompleted.class) != null) {
+            LOG.debug("Migration already completed.");
+            return;
+        }
+
         final ThreatIntelPluginConfiguration pluginConfig = clusterConfigService.get(ThreatIntelPluginConfiguration.class);
         if (pluginConfig == null || pluginConfig.otxApiKey() == null) {
+            clusterConfigService.write(MigrationCompleted.notConvertedKey());
             return;
         }
 
@@ -69,6 +84,29 @@ public class V20170821100300_MigrateOTXAPIToken extends Migration {
                 .name(dataAdapterDto.name())
                 .contentPack(dataAdapterDto.contentPack())
                 .build());
+
         clusterBus.post(DataAdaptersUpdated.create(saved.id()));
+        clusterConfigService.write(MigrationCompleted.convertedKey(dataAdapterDto.id()));
+    }
+
+    @JsonAutoDetect
+    @AutoValue
+    @WithBeanGetter
+    public static abstract class MigrationCompleted {
+        @JsonProperty
+        public abstract Boolean convertedOTXAPIKey();
+
+        @JsonProperty
+        @Nullable
+        public abstract String dataAdapterId();
+
+        @JsonCreator
+        public static MigrationCompleted convertedKey(final String dataAdapterId) {
+            return new AutoValue_V20170821100300_MigrateOTXAPIToken_MigrationCompleted(true, dataAdapterId);
+        }
+
+        public static MigrationCompleted notConvertedKey() {
+            return new AutoValue_V20170821100300_MigrateOTXAPIToken_MigrationCompleted(false, null);
+        }
     }
 }
