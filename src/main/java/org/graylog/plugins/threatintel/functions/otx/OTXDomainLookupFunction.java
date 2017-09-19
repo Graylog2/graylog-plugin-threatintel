@@ -33,7 +33,7 @@ public class OTXDomainLookupFunction extends AbstractOTXLookupFunction {
         final String domain = valueParam.required(args, context);
         if (domain == null) {
             LOG.error("NULL parameter passed to OTX threat intel lookup.");
-            return null;
+            return OTXLookupResult.EMPTY;
         }
 
         LOG.debug("Running OTX lookup for domain [{}].", domain);

@@ -33,7 +33,7 @@ public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
         final String ip = valueParam.required(args, context);
         if (ip == null) {
             LOG.error("NULL parameter passed to OTX threat intel lookup.");
-            return null;
+            return OTXLookupResult.EMPTY;
         }
 
         LOG.debug("Running OTX lookup for IP [{}].", ip);
