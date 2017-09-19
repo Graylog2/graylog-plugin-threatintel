@@ -41,7 +41,6 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.site.skip>true</maven.site.skip>
         <graylog.version>2.4.0-SNAPSHOT</graylog.version>
-        <graylog-pipelines.version>2.4.0-SNAPSHOT</graylog-pipelines.version>
     </properties>
 
     <dependencies>
