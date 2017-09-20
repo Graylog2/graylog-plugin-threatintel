@@ -10,7 +10,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.inject.assistedinject.Assisted;
-import okhttp3.Response;
 import org.apache.commons.net.util.SubnetUtils;
 import org.graylog.autovalue.WithBeanGetter;
 import org.graylog2.lookup.adapters.DSVHTTPDataAdapter;
