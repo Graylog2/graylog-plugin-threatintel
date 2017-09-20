@@ -10,11 +10,11 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.inject.assistedinject.Assisted;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import org.apache.commons.net.util.SubnetUtils;
 import org.graylog.autovalue.WithBeanGetter;
 import org.graylog2.lookup.adapters.DSVHTTPDataAdapter;
+import org.graylog2.lookup.adapters.dsvhttp.HTTPFileRetriever;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
@@ -43,15 +43,17 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
     };
 
     private final AtomicReference<Map<String, Map<SubnetUtils.SubnetInfo, String>>> subnets = new AtomicReference<>(Collections.emptyMap());
+    private final HTTPFileRetriever httpFileRetriever;
 
     @Inject
     public SpamhausEDROPDataAdapter(@Assisted("id") String id,
-                              @Assisted("name") String name,
-                              @Assisted LookupDataAdapterConfiguration config,
-                              OkHttpClient httpClient,
-                              DSVHTTPDataAdapter.Descriptor dsvHttpDataAdapterDescriptor,
-                              MetricRegistry metricRegistry) {
-        super(id, name, dsvHttpDataAdapterDescriptor.defaultConfiguration(), httpClient, metricRegistry);
+                                    @Assisted("name") String name,
+                                    @Assisted LookupDataAdapterConfiguration config,
+                                    DSVHTTPDataAdapter.Descriptor dsvHttpDataAdapterDescriptor,
+                                    MetricRegistry metricRegistry,
+                                    HTTPFileRetriever httpFileRetriever) {
+        super(id, name, dsvHttpDataAdapterDescriptor.defaultConfiguration(), metricRegistry, httpFileRetriever);
+        this.httpFileRetriever = httpFileRetriever;
     }
 
     @Override
@@ -85,9 +87,9 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
     private Map<SubnetUtils.SubnetInfo, String> fetchSubnetsFromEDROPLists(String list) {
         final ImmutableMap.Builder<SubnetUtils.SubnetInfo, String> builder = ImmutableMap.builder();
         try {
-            final Response response = fetchDSVFile(list);
-            if (response.isSuccessful() && response.body() != null) {
-                try (final Scanner scanner = new Scanner(response.body().byteStream())) {
+            final Optional<String> body = httpFileRetriever.fetchFileIfNotModified(list);
+            if (body.isPresent()) {
+                try (final Scanner scanner = new Scanner(body.get())) {
                     while (scanner.hasNextLine()) {
                         final String line = scanner.nextLine().trim();
 
