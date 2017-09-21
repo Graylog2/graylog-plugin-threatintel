@@ -1,5 +1,6 @@
 package org.graylog.plugins.threatintel.functions.global;
 
+import com.google.common.eventbus.EventBus;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
@@ -9,7 +10,6 @@ import org.graylog.plugins.threatintel.functions.DomainFunctions;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
 import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomDomainLookupFunction;
 import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
-import org.graylog2.events.ClusterEventBus;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ public class GlobalDomainLookupFunction extends AbstractGlobalLookupFunction {
     @Inject
     public GlobalDomainLookupFunction(@DomainFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> domainFunctions,
                                       final ClusterConfigService clusterConfigService,
-                                      final ClusterEventBus clusterEventBus) {
-        super(clusterConfigService, clusterEventBus);
+                                      final EventBus serverEventBus) {
+        super(clusterConfigService, serverEventBus);
         this.domainFunctions = domainFunctions;
     }
 

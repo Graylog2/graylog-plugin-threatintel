@@ -1,5 +1,6 @@
 package org.graylog.plugins.threatintel.functions.global;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.AbstractFunction;
@@ -8,7 +9,6 @@ import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
 import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog2.cluster.ClusterConfigChangedEvent;
-import org.graylog2.events.ClusterEventBus;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.graylog2.shared.utilities.AutoValueUtils;
 
@@ -23,10 +23,10 @@ abstract class AbstractGlobalLookupFunction extends AbstractFunction<GlobalLooku
     private final ClusterConfigService clusterConfigService;
 
     AbstractGlobalLookupFunction(final ClusterConfigService clusterConfigService,
-                                 final ClusterEventBus clusterEventBus) {
+                                 final EventBus serverEventBus) {
         this.clusterConfigService = clusterConfigService;
         this.config.set(clusterConfigService.getOrDefault(ThreatIntelPluginConfiguration.class, ThreatIntelPluginConfiguration.defaults()));
-        clusterEventBus.register(this);
+        serverEventBus.register(this);
     }
 
     GlobalLookupResult matchEntityAgainstFunctions(Map<String, LookupTableFunction<? extends GenericLookupResult>> functions,
