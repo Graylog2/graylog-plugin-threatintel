@@ -22,12 +22,14 @@ public class WhoisIpLookup {
 
     private static final int PORT = 43;
 
-    /*
-     * In the future we'll get rid of this and make the initial registry configurable.
-     * European Graylog deployments will want to query RIPE NCC first.
-     */
+    private final InternetRegistry defaultRegistry;
+
+    public WhoisIpLookup(InternetRegistry defaultRegistry) {
+        this.defaultRegistry = defaultRegistry;
+    }
+
     public WhoisIpLookupResult run(String ip) throws Exception {
-        return run(InternetRegistry.ARIN, ip);
+        return run(this.defaultRegistry, ip);
     }
 
     public WhoisIpLookupResult run(InternetRegistry registry, String ip) throws Exception {
@@ -53,11 +55,9 @@ public class WhoisIpLookup {
                 throw new RuntimeException("No parser implemented for [" + registry.name() + "] responses.");
         }
 
-        Socket socket = null;
-        try {
-            socket = new Socket(registry.getWhoisServer(), PORT);
-            OutputStream out = socket.getOutputStream();
-            InputStream in = socket.getInputStream();
+        try (final Socket socket = new Socket(registry.getWhoisServer(), PORT)){
+            final OutputStream out = socket.getOutputStream();
+            final InputStream in = socket.getInputStream();
 
             out.write((ip + "\n").getBytes(StandardCharsets.UTF_8));
 
@@ -96,14 +96,6 @@ public class WhoisIpLookup {
         } catch (IOException e) {
             LOG.error("Could not lookup WHOIS information for [{}] at [{}].", ip, registry.toString());
             throw e;
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    LOG.warn("Could not close WHOIS socket.");
-                }
-            }
         }
     }
 
