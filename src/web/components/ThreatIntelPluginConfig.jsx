@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -9,8 +10,8 @@ import Routes from 'routing/Routes';
 
 const ThreatIntelPluginConfig = React.createClass({
   propTypes: {
-    config: React.PropTypes.object,
-    updateConfig: React.PropTypes.func.isRequired,
+    config: PropTypes.object,
+    updateConfig: PropTypes.func.isRequired,
   },
 
   getDefaultProps() {
