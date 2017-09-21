@@ -184,11 +184,12 @@
         "type": "dsvhttp",
         "url": "https://ransomwaretracker.abuse.ch/downloads/RW_DOMBL.txt",
         "separator": ",",
+        "line_separator": "\n",
         "quotechar": "\"",
         "ignorechar": "#",
-        "key_column": "key",
+        "key_column": 0,
         "check_presence_only": true,
-        "value_column": "value",
+        "value_column": 1,
         "refresh_interval": 150,
         "case_insensitive_lookup": true
       }
@@ -209,11 +210,12 @@
         "type": "dsvhttp",
         "url": "https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt",
         "separator": ",",
+        "line_separator": "\n",
         "quotechar": "\"",
         "ignorechar": "#",
-        "key_column": "key",
+        "key_column": 0,
         "check_presence_only": true,
-        "value_column": "value",
+        "value_column": 1,
         "refresh_interval": 150,
         "case_insensitive_lookup": false
       }
