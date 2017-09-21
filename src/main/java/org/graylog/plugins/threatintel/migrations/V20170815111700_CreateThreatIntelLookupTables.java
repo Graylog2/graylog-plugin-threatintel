@@ -51,7 +51,7 @@ public class V20170815111700_CreateThreatIntelLookupTables extends Migration {
         }
 
         try {
-            final URL contentPackURL = V20170815111700_CreateThreatIntelLookupTables.class.getResource("V20170815111700_CreateThreatIntelLookupTables-content-pack.json");
+            final URL contentPackURL = V20170815111700_CreateThreatIntelLookupTables.class.getResource("V20170815111700_CreateThreatIntelLookupTables-content_pack.json");
             final ConfigurationBundle configurationBundle = this.objectMapper.readValue(contentPackURL, ConfigurationBundle.class);
             final ConfigurationBundle savedBundle = this.bundleService.insert(configurationBundle);
             this.bundleService.applyConfigurationBundle(savedBundle, this.userService.getAdminUser());
@@ -65,11 +65,11 @@ public class V20170815111700_CreateThreatIntelLookupTables extends Migration {
     @AutoValue
     @WithBeanGetter
     public static abstract class MigrationCompleted {
-        @JsonProperty
+        @JsonProperty("content_bundle_id")
         public abstract String contentBundleId();
 
         @JsonCreator
-        public static MigrationCompleted create(final String contentBundleId) {
+        public static MigrationCompleted create(@JsonProperty("content_bundle_id") final String contentBundleId) {
             return new AutoValue_V20170815111700_CreateThreatIntelLookupTables_MigrationCompleted(contentBundleId);
         }
     }
