@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+
 @JsonAutoDetect
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AutoValue
@@ -16,7 +19,7 @@ public abstract class ThreatIntelPluginConfiguration {
     public abstract boolean otxEnabled();
 
     @JsonProperty("otx_api_key")
-    public abstract String otxApiKey();
+    public abstract Optional<String> otxApiKey();
 
     @JsonProperty("tor_enabled")
     public abstract boolean torEnabled();
@@ -29,7 +32,7 @@ public abstract class ThreatIntelPluginConfiguration {
 
     @JsonCreator
     public static ThreatIntelPluginConfiguration create(@JsonProperty("otx_enabled") boolean otxEnabled,
-                                                        @JsonProperty("otx_api_key") String otxApiKey,
+                                                        @JsonProperty("otx_api_key") @Nullable String otxApiKey,
                                                         @JsonProperty("tor_enabled") boolean torEnabled,
                                                         @JsonProperty("spamhaus_enabled") boolean spamhausEnabled,
                                                         @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled) {
