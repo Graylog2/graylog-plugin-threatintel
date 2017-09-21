@@ -60,7 +60,7 @@ public class GlobalDomainLookupFunction extends AbstractGlobalLookupFunction {
 
     @Override
     boolean isEnabled(LookupTableFunction<? extends GenericLookupResult> function) {
-        final ThreatIntelPluginConfiguration configuration = this.config.get();
+        final ThreatIntelPluginConfiguration configuration = this.threatIntelPluginConfiguration();
         if (function.getClass().equals(AbuseChRansomDomainLookupFunction.class)) {
             return configuration.abusechRansomEnabled();
         }

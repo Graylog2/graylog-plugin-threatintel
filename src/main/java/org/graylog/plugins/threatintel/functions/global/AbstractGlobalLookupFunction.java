@@ -1,5 +1,6 @@
 package org.graylog.plugins.threatintel.functions.global;
 
+import com.google.common.base.Suppliers;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
@@ -16,17 +17,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 abstract class AbstractGlobalLookupFunction extends AbstractFunction<GlobalLookupResult> {
-    final AtomicReference<ThreatIntelPluginConfiguration> config = new AtomicReference<>();
+    private final AtomicReference<Supplier<ThreatIntelPluginConfiguration>> config;
     private final ClusterConfigService clusterConfigService;
 
     AbstractGlobalLookupFunction(final ClusterConfigService clusterConfigService,
                                  final EventBus serverEventBus) {
         this.clusterConfigService = clusterConfigService;
-        this.config.set(clusterConfigService.getOrDefault(ThreatIntelPluginConfiguration.class, ThreatIntelPluginConfiguration.defaults()));
         serverEventBus.register(this);
+        this.config = new AtomicReference<>(Suppliers.memoize(() ->
+                this.clusterConfigService.getOrDefault(ThreatIntelPluginConfiguration.class, ThreatIntelPluginConfiguration.defaults())
+        ));
     }
 
     GlobalLookupResult matchEntityAgainstFunctions(Map<String, LookupTableFunction<? extends GenericLookupResult>> functions,
@@ -47,10 +51,16 @@ abstract class AbstractGlobalLookupFunction extends AbstractFunction<GlobalLooku
 
     abstract boolean isEnabled(LookupTableFunction<? extends GenericLookupResult> function);
 
+    ThreatIntelPluginConfiguration threatIntelPluginConfiguration() {
+        return this.config.get().get();
+    }
+
     @Subscribe
     public void handleUpdatedClusterConfig(ClusterConfigChangedEvent clusterConfigChangedEvent) {
         if (clusterConfigChangedEvent.type().equals(AutoValueUtils.getCanonicalName((ThreatIntelPluginConfiguration.class)))) {
-            this.config.set(clusterConfigService.getOrDefault(ThreatIntelPluginConfiguration.class, ThreatIntelPluginConfiguration.defaults()));
+            this.config.set(Suppliers.memoize(() ->
+                    this.clusterConfigService.getOrDefault(ThreatIntelPluginConfiguration.class, ThreatIntelPluginConfiguration.defaults())
+            ));
         }
     }
 }

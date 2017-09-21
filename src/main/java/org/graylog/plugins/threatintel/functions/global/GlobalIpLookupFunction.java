@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class GlobalIpLookupFunction extends AbstractGlobalLookupFunction {
 
@@ -33,7 +32,6 @@ public class GlobalIpLookupFunction extends AbstractGlobalLookupFunction {
     private final ParameterDescriptor<String, String> prefixParam = ParameterDescriptor.string(PREFIX).description("A prefix for results. For example \"src_addr\" will result in fields called \"src_addr_threat_indicated\".").build();
 
     private Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions;
-    private final AtomicReference<ThreatIntelPluginConfiguration> config = new AtomicReference<>();
 
     @Inject
     public GlobalIpLookupFunction(@IPFunctions final Map<String, LookupTableFunction<? extends GenericLookupResult>> ipFunctions,
@@ -65,7 +63,7 @@ public class GlobalIpLookupFunction extends AbstractGlobalLookupFunction {
 
    @Override
    boolean isEnabled(LookupTableFunction<? extends GenericLookupResult> function) {
-        final ThreatIntelPluginConfiguration configuration = this.config.get();
+        final ThreatIntelPluginConfiguration configuration = this.threatIntelPluginConfiguration();
         if (function.getClass().equals(TorExitNodeLookupFunction.class)) {
             return configuration.torEnabled();
         }
