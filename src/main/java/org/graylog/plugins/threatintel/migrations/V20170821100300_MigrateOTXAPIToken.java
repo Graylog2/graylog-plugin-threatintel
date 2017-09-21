@@ -53,12 +53,12 @@ public class V20170821100300_MigrateOTXAPIToken extends Migration {
         }
 
         final ThreatIntelPluginConfiguration pluginConfig = clusterConfigService.get(ThreatIntelPluginConfiguration.class);
-        if (pluginConfig == null || pluginConfig.otxApiKey() == null) {
+        if (pluginConfig == null || pluginConfig.otxApiKey() == null || !pluginConfig.otxApiKey().isPresent()) {
             clusterConfigService.write(MigrationCompleted.notConvertedKey());
             return;
         }
 
-        final String otxApiKey = pluginConfig.otxApiKey();
+        final String otxApiKey = pluginConfig.otxApiKey().get();
         final DataAdapterDto dataAdapterDto = this.dbDataAdapterService.get(OTX_DATA_ADAPTER_NAME)
                 .orElseThrow(() -> new IllegalStateException("OTX data adapter not present when trying to add API token."));
 
@@ -93,20 +93,25 @@ public class V20170821100300_MigrateOTXAPIToken extends Migration {
     @AutoValue
     @WithBeanGetter
     public static abstract class MigrationCompleted {
-        @JsonProperty
+        @JsonProperty("converted_otx_api_key")
         public abstract Boolean convertedOTXAPIKey();
 
-        @JsonProperty
+        @JsonProperty("data_adapter_id")
         @Nullable
         public abstract String dataAdapterId();
 
         @JsonCreator
-        public static MigrationCompleted convertedKey(final String dataAdapterId) {
-            return new AutoValue_V20170821100300_MigrateOTXAPIToken_MigrationCompleted(true, dataAdapterId);
+        public static MigrationCompleted create(@JsonProperty("data_adapter_id") @Nullable final String dataAdapterId,
+                                                @JsonProperty("converted_otx_api_key") final Boolean convertedOTXAPIKey) {
+            return new AutoValue_V20170821100300_MigrateOTXAPIToken_MigrationCompleted(convertedOTXAPIKey, dataAdapterId);
+        }
+
+        public static MigrationCompleted convertedKey(@JsonProperty("data_adapter_id") final String dataAdapterId) {
+            return create(dataAdapterId, true);
         }
 
         public static MigrationCompleted notConvertedKey() {
-            return new AutoValue_V20170821100300_MigrateOTXAPIToken_MigrationCompleted(false, null);
+            return create(null, false);
         }
     }
 }
