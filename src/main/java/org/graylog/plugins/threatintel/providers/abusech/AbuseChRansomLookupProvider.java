@@ -70,7 +70,7 @@ public class AbuseChRansomLookupProvider extends LocalCopyListProvider<GenericLo
 
     @Override
     protected void refreshTable() throws ExecutionException {
-        LOG.info("Refreshing internal table of Abuse.ch Ransomware tracker data.");
+        LOG.debug("Refreshing internal table of Abuse.ch Ransomware tracker data.");
         Response response = null;
 
         // TODO make timeouts configurable

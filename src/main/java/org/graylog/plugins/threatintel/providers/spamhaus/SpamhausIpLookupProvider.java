@@ -75,7 +75,7 @@ public class SpamhausIpLookupProvider extends LocalCopyListProvider<GenericLooku
 
     @Override
     protected void refreshTable() throws ExecutionException {
-        LOG.info("Refreshing internal table of Spamhaus drop list IPs.");
+        LOG.debug("Refreshing internal table of Spamhaus drop list IPs.");
         ImmutableList.Builder<SubnetUtils.SubnetInfo> list = new ImmutableList.Builder<>();
 
         // TODO make timeouts configurable

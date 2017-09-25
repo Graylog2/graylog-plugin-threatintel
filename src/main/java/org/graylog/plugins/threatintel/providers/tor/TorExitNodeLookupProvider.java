@@ -64,7 +64,7 @@ public class TorExitNodeLookupProvider extends LocalCopyListProvider<GenericLook
 
     @Override
     public void refreshTable() throws ExecutionException {
-        LOG.info("Refreshing internal table of known Tor exit nodes.");
+        LOG.debug("Refreshing internal table of known Tor exit nodes.");
         Response response = null;
 
         // TODO make timeouts configurable
