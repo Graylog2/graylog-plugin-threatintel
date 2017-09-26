@@ -19,7 +19,8 @@ public abstract class ThreatIntelPluginConfiguration {
     public abstract boolean otxEnabled();
 
     @JsonProperty("otx_api_key")
-    public abstract Optional<String> otxApiKey();
+    @Nullable
+    public abstract String otxApiKey();
 
     @JsonProperty("tor_enabled")
     public abstract boolean torEnabled();
@@ -62,7 +63,7 @@ public abstract class ThreatIntelPluginConfiguration {
     public static abstract class Builder {
         public abstract Builder otxEnabled(boolean otxEnabled);
 
-        public abstract Builder otxApiKey(String otxApiKey);
+        abstract Builder otxApiKey(String otxApiKey);
 
         public abstract Builder torEnabled(boolean torEnabled);
 

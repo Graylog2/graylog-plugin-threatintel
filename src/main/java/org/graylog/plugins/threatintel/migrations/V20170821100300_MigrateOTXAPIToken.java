@@ -53,12 +53,12 @@ public class V20170821100300_MigrateOTXAPIToken extends Migration {
         }
 
         final ThreatIntelPluginConfiguration pluginConfig = clusterConfigService.get(ThreatIntelPluginConfiguration.class);
-        if (pluginConfig == null || pluginConfig.otxApiKey() == null || !pluginConfig.otxApiKey().isPresent()) {
+        if (pluginConfig == null || pluginConfig.otxApiKey() == null) {
             clusterConfigService.write(MigrationCompleted.notConvertedKey());
             return;
         }
 
-        final String otxApiKey = pluginConfig.otxApiKey().get();
+        final String otxApiKey = pluginConfig.otxApiKey();
         final DataAdapterDto dataAdapterDto = this.dbDataAdapterService.get(OTX_DATA_ADAPTER_NAME)
                 .orElseThrow(() -> new IllegalStateException("OTX data adapter not present when trying to add API token."));
 
@@ -67,7 +67,8 @@ public class V20170821100300_MigrateOTXAPIToken extends Migration {
         }
 
         final HTTPJSONPathDataAdapter.Config config = (HTTPJSONPathDataAdapter.Config)dataAdapterDto.config();
-        final Map<String, String> newHeaders = new HashMap<>(config.headers() != null ? config.headers() : Collections.emptyMap());
+        final Map<String, String> headers = config.headers();
+        final Map<String, String> newHeaders = new HashMap<>(headers != null ? headers : Collections.emptyMap());
         newHeaders.put("X-OTX-API-KEY", otxApiKey);
         final HTTPJSONPathDataAdapter.Config.Builder updatedConfigBuilder = HTTPJSONPathDataAdapter.Config.builder()
                 .type(config.type())
