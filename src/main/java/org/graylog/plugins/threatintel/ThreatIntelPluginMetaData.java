@@ -23,7 +23,7 @@ public class ThreatIntelPluginMetaData implements PluginMetaData {
 
     @Override
     public String getAuthor() {
-        return "Graylog, Inc <hello@graylog.com>";
+        return "Graylog, Inc";
     }
 
     @Override
