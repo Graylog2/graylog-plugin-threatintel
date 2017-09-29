@@ -25,7 +25,7 @@ public class GlobalIpLookupFunction extends AbstractGlobalLookupFunction {
     private static final Logger LOG = LoggerFactory.getLogger(GlobalIpLookupFunction.class);
 
     public static final String NAME = "threat_intel_lookup_ip";
-    private static final String VALUE = "ip";
+    private static final String VALUE = "ip_address";
     private static final String PREFIX = "prefix";
 
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IPv4 or IPv6 address to look up.").build();
