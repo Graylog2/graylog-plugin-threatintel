@@ -59,7 +59,10 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
     public void doStart() throws Exception {
         final ImmutableMap.Builder<String, Map<SubnetUtils.SubnetInfo, String>> builder = ImmutableMap.builder();
         for (String list : lists) {
-            builder.put(list, fetchSubnetsFromEDROPLists(list));
+            final Map<SubnetUtils.SubnetInfo, String> subnetMap = fetchSubnetsFromEDROPLists(list);
+            if (subnetMap != null) {
+                builder.put(list, subnetMap);
+            }
         }
         this.subnets.set(builder.build());
     }
@@ -132,8 +135,8 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
     public interface Factory extends LookupDataAdapter.Factory<SpamhausEDROPDataAdapter> {
         @Override
         SpamhausEDROPDataAdapter create(@Assisted("id") String id,
-                                  @Assisted("name") String name,
-                                  LookupDataAdapterConfiguration configuration);
+                                        @Assisted("name") String name,
+                                        LookupDataAdapterConfiguration configuration);
 
         @Override
         SpamhausEDROPDataAdapter.Descriptor getDescriptor();
