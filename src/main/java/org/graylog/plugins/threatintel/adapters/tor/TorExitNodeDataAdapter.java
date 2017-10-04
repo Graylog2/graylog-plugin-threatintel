@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.concurrent.TimeUnit;
 
 public class TorExitNodeDataAdapter extends LookupDataAdapter {
     public static final String NAME = "torexitnode";
@@ -40,14 +39,13 @@ public class TorExitNodeDataAdapter extends LookupDataAdapter {
             @Assisted("name") String name,
             @Assisted LookupDataAdapterConfiguration config,
             MetricRegistry metricRegistry,
-            TorExitNodeListParser torExitNodeListParser) {
+            TorExitNodeListParser torExitNodeListParser,
+            OkHttpClient httpClient) {
         super(id, name, config, metricRegistry);
 
-        this.client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .followSslRedirects(true)
+        this.client = httpClient.newBuilder()
                 .followRedirects(true)
+                .followSslRedirects(true)
                 .build();
 
         this.parser = torExitNodeListParser;
