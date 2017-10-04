@@ -145,7 +145,7 @@ public class SpamhausEDROPDataAdapterTest {
         assertNegativeLookupResult(negativeLookup);
     }
     
-    private void assertLookupResultHasMultiValue(LookupResult lookupResult, Map.Entry<Object, Object>... entries) {
+    private void assertLookupResultHasMultiValue(LookupResult lookupResult, Map.Entry... entries) {
         assertThat(lookupResult).isNotNull();
         assertThat(lookupResult.isEmpty()).isFalse();
         assertThat(lookupResult.singleValue()).isNotNull();
@@ -164,6 +164,6 @@ public class SpamhausEDROPDataAdapterTest {
     }
 
     private Map.Entry<Object, Object> entry(String key, Object value) {
-        return new AbstractMap.SimpleEntry<Object, Object>(key, value);
+        return new AbstractMap.SimpleEntry<>(key, value);
     }
 }
