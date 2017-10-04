@@ -79,7 +79,7 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         final Map<String, Map<SubnetUtils.SubnetInfo, String>> oldList = this.subnets.get();
         result.entrySet()
                 .stream()
-                .filter(Objects::isNull)
+                .filter(entry -> entry.getValue() == null)
                 .forEach(entry -> result.put(entry.getKey(), oldList.get(entry.getKey())));
 
         this.subnets.set(ImmutableMap.copyOf(result));
