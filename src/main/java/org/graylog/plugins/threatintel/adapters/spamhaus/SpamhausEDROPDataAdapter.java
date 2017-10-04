@@ -108,6 +108,7 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
             }
         } catch (IOException e) {
             LOG.error("Unable to retrieve Spamhaus (E)DROP list <" + list + ">: ", e);
+            return null;
         }
 
         return builder.build();
