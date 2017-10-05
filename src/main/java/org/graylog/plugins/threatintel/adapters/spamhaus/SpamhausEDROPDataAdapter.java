@@ -18,11 +18,11 @@ import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
 import org.graylog2.plugin.lookup.LookupResult;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +47,6 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
     @Inject
     public SpamhausEDROPDataAdapter(@Assisted("id") String id,
                                     @Assisted("name") String name,
-                                    @Assisted LookupDataAdapterConfiguration config,
                                     DSVHTTPDataAdapter.Descriptor dsvHttpDataAdapterDescriptor,
                                     MetricRegistry metricRegistry,
                                     HTTPFileRetriever httpFileRetriever) {
@@ -133,6 +132,11 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         )).orElse(LookupResult.single(false));
     }
 
+    @Override
+    public Duration refreshInterval() {
+        return Duration.standardHours(12);
+    }
+
     public interface Factory extends LookupDataAdapter.Factory<SpamhausEDROPDataAdapter> {
         @Override
         SpamhausEDROPDataAdapter create(@Assisted("id") String id,
@@ -152,7 +156,6 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         public SpamhausEDROPDataAdapter.Config defaultConfiguration() {
             return SpamhausEDROPDataAdapter.Config.builder()
                     .type(NAME)
-                    .refreshInterval(43200)
                     .build();
         }
     }
@@ -167,10 +170,6 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         @Override
         @JsonProperty(TYPE_FIELD)
         public abstract String type();
-
-        @JsonProperty("refresh_interval")
-        @Min(1)
-        public abstract long refreshInterval();
 
         public static SpamhausEDROPDataAdapter.Config.Builder builder() {
             return new AutoValue_SpamhausEDROPDataAdapter_Config.Builder();
@@ -187,9 +186,6 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         public abstract static class Builder {
             @JsonProperty(TYPE_FIELD)
             public abstract SpamhausEDROPDataAdapter.Config.Builder type(String type);
-
-            @JsonProperty("refresh_interval")
-            public abstract SpamhausEDROPDataAdapter.Config.Builder refreshInterval(long refreshInterval);
 
             public abstract SpamhausEDROPDataAdapter.Config build();
         }
