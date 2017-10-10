@@ -51,6 +51,7 @@ public class SpamhausEDROPDataAdapterTest {
     public void setUp() throws Exception {
         this.adapter = new SpamhausEDROPDataAdapter("foobar",
                 "foobar",
+                mock(LookupDataAdapterConfiguration.class),
                 new DSVHTTPDataAdapter.Descriptor(),
                 mock(MetricRegistry.class),
                 httpFileRetriever);
