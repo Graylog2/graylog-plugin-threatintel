@@ -46,7 +46,7 @@ public class WhoisDataAdapter extends LookupDataAdapter {
 
     @Override
     public Duration refreshInterval() {
-        return Duration.standardMinutes(60);
+        return Duration.ZERO;
     }
 
     @Override
