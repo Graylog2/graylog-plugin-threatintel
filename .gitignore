@@ -16,3 +16,4 @@ node_modules
 node
 build
 build.config.js.sample
+cache/
