@@ -12,12 +12,14 @@ import com.google.common.collect.Multimap;
 import com.google.inject.assistedinject.Assisted;
 import org.apache.commons.net.util.SubnetUtils;
 import org.graylog.autovalue.WithBeanGetter;
-import org.graylog2.lookup.adapters.DSVHTTPDataAdapter;
+import org.graylog.plugins.threatintel.PluginConfigService;
+import org.graylog.plugins.threatintel.tools.AdapterDisabledException;
 import org.graylog2.lookup.adapters.dsvhttp.HTTPFileRetriever;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
 import org.graylog2.plugin.lookup.LookupResult;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,12 +29,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
+public class SpamhausEDROPDataAdapter extends LookupDataAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(SpamhausEDROPDataAdapter.class);
     public static final String NAME = "spamhaus-edrop";
 
@@ -41,22 +42,31 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
             "https://www.spamhaus.org/drop/edrop.txt"
     };
 
+    // Update the list at most once an hour: https://www.spamhaus.org/faq/section/DROP%20FAQ#218
+    // the current cache-control header says max-age 14400 seconds
+    private static final Duration REFRESH_INTERVAL = Duration.standardHours(4);
+
     private final AtomicReference<Map<String, Map<SubnetUtils.SubnetInfo, String>>> subnets = new AtomicReference<>(Collections.emptyMap());
     private final HTTPFileRetriever httpFileRetriever;
+    private final PluginConfigService pluginConfigService;
 
     @Inject
     public SpamhausEDROPDataAdapter(@Assisted("id") String id,
                                     @Assisted("name") String name,
                                     @Assisted LookupDataAdapterConfiguration config,
-                                    DSVHTTPDataAdapter.Descriptor dsvHttpDataAdapterDescriptor,
                                     MetricRegistry metricRegistry,
-                                    HTTPFileRetriever httpFileRetriever) {
-        super(id, name, dsvHttpDataAdapterDescriptor.defaultConfiguration(), metricRegistry, httpFileRetriever);
+                                    HTTPFileRetriever httpFileRetriever,
+                                    PluginConfigService pluginConfigService) {
+        super(id, name, config, metricRegistry);
         this.httpFileRetriever = httpFileRetriever;
+        this.pluginConfigService = pluginConfigService;
     }
 
     @Override
     public void doStart() throws Exception {
+        if (!pluginConfigService.config().getCurrent().spamhausEnabled()) {
+            throw new AdapterDisabledException("Spamhaus service is disabled, not starting (E)DROP adapter. To enable it please go to System / Configurations.");
+        }
         final ImmutableMap.Builder<String, Map<SubnetUtils.SubnetInfo, String>> builder = ImmutableMap.builder();
         for (String list : lists) {
             final Map<SubnetUtils.SubnetInfo, String> subnetMap = fetchSubnetsFromEDROPLists(list);
@@ -68,20 +78,34 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
     }
 
     @Override
+    protected void doStop() throws Exception {
+        // nothing to do
+    }
+
+    @Override
+    public Duration refreshInterval() {
+        return Duration.standardSeconds(((Config) getConfig()).refreshInterval());
+    }
+
+    @Override
     protected void doRefresh(LookupCachePurge cachePurge) throws Exception {
-        final Map<String, Map<SubnetUtils.SubnetInfo, String>> result = new HashMap<>(lists.length);
-        for (String list : lists) {
-            result.put(list, fetchSubnetsFromEDROPLists(list));
+        if (!pluginConfigService.config().getCurrent().spamhausEnabled()) {
+            throw new AdapterDisabledException("Spamhaus service is disabled, not refreshing (E)DROP adapter. To enable it please go to System / Configurations.");
         }
-        if (result.values().stream().allMatch(Objects::isNull)) {
+        // keep the old results, which will get overridden if we can fetch new lists
+        final Map<String, Map<SubnetUtils.SubnetInfo, String>> result = new HashMap<>(this.subnets.get());
+        boolean hasUpdates = false;
+        for (String list : lists) {
+            final Map<SubnetUtils.SubnetInfo, String> newList = fetchSubnetsFromEDROPLists(list);
+            if (newList != null) {
+                result.put(list, newList);
+                hasUpdates = true;
+            }
+        }
+        // no changes in the lists, we don't have to purge or update our subnets
+        if (!hasUpdates) {
             return;
         }
-        final Map<String, Map<SubnetUtils.SubnetInfo, String>> oldList = this.subnets.get();
-        result.entrySet()
-                .stream()
-                .filter(entry -> entry.getValue() == null)
-                .forEach(entry -> result.put(entry.getKey(), oldList.get(entry.getKey())));
-
         this.subnets.set(ImmutableMap.copyOf(result));
         cachePurge.purgeAll();
     }
@@ -133,6 +157,11 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         )).orElse(LookupResult.single(false));
     }
 
+    @Override
+    public void set(Object key, Object value) {
+
+    }
+
     public interface Factory extends LookupDataAdapter.Factory<SpamhausEDROPDataAdapter> {
         @Override
         SpamhausEDROPDataAdapter create(@Assisted("id") String id,
@@ -152,7 +181,7 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         public SpamhausEDROPDataAdapter.Config defaultConfiguration() {
             return SpamhausEDROPDataAdapter.Config.builder()
                     .type(NAME)
-                    .refreshInterval(43200)
+                    .refreshInterval(REFRESH_INTERVAL.toStandardSeconds().getSeconds())
                     .build();
         }
     }
@@ -168,8 +197,9 @@ public class SpamhausEDROPDataAdapter extends DSVHTTPDataAdapter {
         @JsonProperty(TYPE_FIELD)
         public abstract String type();
 
+        // refresh interval should not be shorter than an hour per spamhaus rules
         @JsonProperty("refresh_interval")
-        @Min(1)
+        @Min(3600)
         public abstract long refreshInterval();
 
         public static SpamhausEDROPDataAdapter.Config.Builder builder() {

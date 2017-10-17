@@ -207,7 +207,7 @@
       "description": "This is the data adapter for the abuse.ch ransomware IP Tracker, listing infrastructure by IP which is used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "abuse-ch-ransomware-ip",
       "config": {
-        "type": "dsvhttp",
+        "type": "abuse-ch-ransomware-ip",
         "url": "https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt",
         "separator": ",",
         "line_separator": "\n",

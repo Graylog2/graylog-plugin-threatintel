@@ -12,7 +12,10 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.graylog.autovalue.WithBeanGetter;
+import org.graylog.plugins.threatintel.PluginConfigService;
+import org.graylog.plugins.threatintel.tools.AdapterDisabledException;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
@@ -31,6 +34,7 @@ public class TorExitNodeDataAdapter extends LookupDataAdapter {
     public static final String NAME = "torexitnode";
     private final OkHttpClient client;
     private final TorExitNodeListParser parser;
+    private final PluginConfigService pluginConfigService;
     private Map<String, List<String>> torExitNodes = Collections.emptyMap();
 
     @Inject
@@ -40,7 +44,8 @@ public class TorExitNodeDataAdapter extends LookupDataAdapter {
             @Assisted LookupDataAdapterConfiguration config,
             MetricRegistry metricRegistry,
             TorExitNodeListParser torExitNodeListParser,
-            OkHttpClient httpClient) {
+            OkHttpClient httpClient,
+            PluginConfigService pluginConfigService) {
         super(id, name, config, metricRegistry);
 
         this.client = httpClient.newBuilder()
@@ -49,6 +54,7 @@ public class TorExitNodeDataAdapter extends LookupDataAdapter {
                 .build();
 
         this.parser = torExitNodeListParser;
+        this.pluginConfigService = pluginConfigService;
     }
 
     public interface Factory extends LookupDataAdapter.Factory<TorExitNodeDataAdapter> {
@@ -63,6 +69,9 @@ public class TorExitNodeDataAdapter extends LookupDataAdapter {
 
     @Override
     protected void doStart() throws Exception {
+        if (!pluginConfigService.config().getCurrent().torEnabled()) {
+            throw new AdapterDisabledException("TOR service is disabled, not starting TOR exit addresses adapter. To enable it please go to System / Configurations.");
+        }
         final Response torExitNodeListResponse = this.client.newCall(new Request.Builder()
                 .get()
                 .url(new HttpUrl.Builder()
@@ -73,8 +82,9 @@ public class TorExitNodeDataAdapter extends LookupDataAdapter {
                 .build())
                 .execute();
 
-        if (torExitNodeListResponse.isSuccessful() && torExitNodeListResponse.body() != null) {
-            this.torExitNodes = this.parser.parse(torExitNodeListResponse.body().string());
+        final ResponseBody body = torExitNodeListResponse.body();
+        if (torExitNodeListResponse.isSuccessful() && body != null) {
+            this.torExitNodes = this.parser.parse(body.string());
         }
     }
 
