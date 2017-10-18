@@ -16,7 +16,7 @@ const AbuseChRansomAdapterSummary = React.createClass({
     };
     return (<dl>
       <dt>Blocklist type</dt>
-      <dd>{blocklistType[config.database_type]}</dd>
+      <dd>{blocklistType[config.blocklist_type]}</dd>
       <dt>Update interval</dt>
       <dd><TimeUnit value={config.refresh_interval} unit={config.refresh_interval_unit} /></dd>
     </dl>);
