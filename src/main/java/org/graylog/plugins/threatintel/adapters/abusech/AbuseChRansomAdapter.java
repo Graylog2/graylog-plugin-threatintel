@@ -24,14 +24,17 @@ import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class AbuseChRansomAdapter extends LookupDataAdapter {
+public class AbuseChRansomAdapter extends LookupDataAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(AbuseChRansomAdapter.class);
 
     // abuse.ch lists are updated every 5 mins, we check more often to avoid lagging behind too much.
@@ -40,10 +43,11 @@ public abstract class AbuseChRansomAdapter extends LookupDataAdapter {
     private static final int REFRESH_INTERVAL = Period.minutes(5).toStandardSeconds().getSeconds() / 2;
 
     public static final String NAME = "abuse-ch-ransom";
+    private static final LookupResult TRUE_RESULT = LookupResult.single(true);
 
     private final HTTPFileRetriever httpFileRetriever;
     private final PluginConfigService pluginConfigService;
-    private final AtomicReference<Map<String, String>> lookupRef = new AtomicReference<>(Collections.emptyMap());
+    private final AtomicReference<Set<String>> lookupRef = new AtomicReference<>(Collections.emptySet());
     private final DSVParser dsvParser;
     private final BlocklistType blocklistType;
 
@@ -106,12 +110,17 @@ public abstract class AbuseChRansomAdapter extends LookupDataAdapter {
     private void loadData() throws IOException {
         final Optional<String> response = httpFileRetriever.fetchFileIfNotModified(blocklistType.getUrl());
 
-        response.ifPresent(body -> lookupRef.set(dsvParser.parse(body)));
+        response.ifPresent(body -> {
+            final Map<String, String> map = dsvParser.parse(body);
+            lookupRef.set(map.keySet());
+        });
     }
 
     @Override
     protected LookupResult doGet(Object key) {
-        return null;
+        return lookupRef.get().contains(key.toString())
+                ? TRUE_RESULT
+                : LookupResult.empty();
     }
 
     @Override
@@ -164,6 +173,10 @@ public abstract class AbuseChRansomAdapter extends LookupDataAdapter {
         @Min(150) // see REFRESH_INTERVAL
         public abstract long refreshInterval();
 
+        @Nullable
+        @JsonProperty("refresh_interval_unit")
+        public abstract TimeUnit refreshIntervalUnit();
+
         @JsonProperty("blocklist_type")
         public abstract BlocklistType blocklistType();
 
@@ -184,6 +197,9 @@ public abstract class AbuseChRansomAdapter extends LookupDataAdapter {
 
             @JsonProperty("blocklist_type")
             public abstract Builder blocklistType(BlocklistType blocklistType);
+
+            @JsonProperty("refresh_interval_unit")
+            public abstract Builder refreshIntervalUnit(@Nullable TimeUnit refreshIntervalUnit);
 
             public abstract Config build();
         }

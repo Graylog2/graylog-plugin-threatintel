@@ -7,6 +7,7 @@ import ThreatIntelPluginConfig from 'components/ThreatIntelPluginConfig';
 import { SpamhausEDROPAdapterDocumentation, SpamhausEDROPAdapterFieldSet, SpamhausEDROPAdapterSummary } from 'components/adapters/spamhaus-edrop';
 import { TorExitNodeAdapterDocumentation, TorExitNodeAdapterFieldSet, TorExitNodeAdapterSummary } from 'components/adapters/torexitnode';
 import { WhoisAdapterDocumentation, WhoisAdapterFieldSet, WhoisAdapterSummary } from 'components/adapters/whois/index';
+import { AbuseChRansomAdapterDocumentation, AbuseChRansomAdapterFieldSet, AbuseChRansomAdapterSummary } from 'components/adapters/abusech/index';
 
 import packageJson from '../../package.json';
 
@@ -38,6 +39,13 @@ PluginStore.register(new PluginManifest(packageJson, {
       formComponent: WhoisAdapterFieldSet,
       summaryComponent: WhoisAdapterSummary,
       documentationComponent: WhoisAdapterDocumentation,
+    },
+    {
+      type: 'abuse-ch-ransom',
+      displayName: 'Ransomware blocklists from abuse.ch',
+      formComponent: AbuseChRansomAdapterFieldSet,
+      summaryComponent: AbuseChRansomAdapterSummary,
+      documentationComponent: AbuseChRansomAdapterDocumentation,
     },
   ],
 }));

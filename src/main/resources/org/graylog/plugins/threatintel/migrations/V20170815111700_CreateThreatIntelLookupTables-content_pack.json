@@ -23,7 +23,7 @@
       "title": "abuse.ch Ransomware Domains",
       "description": "This is the lookup table for the abuse.ch ransomware Domain Tracker, listing infrastructure by domain names which are used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "abuse-ch-ransomware-domains",
-      "cache_name": "abuse-ch-ransomware-cache",
+      "cache_name": "threat-intel-uncached-adapters",
       "data_adapter_name": "abuse-ch-ransomware-domains",
       "default_single_value": "",
       "default_single_value_type": "NULL",
@@ -45,7 +45,7 @@
       "title": "abuse.ch Ransomware IP",
       "description": "This is the lookup table for the abuse.ch ransomware IP Tracker, listing infrastructure by IP which is used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "abuse-ch-ransomware-ip",
-      "cache_name": "abuse-ch-ransomware-cache",
+      "cache_name": "threat-intel-uncached-adapters",
       "data_adapter_name": "abuse-ch-ransomware-ip",
       "default_single_value": "",
       "default_single_value_type": "NULL",
@@ -76,6 +76,14 @@
     }
   ],
   "lookup_caches": [
+    {
+      "title": "Threat Intel Uncached Adapters",
+      "description": "Certain downloaded lists do not require caching because they are in memory already and use this no-op cache.",
+      "name": "threat-intel-uncached-adapters",
+      "config": {
+        "type": "none"
+      }
+    },
     {
       "title": "AlienVault Open Threat Exchange IP Cache",
       "description": "This is the cache for AlienVault's Open Thread Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
@@ -181,17 +189,10 @@
       "description": "This is the data adapter for the abuse.ch ransomware Domain Tracker, listing infrastructure by domain names which are used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "abuse-ch-ransomware-domains",
       "config": {
-        "type": "dsvhttp",
-        "url": "https://ransomwaretracker.abuse.ch/downloads/RW_DOMBL.txt",
-        "separator": ",",
-        "line_separator": "\n",
-        "quotechar": "\"",
-        "ignorechar": "#",
-        "key_column": 0,
-        "check_presence_only": true,
-        "value_column": 1,
+        "type": "abuse-ch-ransom",
+        "blocklist_type": "DOMAINS",
         "refresh_interval": 150,
-        "case_insensitive_lookup": true
+        "refresh_interval_unit": "SECONDS"
       }
     },
     {
@@ -207,17 +208,10 @@
       "description": "This is the data adapter for the abuse.ch ransomware IP Tracker, listing infrastructure by IP which is used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "abuse-ch-ransomware-ip",
       "config": {
-        "type": "abuse-ch-ransomware-ip",
-        "url": "https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt",
-        "separator": ",",
-        "line_separator": "\n",
-        "quotechar": "\"",
-        "ignorechar": "#",
-        "key_column": 0,
-        "check_presence_only": true,
-        "value_column": 1,
+        "type": "abuse-ch-ransom",
+        "blocklist_type": "IPS",
         "refresh_interval": 150,
-        "case_insensitive_lookup": false
+        "refresh_interval_unit": "SECONDS"
       }
     }
   ]
