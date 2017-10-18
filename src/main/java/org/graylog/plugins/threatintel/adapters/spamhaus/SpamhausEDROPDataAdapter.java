@@ -146,6 +146,8 @@ public class SpamhausEDROPDataAdapter extends LookupDataAdapter {
             return LookupResult.empty();
         }
 
+        // TODO potentially use a RangeMap here instead of doing linear searches all the time
+        // We should be able to use ranges of the integer values of lowAddress and highAddress as keys
         final Optional<Map.Entry<SubnetUtils.SubnetInfo, String>> match = subnets.get().values()
                 .stream()
                 .flatMap(list -> list.entrySet().stream())
