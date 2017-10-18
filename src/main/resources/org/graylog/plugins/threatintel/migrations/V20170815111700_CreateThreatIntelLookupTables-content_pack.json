@@ -67,7 +67,7 @@
       "title": "Tor Exit Node List",
       "description": "This is the lookup table for the TOR (The Onion Router) Exit Node List, listing Exit Nodes of the TOR Network . This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "tor-exit-node-list",
-      "cache_name": "tor-exit-node-list-cache",
+      "cache_name": "threat-intel-uncached-adapters",
       "data_adapter_name": "tor-exit-node",
       "default_single_value": "",
       "default_single_value_type": "NULL",
@@ -95,19 +95,6 @@
         "expire_after_access_unit": "SECONDS",
         "expire_after_write": 60,
         "expire_after_write_unit": "SECONDS"
-      }
-    },
-    {
-      "title": "Tor Exit Node List Cache",
-      "description": "This is the cache for the TOR (The Onion Router) Exit Node List, listing Exit Nodes of the TOR Network . This cache used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
-      "name": "tor-exit-node-list-cache",
-      "config": {
-        "type": "guava_cache",
-        "max_size": 1000,
-        "expire_after_access": 0,
-        "expire_after_access_unit": "SECONDS",
-        "expire_after_write": 2,
-        "expire_after_write_unit": "MINUTES"
       }
     },
     {
