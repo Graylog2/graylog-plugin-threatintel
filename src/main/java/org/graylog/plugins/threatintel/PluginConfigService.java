@@ -1,10 +1,20 @@
 package org.graylog.plugins.threatintel;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.graylog2.cluster.ClusterConfigChangedEvent;
+import org.graylog2.events.ClusterEventBus;
+import org.graylog2.lookup.db.DBDataAdapterService;
+import org.graylog2.lookup.dto.DataAdapterDto;
+import org.graylog2.lookup.events.DataAdaptersUpdated;
 import org.graylog2.plugin.cluster.ClusterConfigService;
+import org.graylog2.rest.models.PaginatedList;
 import org.graylog2.shared.utilities.AutoValueUtils;
+import org.mongojack.DBQuery;
+import org.mongojack.DBSort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,20 +22,30 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * Provides up to date access to this plugins' cluster config without forcing consumers to listen to updates manually.
  */
 @Singleton
 public class PluginConfigService {
+    private static final Logger LOG = LoggerFactory.getLogger(PluginConfigService.class);
 
     private final ClusterConfigService clusterConfigService;
+    private final DBDataAdapterService dbDataAdapterService;
+    private final ClusterEventBus clusterEventBus;
     private AtomicReference<ConfigVersions<ThreatIntelPluginConfiguration>> config = new AtomicReference<>();
 
     @Inject
-    public PluginConfigService(final ClusterConfigService clusterConfigService, final EventBus serverEventBus) {
+    public PluginConfigService(final ClusterConfigService clusterConfigService,
+                               final EventBus serverEventBus,
+                               final DBDataAdapterService dbDataAdapterService,
+                               final ClusterEventBus clusterEventBus) {
         this.clusterConfigService = clusterConfigService;
+        this.dbDataAdapterService = dbDataAdapterService;
+        this.clusterEventBus = clusterEventBus;
         final ThreatIntelPluginConfiguration currentVersion = clusterConfigService.get(ThreatIntelPluginConfiguration.class);
         final ConfigVersions<ThreatIntelPluginConfiguration> versions = ConfigVersions.of(null,
                 Optional.ofNullable(currentVersion).orElse(ThreatIntelPluginConfiguration.defaults()));
@@ -44,6 +64,33 @@ public class PluginConfigService {
                     .orElse(ThreatIntelPluginConfiguration.defaults());
             final ThreatIntelPluginConfiguration previous = config.get().getCurrent();
             config.set(ConfigVersions.of(previous, currentVersion));
+
+            // check for changes in the configuration and bounce the corresponding adapters if something changed
+            final ImmutableList.Builder<Object> adaptersToLoad = ImmutableList.builder();
+            if (previous.abusechRansomEnabled() != currentVersion.abusechRansomEnabled()) {
+                adaptersToLoad.add("abuse-ch-ransomware-domains", "abuse-ch-ransomware-ip");
+            }
+            if (previous.torEnabled() != currentVersion.torEnabled()) {
+                adaptersToLoad.add("tor-exit-node");
+            }
+            if (previous.spamhausEnabled() != currentVersion.spamhausEnabled()) {
+                adaptersToLoad.add("spamhaus-drop");
+            }
+
+            // we request 10 per page, which is more than enough for the 4 that we potentially have to bounce
+            final ImmutableList<Object> adapterNames = adaptersToLoad.build();
+            final PaginatedList<DataAdapterDto> adapterDtos = dbDataAdapterService.findPaginated(
+                    DBQuery.in(DataAdapterDto.FIELD_NAME, adapterNames),
+                    DBSort.asc(DataAdapterDto.FIELD_ID),
+                    1,
+                    10);
+
+            final Set<String> adapterIds = adapterDtos.delegate().stream().map(DataAdapterDto::id).collect(Collectors.toSet());
+            if (!adapterIds.isEmpty()) {
+                LOG.warn("Restarting data adapters {} due to updated enabled/disabled states", adapterNames);
+                // this takes care of restarting the lookup tables and necessary adapters and caches to reflect their "enabled-ness"
+                clusterEventBus.post(DataAdaptersUpdated.create(adapterIds));
+            }
         }
     }
 

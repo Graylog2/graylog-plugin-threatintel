@@ -4,7 +4,10 @@ import com.codahale.metrics.MetricRegistry;
 import com.google.common.eventbus.EventBus;
 import org.graylog.plugins.threatintel.PluginConfigService;
 import org.graylog.plugins.threatintel.TestClusterConfigService;
+import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
+import org.graylog2.events.ClusterEventBus;
 import org.graylog2.lookup.adapters.dsvhttp.HTTPFileRetriever;
+import org.graylog2.lookup.db.DBDataAdapterService;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
 import org.graylog2.plugin.lookup.LookupResult;
@@ -46,6 +49,8 @@ public class SpamhausEDROPDataAdapterTest {
     private SpamhausEDROPDataAdapter adapter;
     private TestClusterConfigService clusterConfigService;
     private EventBus serverEventBus;
+    private ClusterEventBus clusterEventBus;
+    private PluginConfigService pluginConfigService;
 
     public SpamhausEDROPDataAdapterTest() throws IOException, URISyntaxException {
     }
@@ -59,13 +64,18 @@ public class SpamhausEDROPDataAdapterTest {
     @Before
     public void setUp() throws Exception {
         clusterConfigService = new TestClusterConfigService();
+        clusterConfigService.write(ThreatIntelPluginConfiguration.create(true, "", true, true, true));
         serverEventBus = new EventBus();
+        clusterEventBus = new ClusterEventBus();
+        final DBDataAdapterService dbDataAdapterService = mock(DBDataAdapterService.class);
+        pluginConfigService = new PluginConfigService(clusterConfigService, serverEventBus, dbDataAdapterService, clusterEventBus);
+
         this.adapter = new SpamhausEDROPDataAdapter("foobar",
                 "foobar",
                 mock(LookupDataAdapterConfiguration.class),
                 mock(MetricRegistry.class),
                 httpFileRetriever,
-                new PluginConfigService(clusterConfigService, serverEventBus));
+                pluginConfigService);
     }
 
     @Test
