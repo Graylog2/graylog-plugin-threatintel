@@ -98,19 +98,6 @@
       }
     },
     {
-      "title": "abuse.ch ransomware Cache",
-      "description": "This is the cache for the abuse.ch ransomware Tracker, listing infrastructure which is used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
-      "name": "abuse-ch-ransomware-cache",
-      "config": {
-        "type": "guava_cache",
-        "max_size": 1000,
-        "expire_after_access": 0,
-        "expire_after_access_unit": "SECONDS",
-        "expire_after_write": 150,
-        "expire_after_write_unit": "SECONDS"
-      }
-    },
-    {
       "title": "Tor Exit Node List Cache",
       "description": "This is the cache for the TOR (The Onion Router) Exit Node List, listing Exit Nodes of the TOR Network . This cache used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "tor-exit-node-list-cache",
