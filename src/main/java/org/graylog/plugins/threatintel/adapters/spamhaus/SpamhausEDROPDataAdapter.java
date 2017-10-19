@@ -84,6 +84,9 @@ public class SpamhausEDROPDataAdapter extends LookupDataAdapter {
 
     @Override
     public Duration refreshInterval() {
+        if (!pluginConfigService.config().getCurrent().spamhausEnabled()) {
+            return Duration.ZERO;
+        }
         return Duration.standardSeconds(((Config) getConfig()).refreshInterval());
     }
 

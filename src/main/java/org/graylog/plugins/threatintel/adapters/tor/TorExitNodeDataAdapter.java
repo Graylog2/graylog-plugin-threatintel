@@ -93,6 +93,9 @@ public class TorExitNodeDataAdapter extends LookupDataAdapter {
 
     @Override
     public Duration refreshInterval() {
+        if (!pluginConfigService.config().getCurrent().torEnabled()) {
+            return Duration.ZERO;
+        }
         return Duration.standardMinutes(60);
     }
 

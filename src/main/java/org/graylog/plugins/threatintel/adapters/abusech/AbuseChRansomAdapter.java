@@ -95,6 +95,9 @@ public class AbuseChRansomAdapter extends LookupDataAdapter {
 
     @Override
     public Duration refreshInterval() {
+        if (!pluginConfigService.config().getCurrent().abusechRansomEnabled()) {
+            return Duration.ZERO;
+        }
         return Duration.standardSeconds(((Config) getConfig()).refreshInterval());
     }
 
