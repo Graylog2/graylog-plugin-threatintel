@@ -18,9 +18,9 @@ const ThreatIntelPluginConfig = React.createClass({
     return {
       config: {
         otx_enabled: false,
-        tor_enabled: true,
-        spamhaus_enabled: true,
-        abusech_ransom_enabled: true,
+        tor_enabled: false,
+        spamhaus_enabled: false,
+        abusech_ransom_enabled: false,
       },
     };
   },
