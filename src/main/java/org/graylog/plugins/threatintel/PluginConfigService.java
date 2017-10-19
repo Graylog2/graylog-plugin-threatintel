@@ -87,7 +87,7 @@ public class PluginConfigService {
 
             final Set<String> adapterIds = adapterDtos.delegate().stream().map(DataAdapterDto::id).collect(Collectors.toSet());
             if (!adapterIds.isEmpty()) {
-                LOG.warn("Restarting data adapters {} due to updated enabled/disabled states", adapterNames);
+                LOG.debug("Restarting data adapters {} due to updated enabled/disabled states", adapterNames);
                 // this takes care of restarting the lookup tables and necessary adapters and caches to reflect their "enabled-ness"
                 clusterEventBus.post(DataAdaptersUpdated.create(adapterIds));
             }
