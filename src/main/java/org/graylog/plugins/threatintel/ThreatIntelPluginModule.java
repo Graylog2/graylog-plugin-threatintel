@@ -1,9 +1,11 @@
 package org.graylog.plugins.threatintel;
 
 import com.google.inject.Binder;
+import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
+import org.graylog.plugins.threatintel.adapters.abusech.AbuseChRansomAdapter;
 import org.graylog.plugins.threatintel.functions.DomainFunctions;
 import org.graylog.plugins.threatintel.functions.IPFunctions;
 import org.graylog.plugins.threatintel.migrations.V20170815111700_CreateThreatIntelLookupTables;
@@ -38,6 +40,9 @@ public class ThreatIntelPluginModule extends PluginModule {
 
     @Override
     protected void configure() {
+
+        bind(PluginConfigService.class).in(Scopes.SINGLETON);
+
         // AlienVault OTX threat intel lookup.
         addMessageProcessorFunction(OTXDomainLookupFunction.NAME, OTXDomainLookupFunction.class);
         addMessageProcessorFunction(OTXIPLookupFunction.NAME, OTXIPLookupFunction.class);
@@ -62,6 +67,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         // Private network lookup.
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
 
+        installLookupDataAdapter(AbuseChRansomAdapter.NAME, AbuseChRansomAdapter.class, AbuseChRansomAdapter.Factory.class, AbuseChRansomAdapter.Config.class);
         installLookupDataAdapter(SpamhausEDROPDataAdapter.NAME, SpamhausEDROPDataAdapter.class, SpamhausEDROPDataAdapter.Factory.class, SpamhausEDROPDataAdapter.Config.class);
         installLookupDataAdapter(TorExitNodeDataAdapter.NAME, TorExitNodeDataAdapter.class, TorExitNodeDataAdapter.Factory.class, TorExitNodeDataAdapter.Config.class);
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);

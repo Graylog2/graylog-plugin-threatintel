@@ -18,9 +18,9 @@ const ThreatIntelPluginConfig = React.createClass({
     return {
       config: {
         otx_enabled: false,
-        tor_enabled: true,
-        spamhaus_enabled: true,
-        abusech_ransom_enabled: true,
+        tor_enabled: false,
+        spamhaus_enabled: false,
+        abusech_ransom_enabled: false,
       },
     };
   },
@@ -114,7 +114,7 @@ const ThreatIntelPluginConfig = React.createClass({
             <Input type="checkbox"
                    ref="torEnabled"
                    label="Allow Tor exit node lookups?"
-                   help="Enable to include Tor exit node lookup in global pipeline function."
+                   help="Enable to include Tor exit node lookup in global pipeline function, disabling also stops refreshing the data."
                    name="tor_enabled"
                    checked={this.state.config.tor_enabled}
                    onChange={this._onCheckboxClick('tor_enabled', 'torEnabled')}/>
@@ -122,7 +122,7 @@ const ThreatIntelPluginConfig = React.createClass({
             <Input type="checkbox"
                    ref="spamhausEnabled"
                    label="Allow Spamhaus DROP/EDROP lookups?"
-                   help="Enable to include Spamhaus lookup in global pipeline function."
+                   help="Enable to include Spamhaus lookup in global pipeline function, disabling also stops refreshing the data."
                    name="tor_enabled"
                    checked={this.state.config.spamhaus_enabled}
                    onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')}/>
@@ -130,7 +130,7 @@ const ThreatIntelPluginConfig = React.createClass({
             <Input type="checkbox"
                    ref="abusechRansomEnabled"
                    label="Allow Abuse.ch Ransomware tracker lookups?"
-                   help="Enable to include Abuse.ch Ransomware tracker lookup in global pipeline function."
+                   help="Enable to include Abuse.ch Ransomware tracker lookup in global pipeline function, disabling also stops refreshing the data."
                    name="tor_enabled"
                    checked={this.state.config.abusech_ransom_enabled}
                    onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>

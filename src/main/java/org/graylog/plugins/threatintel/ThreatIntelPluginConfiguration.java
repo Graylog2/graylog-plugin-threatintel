@@ -2,13 +2,11 @@ package org.graylog.plugins.threatintel;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 @JsonAutoDetect
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -53,9 +51,9 @@ public abstract class ThreatIntelPluginConfiguration {
     public static ThreatIntelPluginConfiguration defaults() {
         return builder()
                 .otxEnabled(false)
-                .torEnabled(true)
-                .spamhausEnabled(true)
-                .abusechRansomEnabled(true)
+                .torEnabled(false)
+                .spamhausEnabled(false)
+                .abusechRansomEnabled(false)
                 .build();
     }
 
