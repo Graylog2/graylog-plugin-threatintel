@@ -57,7 +57,7 @@ public class WhoisDataAdapter extends LookupDataAdapter {
     protected LookupResult doGet(Object key) {
         try {
             final WhoisIpLookupResult result = this.whoisIpLookup.run(key.toString());
-            if (result != WhoisIpLookupResult.empty()) {
+            if (!WhoisIpLookupResult.empty().equals(result)) {
                 final Map<Object, Object> fields = ImmutableMap.of(
                         ORGANIZATION_FIELD, result.getOrganization(),
                         COUNTRY_CODE_FIELD, result.getCountryCode()
