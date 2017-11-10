@@ -112,6 +112,7 @@ const ThreatIntelPluginConfig = React.createClass({
                             submitButtonText="Save">
           <fieldset>
             <Input type="checkbox"
+                   id="tor-checkbox"
                    ref="torEnabled"
                    label="Allow Tor exit node lookups?"
                    help="Enable to include Tor exit node lookup in global pipeline function, disabling also stops refreshing the data."
@@ -120,6 +121,7 @@ const ThreatIntelPluginConfig = React.createClass({
                    onChange={this._onCheckboxClick('tor_enabled', 'torEnabled')}/>
 
             <Input type="checkbox"
+                   id="spamhaus-checkbox"
                    ref="spamhausEnabled"
                    label="Allow Spamhaus DROP/EDROP lookups?"
                    help="Enable to include Spamhaus lookup in global pipeline function, disabling also stops refreshing the data."
@@ -128,6 +130,7 @@ const ThreatIntelPluginConfig = React.createClass({
                    onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')}/>
 
             <Input type="checkbox"
+                   id="abusech-checkbox"
                    ref="abusechRansomEnabled"
                    label="Allow Abuse.ch Ransomware tracker lookups?"
                    help="Enable to include Abuse.ch Ransomware tracker lookup in global pipeline function, disabling also stops refreshing the data."
@@ -136,6 +139,7 @@ const ThreatIntelPluginConfig = React.createClass({
                    onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>
 
             <Input type="checkbox"
+                   id="otx-checkbox"
                    ref="otxEnabled"
                    label="Allow AlienVault OTX lookups?"
                    help="Enable to include AlienVault OTX lookup in global pipeline function."

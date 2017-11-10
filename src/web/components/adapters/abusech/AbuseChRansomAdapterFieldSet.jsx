@@ -41,6 +41,7 @@ const AbuseChRansomAdapterFieldSet = React.createClass({
     ];
     return (<fieldset>
       <Input label="Blocklist type"
+             id="blocklist-type-selector"
              required
              autoFocus
              help={'Select the type of the abuse.ch ransomware blocklist'}
