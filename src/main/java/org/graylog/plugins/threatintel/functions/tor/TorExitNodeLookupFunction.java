@@ -19,7 +19,7 @@ public class TorExitNodeLookupFunction extends LookupTableFunction<GenericLookup
 
     public static final String NAME = "tor_lookup";
     private static final String VALUE = "ip_address";
-    private static final String LOOKUP_TABLE_NAME = "abuse-ch-ransomware-domains";
+    private static final String LOOKUP_TABLE_NAME = "tor-exit-node-list";
 
     private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IP to look up.").build();
 
@@ -41,12 +41,13 @@ public class TorExitNodeLookupFunction extends LookupTableFunction<GenericLookup
         LOG.debug("Running Tor exit node lookup for IP [{}].", ip);
 
         final LookupResult lookupResult = this.lookupFunction.lookup(ip.trim());
-        if (lookupResult != null && !lookupResult.isEmpty() && lookupResult.singleValue() != null) {
-            if (lookupResult.singleValue() instanceof Boolean) {
-                return (Boolean)lookupResult.singleValue() ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
+        if (lookupResult != null && !lookupResult.isEmpty()) {
+            final Object value = lookupResult.singleValue();
+            if (value instanceof Boolean) {
+                return (Boolean) value ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
             }
-            if (lookupResult.singleValue() instanceof String) {
-                return Boolean.valueOf((String) lookupResult.singleValue()) ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
+            if (value instanceof String) {
+                return Boolean.valueOf((String) value) ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
             }
         }
 
