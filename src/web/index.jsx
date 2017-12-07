@@ -8,6 +8,7 @@ import { SpamhausEDROPAdapterDocumentation, SpamhausEDROPAdapterFieldSet, Spamha
 import { TorExitNodeAdapterDocumentation, TorExitNodeAdapterFieldSet, TorExitNodeAdapterSummary } from 'components/adapters/torexitnode';
 import { WhoisAdapterDocumentation, WhoisAdapterFieldSet, WhoisAdapterSummary } from 'components/adapters/whois/index';
 import { AbuseChRansomAdapterDocumentation, AbuseChRansomAdapterFieldSet, AbuseChRansomAdapterSummary } from 'components/adapters/abusech/index';
+import { OTXAdapterDocumentation, OTXAdapterFieldSet, OTXAdapterSummary } from './components/adapters/otx';
 
 import packageJson from '../../package.json';
 
@@ -46,6 +47,13 @@ PluginStore.register(new PluginManifest(packageJson, {
       formComponent: AbuseChRansomAdapterFieldSet,
       summaryComponent: AbuseChRansomAdapterSummary,
       documentationComponent: AbuseChRansomAdapterDocumentation,
+    },
+    {
+      type: 'otx-api',
+      displayName: 'Alienvault OTX API',
+      formComponent: OTXAdapterFieldSet,
+      summaryComponent: OTXAdapterSummary,
+      documentationComponent: OTXAdapterDocumentation,
     },
   ],
 }));
