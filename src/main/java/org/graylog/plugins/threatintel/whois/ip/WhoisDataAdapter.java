@@ -2,6 +2,7 @@ package org.graylog.plugins.threatintel.whois.ip;
 
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -33,7 +34,7 @@ public class WhoisDataAdapter extends LookupDataAdapter {
                             @Assisted LookupDataAdapterConfiguration config,
                             MetricRegistry metricRegistry) {
         super(id, name, config, metricRegistry);
-        this.whoisIpLookup = new WhoisIpLookup(((Config) config).registry());
+        this.whoisIpLookup = new WhoisIpLookup((Config) config, metricRegistry);
     }
 
     @Override
@@ -96,6 +97,8 @@ public class WhoisDataAdapter extends LookupDataAdapter {
             return WhoisDataAdapter.Config.builder()
                     .type(NAME)
                     .registry(InternetRegistry.ARIN)
+                    .connectTimeout(1000)
+                    .readTimeout(1000)
                     .build();
         }
     }
@@ -103,7 +106,7 @@ public class WhoisDataAdapter extends LookupDataAdapter {
     @AutoValue
     @WithBeanGetter
     @JsonAutoDetect
-    @JsonDeserialize(builder = AutoValue_WhoisDataAdapter_Config.Builder.class)
+    @JsonDeserialize(builder = WhoisDataAdapter.Config.Builder.class)
     @JsonTypeName(NAME)
     public static abstract class Config implements LookupDataAdapterConfiguration {
 
@@ -113,6 +116,12 @@ public class WhoisDataAdapter extends LookupDataAdapter {
 
         @JsonProperty("registry")
         public abstract InternetRegistry registry();
+
+        @JsonProperty("connect_timeout")
+        public abstract int connectTimeout();
+
+        @JsonProperty("read_timeout")
+        public abstract int readTimeout();
 
         public static Builder builder() {
             return new AutoValue_WhoisDataAdapter_Config.Builder();
@@ -125,11 +134,22 @@ public class WhoisDataAdapter extends LookupDataAdapter {
 
         @AutoValue.Builder
         public abstract static class Builder {
+            @JsonCreator
+            public static Builder create() {
+                return Config.builder().connectTimeout(1000).readTimeout(1000);
+            }
+
             @JsonProperty(TYPE_FIELD)
             public abstract Builder type(String type);
 
             @JsonProperty("registry")
             public abstract Builder registry(InternetRegistry registry);
+
+            @JsonProperty("connect_timeout")
+            public abstract Builder connectTimeout(int connectTimeout);
+
+            @JsonProperty("read_timeout")
+            public abstract Builder readTimeout(int readTimeout);
 
             public abstract Config build();
         }

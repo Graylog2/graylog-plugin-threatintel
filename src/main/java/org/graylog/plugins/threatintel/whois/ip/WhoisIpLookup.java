@@ -1,6 +1,9 @@
 package org.graylog.plugins.threatintel.whois.ip;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.net.whois.WhoisClient;
 import org.graylog.plugins.threatintel.whois.ip.parsers.AFRINICResponseParser;
 import org.graylog.plugins.threatintel.whois.ip.parsers.APNICResponseParser;
 import org.graylog.plugins.threatintel.whois.ip.parsers.ARINResponseParser;
@@ -11,9 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class WhoisIpLookup {
@@ -23,9 +23,16 @@ public class WhoisIpLookup {
     private static final int PORT = 43;
 
     private final InternetRegistry defaultRegistry;
+    private final int connectTimeout;
+    private final int readTimeout;
+    private final Timer whoisRequestTimer;
 
-    public WhoisIpLookup(InternetRegistry defaultRegistry) {
-        this.defaultRegistry = defaultRegistry;
+    public WhoisIpLookup(WhoisDataAdapter.Config whoisConfig, MetricRegistry metricRegistry) {
+        this.defaultRegistry = whoisConfig.registry();
+        this.connectTimeout = whoisConfig.connectTimeout();
+        this.readTimeout = whoisConfig.readTimeout();
+
+        this.whoisRequestTimer = metricRegistry.timer(MetricRegistry.name(getClass(), "whoisRequestTime"));
     }
 
     public WhoisIpLookupResult run(String ip) throws Exception {
@@ -55,13 +62,22 @@ public class WhoisIpLookup {
                 throw new RuntimeException("No parser implemented for [" + registry.name() + "] responses.");
         }
 
-        try (final Socket socket = new Socket(registry.getWhoisServer(), PORT)){
-            final OutputStream out = socket.getOutputStream();
-            final InputStream in = socket.getInputStream();
+        final WhoisClient whoisClient = new WhoisClient();
+        try {
+            whoisClient.setDefaultPort(PORT);
+            whoisClient.setConnectTimeout(connectTimeout);
+            whoisClient.setDefaultTimeout(readTimeout);
 
-            out.write((ip + "\n").getBytes(StandardCharsets.UTF_8));
+            try (final Timer.Context ignored = whoisRequestTimer.time()) {
+                whoisClient.connect(registry.getWhoisServer());
 
-            IOUtils.readLines(in, StandardCharsets.UTF_8).forEach(parser::readLine);
+                IOUtils.readLines(whoisClient.getInputStream(ip), StandardCharsets.UTF_8).forEach(parser::readLine);
+            }
+
+            // When we encounter a registry redirect we recursively call this method with the new registry server.
+            // We don't want to keep the connection open until all redirects have been processed, so disconnect as
+            // soon as we are done reading the response from a server.
+            whoisClient.disconnect();
 
             // Handle registry redirect.
             if(parser.isRedirect()) {
@@ -96,6 +112,10 @@ public class WhoisIpLookup {
         } catch (IOException e) {
             LOG.error("Could not lookup WHOIS information for [{}] at [{}].", ip, registry.toString());
             throw e;
+        } finally {
+            if (whoisClient.isConnected()) {
+                whoisClient.disconnect();
+            }
         }
     }
 
