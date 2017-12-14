@@ -146,12 +146,6 @@ const ThreatIntelPluginConfig = React.createClass({
                    name="otx_enabled"
                    checked={this.state.config.otx_enabled}
                    onChange={this._onCheckboxClick('otx_enabled', 'otxEnabled')}/>
-
-            <Alert>
-              Please take note that the <i>AlienVault OTX API token</i> is not managed on this page anymore.
-              Instead you have to add an <code>X-OTX-API-KEY</code> header containing your personal API token for the
-              corresponding data adapter over <LinkContainer to={Routes.SYSTEM.LOOKUPTABLES.DATA_ADAPTERS.edit('otx-ip')}><span>here</span></LinkContainer>.
-            </Alert>
           </fieldset>
         </BootstrapModalForm>
       </div>
