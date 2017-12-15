@@ -11,15 +11,27 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 abstract class AbstractOTXLookupFunction extends LookupTableFunction<OTXLookupResult> {
-    private static final String LOOKUP_TABLE_NAME = "otx-ip";
-    private final LookupTableService.Function lookupFunction;
+    private static final String IP_LOOKUP_TABLE_NAME = "otx-api-ip";
+    private static final String DOMAIN_LOOKUP_TABLE_NAME = "otx-api-domain";
+    private final LookupTableService.Function ipLookupFunction;
+    private final LookupTableService.Function domainLookupFunction;
 
     AbstractOTXLookupFunction(final LookupTableService lookupTableService) {
-        this.lookupFunction = lookupTableService.newBuilder().lookupTable(LOOKUP_TABLE_NAME).build();
+        this.ipLookupFunction = lookupTableService.newBuilder().lookupTable(IP_LOOKUP_TABLE_NAME).build();
+        this.domainLookupFunction = lookupTableService.newBuilder().lookupTable(DOMAIN_LOOKUP_TABLE_NAME).build();
     }
 
-    OTXLookupResult lookupIntel(String entity, String type) {
-        final LookupResult lookupResult = this.lookupFunction.lookup(type + "/" + entity);
+    protected OTXLookupResult lookupIP(final String ip) {
+        return lookupIntel(ip, ipLookupFunction);
+    }
+
+    protected OTXLookupResult lookupDomain(final String domain) {
+        return lookupIntel(domain, ipLookupFunction);
+    }
+
+    private OTXLookupResult lookupIntel(final String key, final LookupTableService.Function lookupFunction) {
+        final LookupResult lookupResult = lookupFunction.lookup(key);
+
         if (lookupResult != null && !lookupResult.isEmpty()) {
             final ImmutableMap.Builder<String, Object> result = ImmutableMap.builder();
             final Object singleValue = lookupResult.singleValue();
