@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Button } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { IfPermitted } from 'components/common';
 import ObjectUtils from 'util/ObjectUtils';
-import Routes from 'routing/Routes';
 
 const ThreatIntelPluginConfig = React.createClass({
   propTypes: {
