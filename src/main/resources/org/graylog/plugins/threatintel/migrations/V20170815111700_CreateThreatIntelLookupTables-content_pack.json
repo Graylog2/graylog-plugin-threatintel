@@ -156,10 +156,8 @@
       "config": {
         "type": "otx-api",
         "indicator": "IPAutoDetect",
-        "http_user_agent": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel",
-        "otx_host": "otx.alienvault.com",
-        "otx_port": "443",
-        "otx_scheme": "https"
+        "api_url": "https://otx.alienvault.com",
+        "http_user_agent": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel"
       }
     },
     {
@@ -169,10 +167,8 @@
       "config": {
         "type": "otx-api",
         "indicator": "domain",
-        "http_user_agent": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel",
-        "otx_host": "otx.alienvault.com",
-        "otx_port": "443",
-        "otx_scheme": "https"
+        "api_url": "https://otx.alienvault.com",
+        "http_user_agent": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel"
       }
     },
     {

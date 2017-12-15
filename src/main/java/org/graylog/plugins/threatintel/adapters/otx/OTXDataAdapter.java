@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.core.HttpHeaders;
@@ -44,7 +43,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +66,6 @@ public class OTXDataAdapter extends LookupDataAdapter {
     private static final ImmutableSet<String> OTX_IP_INDICATORS = ImmutableSet.of(OTX_INDICATOR_IPV4, OTX_INDICATOR_IPV6);
 
     private static final String OTX_SECTION = "general";
-    private static final ImmutableSet<String> OTX_SCHEMES = ImmutableSet.of("http", "https");
     private static final ImmutableSet<String> OTX_INDICATORS = ImmutableSet.<String>builder()
             .add(OTX_INDICATOR_IP_AUTO_DETECT)
             .add(OTX_INDICATOR_IPV4)
@@ -87,6 +84,7 @@ public class OTXDataAdapter extends LookupDataAdapter {
     private final Timer httpRequestTimer;
     private final Meter httpRequestErrors;
     private Headers httpHeaders;
+    private HttpUrl parsedApiUrl;
 
     @Inject
     protected OTXDataAdapter(@Assisted("id") String id,
@@ -123,17 +121,18 @@ public class OTXDataAdapter extends LookupDataAdapter {
         if (!OTX_INDICATORS.contains(config.indicator())) {
             throw new IllegalArgumentException("Invalid OTX indicator value - allowed: " + String.join(", ", OTX_INDICATORS));
         }
-        if (isNullOrEmpty(config.otxHost())) {
-            throw new IllegalArgumentException("OTX host is missing");
-        }
-        if (config.otxPort() < 1) {
-            throw new IllegalArgumentException("OTX port is missing");
-        }
-        if (isNullOrEmpty(config.otxScheme()) || !OTX_SCHEMES.contains(config.otxScheme().toLowerCase(Locale.ENGLISH))) {
-            throw new IllegalArgumentException("OTX scheme value is invalid - allowed: http, https");
-        }
         if (isNullOrEmpty(config.httpUserAgent())) {
             throw new IllegalArgumentException("HTTP user-agent is missing");
+        }
+
+        if (isNullOrEmpty(config.apiUrl())) {
+            throw new IllegalArgumentException("OTX API URL is missing");
+        }
+        final HttpUrl parsedUrl = HttpUrl.parse(config.apiUrl());
+        if (parsedUrl != null) {
+            this.parsedApiUrl = parsedUrl;
+        } else {
+            throw new IllegalArgumentException("OTX API URL is not valid");
         }
 
         this.httpHeaders = builder
@@ -181,9 +180,9 @@ public class OTXDataAdapter extends LookupDataAdapter {
         }
 
         final HttpUrl url = new HttpUrl.Builder()
-                .scheme(config.otxScheme())
-                .host(config.otxHost())
-                .port(config.otxPort())
+                .scheme(parsedApiUrl.scheme())
+                .host(parsedApiUrl.host())
+                .port(parsedApiUrl.port())
                 .addPathSegments("/api/v1/indicators")
                 .addPathSegment(otxIndicator)
                 .addPathSegment(String.valueOf(key))
@@ -278,9 +277,7 @@ public class OTXDataAdapter extends LookupDataAdapter {
             return Config.builder()
                     .type(NAME)
                     .indicator(OTX_INDICATOR_IP_AUTO_DETECT)
-                    .otxHost("otx.alienvault.com")
-                    .otxPort(443)
-                    .otxScheme("https")
+                    .apiUrl("https://otx.alienvault.com")
                     .httpUserAgent("Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel")
                     .httpConnectTimeout(10000)
                     .httpWriteTimeout(10000)
@@ -308,22 +305,13 @@ public class OTXDataAdapter extends LookupDataAdapter {
         @Nullable
         public abstract String apiKey();
 
+        @JsonProperty("api_url")
+        @NotEmpty
+        public abstract String apiUrl();
+
         @JsonProperty("http_user_agent")
         @NotEmpty
         public abstract String httpUserAgent();
-
-        @JsonProperty("otx_host")
-        @NotEmpty
-        public abstract String otxHost();
-
-        @JsonProperty("otx_port")
-        @Min(1)
-        @Max(65535)
-        public abstract int otxPort();
-
-        @JsonProperty("otx_scheme")
-        @NotEmpty
-        public abstract String otxScheme();
 
         @JsonProperty("http_connect_timeout")
         @Min(1)
@@ -350,8 +338,17 @@ public class OTXDataAdapter extends LookupDataAdapter {
             if (!OTX_INDICATORS.contains(indicator())) {
                 errors.put("indicator", "Invalid value - allowed: " + String.join(", ", OTX_INDICATORS));
             }
-            if (!OTX_SCHEMES.contains(otxScheme().toLowerCase(Locale.ENGLISH))) {
-                errors.put("otx_scheme", "Invalid value - allowed: " + String.join(", ", OTX_SCHEMES));
+            if (HttpUrl.parse(apiUrl()) == null) {
+                errors.put("api_url", "Invalid URL");
+            }
+            if (httpConnectTimeout() < 1) {
+                errors.put("http_connect_timeout", "Value cannot be smaller than 1");
+            }
+            if (httpWriteTimeout() < 1) {
+                errors.put("http_write_timeout", "Value cannot be smaller than 1");
+            }
+            if (httpReadTimeout() < 1) {
+                errors.put("http_read_timeout", "Value cannot be smaller than 1");
             }
 
             return errors.isEmpty() ? Optional.empty() : Optional.of(errors);
@@ -376,17 +373,11 @@ public class OTXDataAdapter extends LookupDataAdapter {
             @JsonProperty("api_key")
             public abstract Builder apiKey(String apiKey);
 
+            @JsonProperty("api_url")
+            public abstract Builder apiUrl(String apiUrl);
+
             @JsonProperty("http_user_agent")
             public abstract Builder httpUserAgent(String httpUserAgent);
-
-            @JsonProperty("otx_host")
-            public abstract Builder otxHost(String otxHost);
-
-            @JsonProperty("otx_port")
-            public abstract Builder otxPort(int otxPort);
-
-            @JsonProperty("otx_scheme")
-            public abstract Builder otxScheme(String otxScheme);
 
             @JsonProperty("http_connect_timeout")
             public abstract Builder httpConnectTimeout(long httpConnectTimeout);

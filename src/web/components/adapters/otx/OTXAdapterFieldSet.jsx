@@ -18,20 +18,13 @@ const OTX_INDICATORS = [
   { label: 'Correlation-Rule', value: 'correlation-rule' },
 ];
 
-const OTX_HTTP_SCHEMES = [
-  { label: 'HTTPS', value: 'https' },
-  { label: 'HTTP', value: 'http' },
-];
-
 const OTXAdapterFieldSet = React.createClass({
   propTypes: {
     config: PropTypes.shape({
       indicator: PropTypes.string.isRequired,
       api_key: PropTypes.string,
+      api_url: PropTypes.string.isRequired,
       http_user_agent: PropTypes.string.isRequired,
-      otx_host: PropTypes.string.isRequired,
-      otx_port: PropTypes.number.isRequired,
-      otx_scheme: PropTypes.string.isRequired,
       http_connect_timeout: PropTypes.number.isRequired,
       http_write_timeout: PropTypes.number.isRequired,
       http_read_timeout: PropTypes.number.isRequired,
@@ -81,6 +74,16 @@ const OTXAdapterFieldSet = React.createClass({
                labelClassName="col-sm-3"
                wrapperClassName="col-sm-9" />
         <Input type="text"
+               id="api_url"
+               name="api_url"
+               label="OTX API URL"
+               onChange={this.props.handleFormEvent}
+               help={this.props.validationMessage('api_url', 'URL of the OTX API server.')}
+               bsStyle={this.props.validationState('api_url')}
+               value={config.api_url}
+               labelClassName="col-sm-3"
+               wrapperClassName="col-sm-9" />
+        <Input type="text"
                id="http_user_agent"
                name="http_user_agent"
                label="HTTP User-Agent"
@@ -91,43 +94,6 @@ const OTXAdapterFieldSet = React.createClass({
                value={config.http_user_agent}
                labelClassName="col-sm-3"
                wrapperClassName="col-sm-9" />
-        <Input type="text"
-               id="otx_host"
-               name="otx_host"
-               label="OTX Hostname"
-               required
-               onChange={this.props.handleFormEvent}
-               help={this.props.validationMessage('otx_host', 'Hostname of the OTX server.')}
-               bsStyle={this.props.validationState('otx_host')}
-               value={config.otx_host}
-               labelClassName="col-sm-3"
-               wrapperClassName="col-sm-9" />
-        <Input type="text"
-               id="otx_port"
-               name="otx_port"
-               label="OTX Port"
-               required
-               onChange={this.props.handleFormEvent}
-               help={this.props.validationMessage('otx_port', 'Port for the connection to the server.')}
-               bsStyle={this.props.validationState('otx_port')}
-               value={config.otx_port}
-               labelClassName="col-sm-3"
-               wrapperClassName="col-sm-9" />
-        <Input id="otx_scheme"
-               label="HTTP Scheme"
-               required
-               onChange={this.props.handleFormEvent}
-               help={this.props.validationMessage('otx_scheme', 'The registry used for the initial lookup, should be the closest to your location.')}
-               bsStyle={this.props.validationState('otx_scheme')}
-               labelClassName="col-sm-3"
-               wrapperClassName="col-sm-9">
-          <Select placeholder="Select indicator"
-                  clearable={false}
-                  options={OTX_HTTP_SCHEMES}
-                  matchProp="value"
-                  onChange={this.handleSelect('otx_scheme')}
-                  value={config.otx_scheme} />
-        </Input>
         <Input type="number"
                id="http_connect_timeout"
                name="http_connect_timeout"

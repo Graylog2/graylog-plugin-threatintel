@@ -34,39 +34,18 @@ const OTXAdapterDocumentation = React.createClass({
           please register for an OTX account and get an API key.</strong>
         </p>
 
+        <h5 style={style}>OTX API URL</h5>
+
+        <p style={style}>
+          HTTP URL of the OTX API server. The default setting of <code>https://otx.alienvault.com</code> should not be changed
+          except if you want to run some tests with a custom server.
+        </p>
+
         <h5 style={style}>HTTP User-Agent</h5>
 
         <p style={style}>
           This will set the <code>User-Agent</code> HTTP header for OTX API requests. You can modify this to include
           your contact details so the OTX API operators can contact you if there are problems with your API requests.
-        </p>
-
-        <hr />
-
-        <p style={style}>
-          The following settings are only useful when you need to contact a different OTX API implementation which
-          should not be needed most of the time.
-        </p>
-
-        <h5 style={style}>OTX Hostname</h5>
-
-        <p style={style}>
-          Hostname of the OTX API server. The default setting of <code>otx.alienvault.com</code> should not be changed
-          except if you want to run some tests with a custom server.
-        </p>
-
-        <h5 style={style}>OTX Port</h5>
-
-        <p style={style}>
-          HTTP port of the OTX API server. The default setting of <code>443</code> should not be changed
-          except if you want to run some tests with a custom server.
-        </p>
-
-        <h5 style={style}>OTX HTTP Scheme</h5>
-
-        <p style={style}>
-          URL scheme for the OTX API server requests. The default setting of <code>HTTPS</code> should not be changed
-          except if you want to run some tests with a custom server.
         </p>
 
         <h5 style={style}>HTTP Connection Timeout</h5>

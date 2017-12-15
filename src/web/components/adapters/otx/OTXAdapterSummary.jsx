@@ -7,10 +7,8 @@ const OTXAdapterSummary = React.createClass({
       config: PropTypes.shape({
         indicator: PropTypes.string.isRequired,
         api_key: PropTypes.string,
+        api_url: PropTypes.string.isRequired,
         http_user_agent: PropTypes.string.isRequired,
-        otx_host: PropTypes.string.isRequired,
-        otx_port: PropTypes.number.isRequired,
-        otx_scheme: PropTypes.string.isRequired,
         http_connect_timeout: PropTypes.number.isRequired,
         http_write_timeout: PropTypes.number.isRequired,
         http_read_timeout: PropTypes.number.isRequired,
@@ -27,14 +25,10 @@ const OTXAdapterSummary = React.createClass({
         <dd>{config.indicator}</dd>
         <dt>OTX API Key</dt>
         <dd>{config.api_key || 'n/a'}</dd>
+        <dt>OTX API URL</dt>
+        <dd>{config.api_url}</dd>
         <dt>HTTP User-Agent</dt>
         <dd>{config.http_user_agent}</dd>
-        <dt>OTX Hostname</dt>
-        <dd>{config.otx_host}</dd>
-        <dt>OTX Port</dt>
-        <dd>{config.otx_port}</dd>
-        <dt>HTTP Scheme</dt>
-        <dd>{config.otx_scheme}</dd>
         <dt>HTTP Connect Timeout</dt>
         <dd>{config.http_connect_timeout} ms</dd>
         <dt>HTTP Write Timeout</dt>
