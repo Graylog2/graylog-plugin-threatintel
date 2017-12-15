@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, Button } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Button } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { IfPermitted } from 'components/common';
 import ObjectUtils from 'util/ObjectUtils';
-import Routes from 'routing/Routes';
 
 const ThreatIntelPluginConfig = React.createClass({
   propTypes: {
@@ -17,7 +15,6 @@ const ThreatIntelPluginConfig = React.createClass({
   getDefaultProps() {
     return {
       config: {
-        otx_enabled: false,
         tor_enabled: false,
         spamhaus_enabled: false,
         abusech_ransom_enabled: false,
@@ -96,9 +93,6 @@ const ThreatIntelPluginConfig = React.createClass({
 
           <dt>Abuse.ch Ransomware:</dt>
           <dd>{this.state.config.abusech_ransom_enabled === true ? 'Enabled' : 'Disabled'}</dd>
-
-          <dt>AlienVault OTX:</dt>
-          <dd>{this.state.config.otx_enabled === true ? 'Enabled' : 'Disabled'}</dd>
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
@@ -134,20 +128,6 @@ const ThreatIntelPluginConfig = React.createClass({
                    name="tor_enabled"
                    checked={this.state.config.abusech_ransom_enabled}
                    onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>
-
-            <Input type="checkbox"
-                   ref="otxEnabled"
-                   label="Allow AlienVault OTX lookups?"
-                   help="Enable to include AlienVault OTX lookup in global pipeline function."
-                   name="otx_enabled"
-                   checked={this.state.config.otx_enabled}
-                   onChange={this._onCheckboxClick('otx_enabled', 'otxEnabled')}/>
-
-            <Alert>
-              Please take note that the <i>AlienVault OTX API token</i> is not managed on this page anymore.
-              Instead you have to add an <code>X-OTX-API-KEY</code> header containing your personal API token for the
-              corresponding data adapter over <LinkContainer to={Routes.SYSTEM.LOOKUPTABLES.DATA_ADAPTERS.edit('otx-ip')}><span>here</span></LinkContainer>.
-            </Alert>
           </fieldset>
         </BootstrapModalForm>
       </div>
