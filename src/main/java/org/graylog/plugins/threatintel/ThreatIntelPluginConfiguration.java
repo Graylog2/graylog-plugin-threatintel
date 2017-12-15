@@ -14,9 +14,11 @@ import javax.annotation.Nullable;
 public abstract class ThreatIntelPluginConfiguration {
 
     @JsonProperty("otx_enabled")
+    @Deprecated // Not used anymore
     public abstract boolean otxEnabled();
 
     @JsonProperty("otx_api_key")
+    @Deprecated // Only used to migrate API key from pre-2.4 setups
     @Nullable
     public abstract String otxApiKey();
 
@@ -59,8 +61,10 @@ public abstract class ThreatIntelPluginConfiguration {
 
     @AutoValue.Builder
     public static abstract class Builder {
+        @Deprecated
         public abstract Builder otxEnabled(boolean otxEnabled);
 
+        @Deprecated
         abstract Builder otxApiKey(String otxApiKey);
 
         public abstract Builder torEnabled(boolean torEnabled);

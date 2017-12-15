@@ -4,12 +4,10 @@ import com.codahale.metrics.MetricRegistry;
 import com.google.common.io.Resources;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import org.graylog.plugins.threatintel.PluginConfigService;
 import org.graylog2.plugin.lookup.LookupResult;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -21,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OTXDataAdapterTest {
     @Rule
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
-    @Mock
-    private PluginConfigService pluginConfigService;
 
     private OTXDataAdapter otxDataAdapter;
 
@@ -31,7 +27,7 @@ public class OTXDataAdapterTest {
         final OTXDataAdapter.Config defaultConfiguration = new OTXDataAdapter.Descriptor().defaultConfiguration();
         final MetricRegistry metricRegistry = new MetricRegistry();
 
-        this.otxDataAdapter = new OTXDataAdapter("1", "otx-test", defaultConfiguration, pluginConfigService, new OkHttpClient(), metricRegistry);
+        this.otxDataAdapter = new OTXDataAdapter("1", "otx-test", defaultConfiguration, new OkHttpClient(), metricRegistry);
     }
 
     @Test

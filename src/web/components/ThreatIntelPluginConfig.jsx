@@ -17,7 +17,6 @@ const ThreatIntelPluginConfig = React.createClass({
   getDefaultProps() {
     return {
       config: {
-        otx_enabled: false,
         tor_enabled: false,
         spamhaus_enabled: false,
         abusech_ransom_enabled: false,
@@ -96,9 +95,6 @@ const ThreatIntelPluginConfig = React.createClass({
 
           <dt>Abuse.ch Ransomware:</dt>
           <dd>{this.state.config.abusech_ransom_enabled === true ? 'Enabled' : 'Disabled'}</dd>
-
-          <dt>AlienVault OTX:</dt>
-          <dd>{this.state.config.otx_enabled === true ? 'Enabled' : 'Disabled'}</dd>
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
@@ -137,15 +133,6 @@ const ThreatIntelPluginConfig = React.createClass({
                    name="tor_enabled"
                    checked={this.state.config.abusech_ransom_enabled}
                    onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>
-
-            <Input type="checkbox"
-                   id="otx-checkbox"
-                   ref="otxEnabled"
-                   label="Allow AlienVault OTX lookups?"
-                   help="Enable to include AlienVault OTX lookup in global pipeline function."
-                   name="otx_enabled"
-                   checked={this.state.config.otx_enabled}
-                   onChange={this._onCheckboxClick('otx_enabled', 'otxEnabled')}/>
           </fieldset>
         </BootstrapModalForm>
       </div>

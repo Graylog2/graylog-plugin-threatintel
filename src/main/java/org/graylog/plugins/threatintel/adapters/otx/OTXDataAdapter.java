@@ -26,8 +26,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.graylog.autovalue.WithBeanGetter;
-import org.graylog.plugins.threatintel.PluginConfigService;
-import org.graylog.plugins.threatintel.tools.AdapterDisabledException;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
@@ -85,7 +83,6 @@ public class OTXDataAdapter extends LookupDataAdapter {
             .build();
 
     private final Config config;
-    private final PluginConfigService pluginConfigService;
     private final OkHttpClient httpClient;
     private final Timer httpRequestTimer;
     private final Meter httpRequestErrors;
@@ -95,7 +92,6 @@ public class OTXDataAdapter extends LookupDataAdapter {
     protected OTXDataAdapter(@Assisted("id") String id,
                              @Assisted("name") String name,
                              @Assisted LookupDataAdapterConfiguration config,
-                             PluginConfigService pluginConfigService,
                              OkHttpClient httpClient,
                              MetricRegistry metricRegistry) {
         super(id, name, config, metricRegistry);
@@ -106,7 +102,6 @@ public class OTXDataAdapter extends LookupDataAdapter {
                 .writeTimeout(this.config.httpWriteTimeout(), TimeUnit.MILLISECONDS)
                 .readTimeout(this.config.httpReadTimeout(), TimeUnit.MILLISECONDS)
                 .build();
-        this.pluginConfigService = pluginConfigService;
 
         this.httpRequestTimer = metricRegistry.timer(MetricRegistry.name(getClass(), "httpRequestTime"));
         this.httpRequestErrors = metricRegistry.meter(MetricRegistry.name(getClass(), "httpRequestErrors"));
@@ -114,10 +109,6 @@ public class OTXDataAdapter extends LookupDataAdapter {
 
     @Override
     protected void doStart() throws Exception {
-        if (!pluginConfigService.config().getCurrent().otxEnabled()) {
-            throw new AdapterDisabledException("AlienVault OTX service is disabled, not starting OTX adapter. To enable it please go to System / Configurations.");
-        }
-
         final Headers.Builder builder = new Headers.Builder();
 
         final String apiKey = config.apiKey();
