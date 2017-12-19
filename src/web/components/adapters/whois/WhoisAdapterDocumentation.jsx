@@ -11,13 +11,6 @@ const WhoisAdapterDocumentation = () => {
 
       <h3 style={style}>Configuration</h3>
 
-      <h5 style={style}>Registry</h5>
-
-      <p style={style}>
-        The whois registry host that should be used for the lookup requests. The default value of <code>ARIN</code> should
-        work in most cases because it is returning redirects to other servers if it cannot answer a request.
-      </p>
-
       <h5 style={style}>Connect timeout</h5>
 
       <p style={style}>

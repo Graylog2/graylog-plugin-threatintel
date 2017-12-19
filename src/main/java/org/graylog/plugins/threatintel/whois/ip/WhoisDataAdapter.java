@@ -151,7 +151,14 @@ public class WhoisDataAdapter extends LookupDataAdapter {
             @JsonProperty("read_timeout")
             public abstract Builder readTimeout(int readTimeout);
 
-            public abstract Config build();
+            abstract Config autoBuild();
+
+            public Config build() {
+                // TODO: For now we always use ARIN regardless of what the user configured. This is because we can only
+                // TODO: process redirects from ARIN responses for now. See: https://github.com/Graylog2/graylog-plugin-threatintel/issues/77
+                registry(InternetRegistry.ARIN);
+                return autoBuild();
+            }
         }
     }
 }
