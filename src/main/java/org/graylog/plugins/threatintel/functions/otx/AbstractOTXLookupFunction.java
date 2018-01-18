@@ -26,7 +26,7 @@ abstract class AbstractOTXLookupFunction extends LookupTableFunction<OTXLookupRe
     }
 
     protected OTXLookupResult lookupDomain(final String domain) {
-        return lookupIntel(domain, ipLookupFunction);
+        return lookupIntel(domain, domainLookupFunction);
     }
 
     private OTXLookupResult lookupIntel(final String key, final LookupTableService.Function lookupFunction) {
