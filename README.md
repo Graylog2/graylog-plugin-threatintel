@@ -109,7 +109,7 @@ You'll need at least Java 8 (u101) to make this work. The exit node information 
 
 ```
   let intel = tor_lookup(to_string($message.src_addr));
-  set_field("src_addr_is_tor_exit_node", intel.exit_node_indicated);
+  set_field("src_addr_is_tor_exit_node", intel.threat_indicated);
 ```
 
 #### Spamhaus DROP/EDROP
