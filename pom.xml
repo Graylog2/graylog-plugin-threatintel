@@ -51,12 +51,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.graylog.plugins</groupId>
-            <artifactId>graylog-plugin-pipeline-processor</artifactId>
-            <version>${graylog.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>3.6</version>
