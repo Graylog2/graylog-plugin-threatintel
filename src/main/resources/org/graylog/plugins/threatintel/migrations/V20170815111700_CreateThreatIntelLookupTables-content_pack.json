@@ -9,8 +9,8 @@
   "grok_patterns": [],
   "lookup_tables": [
     {
-      "title": "Open Thread Exchange (OTX) - IP",
-      "description": "This is the lookup table for AlienVault's Open Thread Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "title": "Open Threat Exchange (OTX) - IP",
+      "description": "This is the lookup table for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "otx-api-ip",
       "cache_name": "otx-api-ip-cache",
       "data_adapter_name": "otx-api-ip",
