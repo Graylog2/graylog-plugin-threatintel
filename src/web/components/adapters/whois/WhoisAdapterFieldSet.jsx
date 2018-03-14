@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import { Input } from 'components/bootstrap';
 
-const WhoisAdapterFieldSet = React.createClass({
-  propTypes: {
+class WhoisAdapterFieldSet extends React.Component {
+  static propTypes = {
     config: PropTypes.shape({
       connect_timeout: PropTypes.number.isRequired,
       read_timeout: PropTypes.number.isRequired,
@@ -12,7 +12,7 @@ const WhoisAdapterFieldSet = React.createClass({
     handleFormEvent: PropTypes.func.isRequired,
     validationMessage: PropTypes.func.isRequired,
     validationState: PropTypes.func.isRequired,
-  },
+  };
 
   render() {
     const { config } = this.props;
@@ -43,7 +43,7 @@ const WhoisAdapterFieldSet = React.createClass({
                wrapperClassName="col-sm-9" />
       </fieldset>
     );
-  },
-});
+  }
+}
 
 export default WhoisAdapterFieldSet;

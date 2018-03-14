@@ -5,32 +5,32 @@ import ObjectUtils from 'util/ObjectUtils';
 import { Input } from 'components/bootstrap';
 import { Select, TimeUnitInput } from 'components/common';
 
-const AbuseChRansomAdapterFieldSet = React.createClass({
-  propTypes: {
+class AbuseChRansomAdapterFieldSet extends React.Component {
+  static propTypes = {
     config: PropTypes.object.isRequired,
 // eslint-disable-next-line react/no-unused-prop-types
     updateConfig: PropTypes.func.isRequired,
     handleFormEvent: PropTypes.func.isRequired,
     validationState: PropTypes.func.isRequired,
     validationMessage: PropTypes.func.isRequired,
-  },
+  };
 
-  _update(value, unit, enabled, name) {
+  _update = (value, unit, enabled, name) => {
     const config = ObjectUtils.clone(this.props.config);
     config[name] = enabled ? value : 0;
     config[`${name}_unit`] = unit;
     this.props.updateConfig(config);
-  },
+  };
 
-  updateRefreshInterval(value, unit, enabled) {
+  updateRefreshInterval = (value, unit, enabled) => {
     this._update(value, unit, enabled, 'refresh_interval');
-  },
+  };
 
-  _onBlocklistTypeSelect(id) {
+  _onBlocklistTypeSelect = (id) => {
     const config = ObjectUtils.clone(this.props.config);
     config.blocklist_type = id;
     this.props.updateConfig(config);
-  },
+  };
 
   render() {
     const config = this.props.config;
@@ -63,7 +63,7 @@ const AbuseChRansomAdapterFieldSet = React.createClass({
                      labelClassName="col-sm-3"
                      wrapperClassName="col-sm-9" />
     </fieldset>);
-  },
-});
+  }
+}
 
 export default AbuseChRansomAdapterFieldSet;

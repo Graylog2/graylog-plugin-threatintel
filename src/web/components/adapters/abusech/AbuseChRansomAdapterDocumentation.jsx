@@ -2,7 +2,7 @@
 import React from 'react';
 import { Alert } from 'react-bootstrap';
 
-const AbuseChRansomAdapterDocumentation = React.createClass({
+class AbuseChRansomAdapterDocumentation extends React.Component {
   render() {
     return (<div>
       <p>The <a href="https://ransomwaretracker.abuse.ch/blocklist/" target="_blank">abuse.ch ransomware tracker</a> offers various types of blocklists that allows you to block Ransomware botnet C&C traffic.</p>
@@ -14,7 +14,7 @@ const AbuseChRansomAdapterDocumentation = React.createClass({
       </Alert>
 
     </div>);
-  },
-});
+  }
+}
 
 export default AbuseChRansomAdapterDocumentation;

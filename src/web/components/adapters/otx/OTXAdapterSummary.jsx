@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const OTXAdapterSummary = React.createClass({
-  propTypes: {
+class OTXAdapterSummary extends React.Component {
+  static propTypes = {
     dataAdapter: PropTypes.shape({
       config: PropTypes.shape({
         indicator: PropTypes.string.isRequired,
@@ -14,7 +14,7 @@ const OTXAdapterSummary = React.createClass({
         http_read_timeout: PropTypes.number.isRequired,
       }),
     }),
-  },
+  };
 
   render() {
     const { config } = this.props.dataAdapter;
@@ -37,7 +37,7 @@ const OTXAdapterSummary = React.createClass({
         <dd>{config.http_read_timeout} ms</dd>
       </dl>
     );
-  },
-});
+  }
+}
 
 export default OTXAdapterSummary;
