@@ -6,7 +6,6 @@ import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog2.lookup.LookupTableService;
 import org.graylog2.plugin.lookup.LookupResult;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
