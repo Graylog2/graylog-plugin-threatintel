@@ -40,9 +40,9 @@ abstract class AbstractOTXLookupFunction extends LookupTableFunction<OTXLookupRe
 
             if (pulseCount > 0) {
                 result.put("otx_threat_indicated", true);
-                if (lookupResult.multiValue() != null && lookupResult.multiValue() instanceof LinkedHashMap) {
+                if (lookupResult.multiValue() != null && lookupResult.multiValue() instanceof Map) {
                     Joiner joiner = Joiner.on(", ").skipNulls();
-                    final LinkedHashMap<String, Object> pulse_info = (LinkedHashMap<String, Object>)lookupResult.multiValue().get("pulse_info");
+                    final Map<String, Object> pulse_info = (Map<String, Object>)lookupResult.multiValue().get("pulse_info");
                     final List<Map<String, Object>> pulses = (List<Map<String, Object>>)pulse_info.get("pulses");
 
                     final List<String> ids = pulses.stream()
