@@ -6,6 +6,7 @@ import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog2.lookup.LookupTableService;
 import org.graylog2.plugin.lookup.LookupResult;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,9 +40,10 @@ abstract class AbstractOTXLookupFunction extends LookupTableFunction<OTXLookupRe
 
             if (pulseCount > 0) {
                 result.put("otx_threat_indicated", true);
-                if (lookupResult.multiValue() != null && lookupResult.multiValue() instanceof List) {
+                if (lookupResult.multiValue() != null && lookupResult.multiValue() instanceof Map) {
                     Joiner joiner = Joiner.on(", ").skipNulls();
-                    final List<Map<String, Object>> pulses = (List<Map<String, Object>>)lookupResult.multiValue();
+                    final Map<String, Object> pulse_info = (Map<String, Object>)lookupResult.multiValue().get("pulse_info");
+                    final List<Map<String, Object>> pulses = (List<Map<String, Object>>)pulse_info.get("pulses");
 
                     final List<String> ids = pulses.stream()
                             .map(pulse -> String.valueOf(pulse.get("id")))
