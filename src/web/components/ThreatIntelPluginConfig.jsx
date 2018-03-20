@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { Button } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { IfPermitted } from 'components/common';
 import ObjectUtils from 'util/ObjectUtils';
 
-const ThreatIntelPluginConfig = React.createClass({
+const ThreatIntelPluginConfig = createReactClass({
+  displayName: 'ThreatIntelPluginConfig',
+
   propTypes: {
     config: PropTypes.object,
     updateConfig: PropTypes.func.isRequired,

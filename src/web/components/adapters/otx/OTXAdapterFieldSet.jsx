@@ -18,8 +18,8 @@ const OTX_INDICATORS = [
   { label: 'Correlation-Rule', value: 'correlation-rule' },
 ];
 
-const OTXAdapterFieldSet = React.createClass({
-  propTypes: {
+class OTXAdapterFieldSet extends React.Component {
+  static propTypes = {
     config: PropTypes.shape({
       indicator: PropTypes.string.isRequired,
       api_key: PropTypes.string,
@@ -33,15 +33,15 @@ const OTXAdapterFieldSet = React.createClass({
     handleFormEvent: PropTypes.func.isRequired,
     validationState: PropTypes.func.isRequired,
     validationMessage: PropTypes.func.isRequired,
-  },
+  };
 
-  handleSelect(fieldName) {
+  handleSelect = (fieldName) => {
     return (selectedIndicator) => {
       const config = lodash.cloneDeep(this.props.config);
       config[fieldName] = selectedIndicator;
       this.props.updateConfig(config);
     };
-  },
+  };
 
   render() {
     const { config } = this.props;
@@ -129,7 +129,7 @@ const OTXAdapterFieldSet = React.createClass({
                wrapperClassName="col-sm-9" />
       </fieldset>
     );
-  },
-});
+  }
+}
 
 export default OTXAdapterFieldSet;

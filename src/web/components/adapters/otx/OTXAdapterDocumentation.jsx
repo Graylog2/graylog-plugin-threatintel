@@ -3,7 +3,7 @@ import React from 'react';
 
 import { ExternalLink } from 'components/common';
 
-const OTXAdapterDocumentation = React.createClass({
+class OTXAdapterDocumentation extends React.Component {
   render() {
     const style = { marginBottom: 10 };
     return (
@@ -70,7 +70,7 @@ const OTXAdapterDocumentation = React.createClass({
         </p>
       </div>
     );
-  },
-});
+  }
+}
 
 export default OTXAdapterDocumentation;
