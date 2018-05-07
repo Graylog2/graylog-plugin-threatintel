@@ -6,6 +6,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.threatintel.adapters.abusech.AbuseChRansomAdapter;
+import org.graylog.plugins.threatintel.adapters.greynoise.GreynoiseAdapter;
 import org.graylog.plugins.threatintel.adapters.otx.OTXDataAdapter;
 import org.graylog.plugins.threatintel.functions.DomainFunctions;
 import org.graylog.plugins.threatintel.functions.IPFunctions;
@@ -73,6 +74,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         installLookupDataAdapter(TorExitNodeDataAdapter.NAME, TorExitNodeDataAdapter.class, TorExitNodeDataAdapter.Factory.class, TorExitNodeDataAdapter.Config.class);
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);
         installLookupDataAdapter(OTXDataAdapter.NAME, OTXDataAdapter.class, OTXDataAdapter.Factory.class, OTXDataAdapter.Config.class);
+        installLookupDataAdapter(GreynoiseAdapter.NAME, GreynoiseAdapter.class, GreynoiseAdapter.Factory.class, GreynoiseAdapter.Config.class);
 
         addMigration(V20170815111700_CreateThreatIntelLookupTables.class);
         addMigration(V20170821100300_MigrateOTXAPIToken.class);

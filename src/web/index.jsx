@@ -9,6 +9,8 @@ import { TorExitNodeAdapterDocumentation, TorExitNodeAdapterFieldSet, TorExitNod
 import { WhoisAdapterDocumentation, WhoisAdapterFieldSet, WhoisAdapterSummary } from 'components/adapters/whois/index';
 import { AbuseChRansomAdapterDocumentation, AbuseChRansomAdapterFieldSet, AbuseChRansomAdapterSummary } from 'components/adapters/abusech/index';
 import { OTXAdapterDocumentation, OTXAdapterFieldSet, OTXAdapterSummary } from './components/adapters/otx';
+import { GreynoiseNoiseAdapterDocumentation, GreynoiseNoiseAdapterFieldSet, GreynoiseNoiseAdapterSummary } from './components/adapters/greynoise-noise';
+
 
 import packageJson from '../../package.json';
 
@@ -55,5 +57,12 @@ PluginStore.register(new PluginManifest(packageJson, {
       summaryComponent: OTXAdapterSummary,
       documentationComponent: OTXAdapterDocumentation,
     },
+    {
+      type: 'greynoise-noise',
+      displayName: 'Greynoise',
+      formComponent: GreynoiseNoiseAdapterFieldSet,
+      summaryComponent: GreynoiseNoiseAdapterSummary,
+      documentationComponent: GreynoiseNoiseAdapterDocumentation,
+    }
   ],
 }));

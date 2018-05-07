@@ -18,6 +18,7 @@ const ThreatIntelPluginConfig = React.createClass({
         tor_enabled: false,
         spamhaus_enabled: false,
         abusech_ransom_enabled: false,
+        greynoise_noise_enabled: false,
       },
     };
   },
@@ -93,6 +94,9 @@ const ThreatIntelPluginConfig = React.createClass({
 
           <dt>Abuse.ch Ransomware:</dt>
           <dd>{this.state.config.abusech_ransom_enabled === true ? 'Enabled' : 'Disabled'}</dd>
+
+          <dt>Greynoise:</dt>
+          <dd>{this.state.config.greynoise_noise_enabled === true ? 'Enabled' : 'Disabled'}</dd>
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
@@ -128,6 +132,14 @@ const ThreatIntelPluginConfig = React.createClass({
                    name="tor_enabled"
                    checked={this.state.config.abusech_ransom_enabled}
                    onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>
+
+            <Input type="checkbox"
+                   ref="greynoiseNoiseRansomEnabled"
+                   label="Allow Greynoise lookups?"
+                   help="Enable to include Greynoise lookup in global pipeline function, disabling also stops refreshing the data."
+                   name="tor_enabled"
+                   checked={this.state.config.greynoise_noise_enabled}
+                   onChange={this._onCheckboxClick('greynoise_noise_enabled', 'greynoiseNoiseRansomEnabled')}/>
           </fieldset>
         </BootstrapModalForm>
       </div>

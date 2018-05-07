@@ -64,7 +64,7 @@ public class SpamhausEDROPDataAdapterTest {
     @Before
     public void setUp() throws Exception {
         clusterConfigService = new TestClusterConfigService();
-        clusterConfigService.write(ThreatIntelPluginConfiguration.create(true, "", true, true, true));
+        clusterConfigService.write(ThreatIntelPluginConfiguration.create(true, "", true, true, true, true));
         serverEventBus = new EventBus();
         clusterEventBus = new ClusterEventBus();
         final DBDataAdapterService dbDataAdapterService = mock(DBDataAdapterService.class);

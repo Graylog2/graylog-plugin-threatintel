@@ -31,18 +31,24 @@ public abstract class ThreatIntelPluginConfiguration {
     @JsonProperty("abusech_ransom_enabled")
     public abstract boolean abusechRansomEnabled();
 
+    @JsonProperty("greynoise_noise_enabled")
+    public abstract boolean greynoiseNoiseEnabled();
+
+
     @JsonCreator
     public static ThreatIntelPluginConfiguration create(@JsonProperty("otx_enabled") boolean otxEnabled,
                                                         @JsonProperty("otx_api_key") @Nullable String otxApiKey,
                                                         @JsonProperty("tor_enabled") boolean torEnabled,
                                                         @JsonProperty("spamhaus_enabled") boolean spamhausEnabled,
-                                                        @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled) {
+                                                        @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled,
+                                                        @JsonProperty("greynoise_noise_enabled") boolean greynoiseNoiseEnabled) {
         return builder()
                 .otxEnabled(otxEnabled)
                 .otxApiKey(otxApiKey)
                 .torEnabled(torEnabled)
                 .spamhausEnabled(spamhausEnabled)
                 .abusechRansomEnabled(abusechRansomEnabled)
+                .greynoiseNoiseEnabled(greynoiseNoiseEnabled)
                 .build();
     }
 
@@ -56,6 +62,7 @@ public abstract class ThreatIntelPluginConfiguration {
                 .torEnabled(false)
                 .spamhausEnabled(false)
                 .abusechRansomEnabled(false)
+                .greynoiseNoiseEnabled(false)
                 .build();
     }
 
@@ -72,6 +79,8 @@ public abstract class ThreatIntelPluginConfiguration {
         public abstract Builder spamhausEnabled(boolean spamhausEnabled);
 
         public abstract Builder abusechRansomEnabled(boolean abusechRansomEnabled);
+
+        public abstract Builder greynoiseNoiseEnabled(boolean greynoiseNoiseEnabled);
 
         public abstract ThreatIntelPluginConfiguration build();
     }
