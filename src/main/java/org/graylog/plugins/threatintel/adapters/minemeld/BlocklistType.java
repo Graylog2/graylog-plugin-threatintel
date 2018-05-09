@@ -11,6 +11,8 @@ public enum BlocklistType {
 	// 2) Click on Nodes
 	// 3) Find the output you want to configure to utilize with this plugin.
 	// 4) Copy the feed base URL.
+    
+    // Example https://hostname/feeds/OutPutURL
 	
     DOMAINS("https://FEEDBASEURL-FOR-DOMAINS", true),
     URLS("https://FEEDBASEURL-FOR-URLS", true),
