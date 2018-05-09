@@ -9,6 +9,7 @@ import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
 import org.graylog.plugins.threatintel.functions.IPFunctions;
 import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomIpLookupFunction;
+import org.graylog.plugins.threatintel.functions.minemeld.MineMeldIpLookupFunction;
 import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog.plugins.threatintel.functions.otx.OTXIPLookupFunction;
 import org.graylog.plugins.threatintel.functions.spamhaus.SpamhausIpLookupFunction;
@@ -72,6 +73,9 @@ public class GlobalIpLookupFunction extends AbstractGlobalLookupFunction {
         }
         if (function.getClass().equals(AbuseChRansomIpLookupFunction.class)) {
             return configuration.abusechRansomEnabled();
+        }
+        if (function.getClass().equals(MineMeldIpLookupFunction.class)) {
+            return configuration.minemeldEnabled();
         }
         if (function.getClass().equals(OTXIPLookupFunction.class)) {
             return configuration.otxEnabled();

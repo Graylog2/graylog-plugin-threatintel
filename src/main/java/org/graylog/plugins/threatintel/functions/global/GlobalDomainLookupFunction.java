@@ -9,6 +9,7 @@ import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog.plugins.threatintel.functions.DomainFunctions;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
 import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomDomainLookupFunction;
+import org.graylog.plugins.threatintel.functions.minemeld.MineMeldDomainLookupFunction;
 import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.slf4j.Logger;
@@ -67,6 +68,15 @@ public class GlobalDomainLookupFunction extends AbstractGlobalLookupFunction {
         return true;
     }
 
+    @Override
+    boolean isEnabled(LookupTableFunction<? extends GenericLookupResult> function) {
+        final ThreatIntelPluginConfiguration configuration = this.threatIntelPluginConfiguration();
+        if (function.getClass().equals(MineMeldDomainLookupFunction.class)) {
+            return configuration.minemeldEnabled();
+        }
+        return true;
+    }
+    
     @Override
     public FunctionDescriptor<GlobalLookupResult> descriptor() {
         return FunctionDescriptor.<GlobalLookupResult>builder()

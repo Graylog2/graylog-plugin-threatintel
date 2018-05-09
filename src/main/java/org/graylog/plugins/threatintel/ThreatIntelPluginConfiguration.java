@@ -30,19 +30,24 @@ public abstract class ThreatIntelPluginConfiguration {
 
     @JsonProperty("abusech_ransom_enabled")
     public abstract boolean abusechRansomEnabled();
+    
+    @JsonProperty("minemeld_enabled")
+    public abstract boolean minemeldEnabled();
 
     @JsonCreator
     public static ThreatIntelPluginConfiguration create(@JsonProperty("otx_enabled") boolean otxEnabled,
                                                         @JsonProperty("otx_api_key") @Nullable String otxApiKey,
                                                         @JsonProperty("tor_enabled") boolean torEnabled,
                                                         @JsonProperty("spamhaus_enabled") boolean spamhausEnabled,
-                                                        @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled) {
+                                                        @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled,
+                                                        @JsonProperty("minemeld_enabled") boolean ) {
         return builder()
                 .otxEnabled(otxEnabled)
                 .otxApiKey(otxApiKey)
                 .torEnabled(torEnabled)
                 .spamhausEnabled(spamhausEnabled)
                 .abusechRansomEnabled(abusechRansomEnabled)
+                .minemeldEnabled(minemeldEnabled)
                 .build();
     }
 
@@ -56,6 +61,7 @@ public abstract class ThreatIntelPluginConfiguration {
                 .torEnabled(false)
                 .spamhausEnabled(false)
                 .abusechRansomEnabled(false)
+                .minemeldEnabled(false)
                 .build();
     }
 
@@ -72,6 +78,8 @@ public abstract class ThreatIntelPluginConfiguration {
         public abstract Builder spamhausEnabled(boolean spamhausEnabled);
 
         public abstract Builder abusechRansomEnabled(boolean abusechRansomEnabled);
+        
+        public abstract Builder minemeldEnabled(boolean minemeldEnabled);
 
         public abstract ThreatIntelPluginConfiguration build();
     }

@@ -21,6 +21,7 @@ const ThreatIntelPluginConfig = createReactClass({
         tor_enabled: false,
         spamhaus_enabled: false,
         abusech_ransom_enabled: false,
+        minemeld_enabled: false,
       },
     };
   },
@@ -96,6 +97,10 @@ const ThreatIntelPluginConfig = createReactClass({
 
           <dt>Abuse.ch Ransomware:</dt>
           <dd>{this.state.config.abusech_ransom_enabled === true ? 'Enabled' : 'Disabled'}</dd>
+            
+          <dt>Minemeld Blocklist:</dt>
+          <dd>{this.state.config.minemeld_enabled === true ? 'Enabled' : 'Disabled'}</dd>
+            
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
@@ -122,7 +127,7 @@ const ThreatIntelPluginConfig = createReactClass({
                    ref="spamhausEnabled"
                    label="Allow Spamhaus DROP/EDROP lookups?"
                    help="Enable to include Spamhaus lookup in global pipeline function, disabling also stops refreshing the data."
-                   name="tor_enabled"
+                   name="spamhaus_enabled"
                    checked={this.state.config.spamhaus_enabled}
                    onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')}/>
 
@@ -134,6 +139,16 @@ const ThreatIntelPluginConfig = createReactClass({
                    name="tor_enabled"
                    checked={this.state.config.abusech_ransom_enabled}
                    onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')}/>
+              
+            <Input type="checkbox"
+                   id="minemeld-checkbox"
+                   ref="MineMeldEnabled"
+                   label="Allow MineMeld Blacklist lookups?"
+                   help="Enable to include MineMeld Blocklist lookup in global pipeline function, disabling also stops refreshing the data."
+                   name="minemeld_enabled"
+                   checked={this.state.config.minemeld_enabled}
+                   onChange={this._onCheckboxClick('minemeld_enabled', 'MineMeldEnabled')}/>
+              
           </fieldset>
         </BootstrapModalForm>
       </div>
