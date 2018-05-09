@@ -26,7 +26,7 @@ public class MineMeldIpLookupFunction extends LookupTableFunction<GenericLookupR
     private final LookupTableService.Function lookupFunction;
 
     @Inject
-    public MineMeldmIpLookupFunction(final LookupTableService lookupTableService) {
+    public MineMeldIpLookupFunction(final LookupTableService lookupTableService) {
         this.lookupFunction = lookupTableService.newBuilder().lookupTable(LOOKUP_TABLE_NAME).build();
     }
 

@@ -40,7 +40,7 @@ public abstract class ThreatIntelPluginConfiguration {
                                                         @JsonProperty("tor_enabled") boolean torEnabled,
                                                         @JsonProperty("spamhaus_enabled") boolean spamhausEnabled,
                                                         @JsonProperty("abusech_ransom_enabled") boolean abusechRansomEnabled,
-                                                        @JsonProperty("minemeld_enabled") boolean ) {
+                                                        @JsonProperty("minemeld_enabled") boolean minemeldEnabled ) {
         return builder()
                 .otxEnabled(otxEnabled)
                 .otxApiKey(otxApiKey)
