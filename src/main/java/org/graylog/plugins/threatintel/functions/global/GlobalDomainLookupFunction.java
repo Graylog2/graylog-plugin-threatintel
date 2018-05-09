@@ -65,9 +65,12 @@ public class GlobalDomainLookupFunction extends AbstractGlobalLookupFunction {
         if (function.getClass().equals(AbuseChRansomDomainLookupFunction.class)) {
             return configuration.abusechRansomEnabled();
         }
+        else if (function.getClass().equals(MineMeldDomainLookupFunction.class)) {
+            return configuration.minemeldEnabled();
+        }
         return true;
     }
-
+/*
     @Override
     boolean isEnabled(LookupTableFunction<? extends GenericLookupResult> function) {
         final ThreatIntelPluginConfiguration configuration = this.threatIntelPluginConfiguration();
@@ -76,7 +79,7 @@ public class GlobalDomainLookupFunction extends AbstractGlobalLookupFunction {
         }
         return true;
     }
-    
+  */  
     @Override
     public FunctionDescriptor<GlobalLookupResult> descriptor() {
         return FunctionDescriptor.<GlobalLookupResult>builder()

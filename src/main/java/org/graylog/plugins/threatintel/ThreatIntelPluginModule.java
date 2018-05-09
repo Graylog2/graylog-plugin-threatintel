@@ -77,7 +77,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
 
         installLookupDataAdapter(AbuseChRansomAdapter.NAME, AbuseChRansomAdapter.class, AbuseChRansomAdapter.Factory.class, AbuseChRansomAdapter.Config.class);
-        installLookupDataAdapter(MineMeldBlockListAdapter.NAME, MineMeldBlockListAdapter.class, MineMeldAdapter.Factory.class, MineMeldBlockListAdapter.Config.class);
+        installLookupDataAdapter(MineMeldBlockListAdapter.NAME, MineMeldBlockListAdapter.class, MineMeldBlockListAdapter.Factory.class, MineMeldBlockListAdapter.Config.class);
         installLookupDataAdapter(SpamhausEDROPDataAdapter.NAME, SpamhausEDROPDataAdapter.class, SpamhausEDROPDataAdapter.Factory.class, SpamhausEDROPDataAdapter.Config.class);
         installLookupDataAdapter(TorExitNodeDataAdapter.NAME, TorExitNodeDataAdapter.class, TorExitNodeDataAdapter.Factory.class, TorExitNodeDataAdapter.Config.class);
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);

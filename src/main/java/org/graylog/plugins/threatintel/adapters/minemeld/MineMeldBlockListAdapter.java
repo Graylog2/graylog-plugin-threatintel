@@ -1,4 +1,4 @@
-package org.graylog.plugins.threatintel.adapters.BlockListMineMeld;
+package org.graylog.plugins.threatintel.adapters.minemeld;
 
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -23,7 +23,6 @@ import org.joda.time.Duration;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import java.io.IOException;
@@ -74,7 +73,7 @@ public class MineMeldBlockListAdapter extends LookupDataAdapter {
 
     @Override
     public void doStart() throws Exception {
-        if (!pluginConfigService.config().getCurrent().mineMeldBlockListEnabled()) {
+        if (!pluginConfigService.config().getCurrent().minemeldEnabled()) {
             throw new AdapterDisabledException("MineMeldAdapter service is disabled, not starting adapter. To enable it please go to System / Configurations.");
         }
         final Config config = ((Config) getConfig());
@@ -93,7 +92,7 @@ public class MineMeldBlockListAdapter extends LookupDataAdapter {
 
     @Override
     public Duration refreshInterval() {
-        if (!pluginConfigService.config().getCurrent().mineMeldBlockListEnabled()) {
+        if (!pluginConfigService.config().getCurrent().minemeldEnabled()) {
             return Duration.ZERO;
         }
         return Duration.standardSeconds(((Config) getConfig()).refreshInterval());
@@ -101,7 +100,7 @@ public class MineMeldBlockListAdapter extends LookupDataAdapter {
 
     @Override
     protected void doRefresh(LookupCachePurge cachePurge) throws Exception {
-        if (!pluginConfigService.config().getCurrent().mineMeldBlockListEnabled()) {
+        if (!pluginConfigService.config().getCurrent().minemeldEnabled()) {
             throw new AdapterDisabledException("MineMeldAdapter service is disabled, not refreshing adapter. To enable it please go to System / Configurations.");
         }
         loadData();

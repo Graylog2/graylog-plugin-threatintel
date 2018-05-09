@@ -1,4 +1,4 @@
-package org.graylog.plugins.threatintel.adapters.BlockListMineMeld;
+package org.graylog.plugins.threatintel.adapters.minemeld;
 
 import com.google.common.base.MoreObjects;
 
