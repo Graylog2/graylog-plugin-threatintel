@@ -16,6 +16,7 @@ import org.elasticsearch.common.Strings;
 import org.graylog.autovalue.WithBeanGetter;
 import org.graylog.plugins.threatintel.PluginConfigService;
 import org.graylog.plugins.threatintel.tools.AdapterDisabledException;
+import org.graylog.plugins.threatintel.tools.PrivateNet;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
@@ -111,6 +112,11 @@ public class GreynoiseAdapter extends LookupDataAdapter {
     @Override
     protected LookupResult doGet(Object key) {
         String ip = String.valueOf(key);
+
+        if(PrivateNet.isInPrivateAddressSpace(ip)) {
+            LOG.debug("Always eturning false for RFC1918 (internal network) IP addresses. IP passed for lookup: [{}].", ip);
+            return LookupResult.single(false);
+        }
 
         if(this.noiseIps.get().isEmpty()) {
             return LookupResult.single(false);
@@ -220,6 +226,12 @@ public class GreynoiseAdapter extends LookupDataAdapter {
                     NoiseContext context = om.readValue(response.body().bytes(), NoiseContext.class);
 
                     ImmutableMap.Builder<Object, Object> result = new ImmutableMap.Builder<>();
+
+                    /*
+                     * Set a value field to true, so we can both access .value in pipelines
+                     * no matter if it is a single or multi-result lookup.
+                     */
+                    result.put("value", true);
 
                     if(!Strings.isNullOrEmpty(context.actor)) {
                         result.put("actor", context.actor);
