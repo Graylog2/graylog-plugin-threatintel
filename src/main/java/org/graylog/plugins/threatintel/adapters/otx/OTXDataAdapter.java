@@ -26,6 +26,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.graylog.autovalue.WithBeanGetter;
+import org.graylog.plugins.threatintel.tools.PrivateNet;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
@@ -174,7 +175,7 @@ public class OTXDataAdapter extends LookupDataAdapter {
             }
         }
 
-        if (OTX_IP_INDICATORS.contains(otxIndicator) && isPrivateIPAddress(key)) {
+        if (OTX_IP_INDICATORS.contains(otxIndicator) && PrivateNet.isInPrivateAddressSpace(key)) {
             LOG.debug("OTX API does not accept private IP address <{}>. Skipping lookup to avoid OTX API request.", key);
             return LookupResult.empty();
         }
@@ -230,16 +231,6 @@ public class OTXDataAdapter extends LookupDataAdapter {
         }
 
         return LookupResult.empty();
-    }
-
-    @VisibleForTesting
-    boolean isPrivateIPAddress(String ip) {
-        try {
-            final InetAddress inetAddress = InetAddress.getByName(ip);
-            return inetAddress.isSiteLocalAddress() || inetAddress.isLoopbackAddress() || inetAddress.isAnyLocalAddress();
-        } catch (UnknownHostException e) {
-            return false;
-        }
     }
 
     private Optional<String> detectIpType(String ip) {
