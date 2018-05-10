@@ -40,14 +40,5 @@ public class OTXDataAdapterTest {
         assertThat(result.multiValue()).isNotNull();
         assertThat(requireNonNull(result.multiValue()).get("country_name")).isEqualTo("Ireland");
     }
-
-    @Test
-    public void isPrivateIPAddress() throws Exception {
-        assertThat(otxDataAdapter.isPrivateIPAddress("0.0.0.0")).isTrue();
-        assertThat(otxDataAdapter.isPrivateIPAddress("127.0.0.1")).isTrue();
-        assertThat(otxDataAdapter.isPrivateIPAddress("192.168.1.1")).isTrue();
-        assertThat(otxDataAdapter.isPrivateIPAddress("192.168.178.56")).isTrue();
-        assertThat(otxDataAdapter.isPrivateIPAddress("8.8.8.8")).isFalse();
-        assertThat(otxDataAdapter.isPrivateIPAddress("137.254.56.25")).isFalse();
-    }
+    
 }
