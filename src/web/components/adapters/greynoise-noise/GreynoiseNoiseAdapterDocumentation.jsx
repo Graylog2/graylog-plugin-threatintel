@@ -14,8 +14,13 @@ const GreynoiseNoiseAdapterDocumentation = React.createClass({
           to the Internet
         </p>
 
+        <h3 style={style}>Configuration</h3>
+
+        <h5 style={style}>Greynoise API Key</h5>
+
         <p style={style}>
-          TODO
+          An API key is required to communicate with the Greynoise APIs. You can get yours at
+          &nbsp;<a href="https://greynoise.io/" target="_blank">https://greynoise.io/</a>.
         </p>
       </div>
     );
