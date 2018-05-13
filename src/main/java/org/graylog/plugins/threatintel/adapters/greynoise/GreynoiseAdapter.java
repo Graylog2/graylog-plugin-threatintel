@@ -114,7 +114,7 @@ public class GreynoiseAdapter extends LookupDataAdapter {
         String ip = String.valueOf(key);
 
         if(PrivateNet.isInPrivateAddressSpace(ip)) {
-            LOG.debug("Always eturning false for RFC1918 (internal network) IP addresses. IP passed for lookup: [{}].", ip);
+            LOG.debug("Always returning false for RFC1918 (internal network) IP addresses. IP passed for lookup: [{}].", ip);
             return LookupResult.single(false);
         }
 
