@@ -6,7 +6,7 @@
 
 **Required Graylog version:** 2.4.0
 
-**This Plugin is currently in testing - do not use this for production**
+**This Plugin use external sources to enrich your data - read the documentation before you run this in production**
 
 This plugin adds [Processing Pipeline](http://docs.graylog.org/en/latest/pages/pipelines.html) functions to enrich log messages with threat intelligence data.
 
@@ -39,6 +39,7 @@ set_fields(src_addr_intel);
 Please read the usage instructions below for more information and specific guides.
 
 ## Installation
+> Since Graylog Version 2.4.0 this plugin is already included in the Graylog server installation package as default plugin.
 
 [Download the plugin](https://github.com/Graylog2/graylog-plugin-threatintel/releases)
 and place the `.jar` file in your Graylog plugin directory. The plugin directory

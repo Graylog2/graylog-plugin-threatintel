@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -70,9 +71,9 @@ public class GreynoiseAdapter extends LookupDataAdapter {
         this.httpClient = httpClient.newBuilder()
                 .followRedirects(true)
                 .followSslRedirects(true)
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -142,10 +143,11 @@ public class GreynoiseAdapter extends LookupDataAdapter {
         // noop
     }
 
+    @NotNull
     private List<String> fetchBulkNoiseIPs() {
         if (Strings.isNullOrEmpty(config.apiKey())) {
             LOG.warn("No Greynoise API key configured. Not fetching noise IPs.");
-            return null;
+            return Collections.emptyList();
         }
 
         ImmutableList.Builder<String> ips = new ImmutableList.Builder<>();
@@ -159,7 +161,7 @@ public class GreynoiseAdapter extends LookupDataAdapter {
         while (!finished) {
             if (loopCount >= MAX_LOOPS) {
                 LOG.error("Looped more than the maximum of <{}> times. Not loading any more data and returning NULL.", MAX_LOOPS);
-                return null;
+                return Collections.emptyList();
             }
 
             final Request.Builder requestBuilder = new Request.Builder()
@@ -187,15 +189,15 @@ public class GreynoiseAdapter extends LookupDataAdapter {
                         LOG.info("Greynoise bulk update: Retrieved <{}> IP addresses so far.", ipCount);
                     } else {
                         LOG.error("Unable to retrieve Greynoise threat intelligence noise information. Empty response.");
-                        return null;
+                        return Collections.emptyList();
                     }
                 } else {
                     LOG.error("Unable to retrieve Greynoise threat intelligence noise information. Received HTTP code <{}>.", response.code());
-                    return null;
+                    return Collections.emptyList();
                 }
             } catch (IOException e) {
                 LOG.error("Unable to retrieve Greynoise threat intelligence noise information.", e);
-                return null;
+                return Collections.emptyList();
             } finally {
                 loopCount++;
             }

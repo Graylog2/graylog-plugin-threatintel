@@ -40,5 +40,5 @@ public class OTXDataAdapterTest {
         assertThat(result.multiValue()).isNotNull();
         assertThat(requireNonNull(result.multiValue()).get("country_name")).isEqualTo("Ireland");
     }
-    
+
 }

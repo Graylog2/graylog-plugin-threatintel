@@ -11,7 +11,6 @@ import { AbuseChRansomAdapterDocumentation, AbuseChRansomAdapterFieldSet, AbuseC
 import { OTXAdapterDocumentation, OTXAdapterFieldSet, OTXAdapterSummary } from './components/adapters/otx';
 import { GreynoiseNoiseAdapterDocumentation, GreynoiseNoiseAdapterFieldSet, GreynoiseNoiseAdapterSummary } from './components/adapters/greynoise-noise';
 
-
 import packageJson from '../../package.json';
 
 PluginStore.register(new PluginManifest(packageJson, {

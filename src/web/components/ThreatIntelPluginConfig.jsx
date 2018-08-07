@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import { Button } from 'react-bootstrap';
 
 import { BootstrapModalForm, Input } from 'components/bootstrap';
 import { IfPermitted } from 'components/common';
 import ObjectUtils from 'util/ObjectUtils';
 
-const ThreatIntelPluginConfig = React.createClass({
+const ThreatIntelPluginConfig = createReactClass({
+  displayName: 'ThreatIntelPluginConfig',
+
   propTypes: {
     config: PropTypes.object,
     updateConfig: PropTypes.func.isRequired,
@@ -110,6 +113,7 @@ const ThreatIntelPluginConfig = React.createClass({
                             submitButtonText="Save">
           <fieldset>
             <Input type="checkbox"
+                   id="tor-checkbox"
                    ref="torEnabled"
                    label="Allow Tor exit node lookups?"
                    help="Allow Tor exit node lookups and also include them in global pipeline function `threat_intel_lookup_ip()`."
@@ -118,6 +122,7 @@ const ThreatIntelPluginConfig = React.createClass({
                    onChange={this._onCheckboxClick('tor_enabled', 'torEnabled')}/>
 
             <Input type="checkbox"
+                   id="spamhaus-checkbox"
                    ref="spamhausEnabled"
                    label="Allow Spamhaus DROP/EDROP lookups?"
                    help="Allow Spamhaus lookups and also include them in global pipeline function `threat_intel_lookup_ip()`."
@@ -126,6 +131,7 @@ const ThreatIntelPluginConfig = React.createClass({
                    onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')}/>
 
             <Input type="checkbox"
+                   id="abusech-checkbox"
                    ref="abusechRansomEnabled"
                    label="Allow Abuse.ch Ransomware tracker lookups?"
                    help="Allow Abuse.ch Ransomware tracker lookups and also include them in global pipeline functions `threat_intel_lookup_ip()`, `threat_intel_lookup_domain()`."
