@@ -15,14 +15,14 @@ const WhoisAdapterDocumentation = () => {
 
       <p style={style}>
         The connection timeout for the socket to the whois server in milliseconds. If you set this to a
-        high value, it can affect your processing peformance.
+        high value, it can affect your processing performance.
       </p>
 
       <h5 style={style}>Read timeout</h5>
 
       <p style={style}>
         The connection read timeout for the socket to the whois server in milliseconds. If you set this to a
-        high value, it can affect your processing peformance.
+        high value, it can affect your processing performance.
       </p>
     </div>
   );
