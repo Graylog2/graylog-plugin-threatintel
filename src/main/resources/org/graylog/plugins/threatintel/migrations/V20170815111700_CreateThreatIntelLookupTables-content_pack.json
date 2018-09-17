@@ -42,6 +42,17 @@
       "default_multi_value_type": "NULL"
     },
     {
+      "title": "MineMeld Domains",
+      "description": "This is the lookup table for the MineMeld Domain list, listing infrastructure by domain names which are used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "minemeld-domains",
+      "cache_name": "threat-intel-uncached-adapters",
+      "data_adapter_name": "minemeld-domains",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    },
+    {
       "title": "Whois",
       "description": "This is the lookup table for the WHOIS database, listing registered users of Internet resources like IPs, Netblocks or Domain Names. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "whois",
@@ -58,6 +69,17 @@
       "name": "abuse-ch-ransomware-ip",
       "cache_name": "threat-intel-uncached-adapters",
       "data_adapter_name": "abuse-ch-ransomware-ip",
+      "default_single_value": "",
+      "default_single_value_type": "NULL",
+      "default_multi_value": "",
+      "default_multi_value_type": "NULL"
+    },
+    {
+      "title": "MineMeld IP List",
+      "description": "This is the lookup table for the MineMeld IP List, listing infrastructure by IP which is used for nefarious reasons based on your threat feed configuration within MineMeld. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "minemeld-ip",
+      "cache_name": "threat-intel-uncached-adapters",
+      "data_adapter_name": "minemeld-ip",
       "default_single_value": "",
       "default_single_value_type": "NULL",
       "default_multi_value": "",
@@ -190,6 +212,17 @@
       }
     },
     {
+      "title": "MineMeld Domains",
+      "description": "This is the lookup table for the MineMeld Domain list, listing infrastructure by domain names which are used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "minemeld-domains",
+      "config": {
+        "type": "minemeld",
+        "blocklist_type": "DOMAINS",
+        "refresh_interval": 150,
+        "refresh_interval_unit": "SECONDS"
+      }
+    },
+    {
       "title": "abuse.ch ransomware Domains",
       "description": "This is the data adapter for the abuse.ch ransomware Domain Tracker, listing infrastructure by domain names which are used for ransomware. For more information see https://ransomwaretracker.abuse.ch. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
       "name": "abuse-ch-ransomware-domains",
@@ -217,7 +250,19 @@
         "blocklist_type": "IPS",
         "refresh_interval": 150,
         "refresh_interval_unit": "SECONDS"
-      }
+      },
+    {
+      "title": "MineMeld IP List",
+      "description": "This is the data adapter for the MineMeld IP List, listing infrastructure by IP which is used for nefarious reasons based on your threat feed configuration within MineMeld. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually.",
+      "name": "minemeld-ip",
+      "config": {
+        "type": "minemeld",
+        "blocklist_type": "IPS",
+        "refresh_interval": 150,
+        "refresh_interval_unit": "SECONDS"
+      },
+        
+
     }
   ]
 }

@@ -8,6 +8,7 @@ import { SpamhausEDROPAdapterDocumentation, SpamhausEDROPAdapterFieldSet, Spamha
 import { TorExitNodeAdapterDocumentation, TorExitNodeAdapterFieldSet, TorExitNodeAdapterSummary } from 'components/adapters/torexitnode';
 import { WhoisAdapterDocumentation, WhoisAdapterFieldSet, WhoisAdapterSummary } from 'components/adapters/whois/index';
 import { AbuseChRansomAdapterDocumentation, AbuseChRansomAdapterFieldSet, AbuseChRansomAdapterSummary } from 'components/adapters/abusech/index';
+import { MineMeldAdapterDocumentation, MineMeldAdapterFieldSet, MineMeldAdapterSummary } from 'components/adapters/minemeld/index';
 import { OTXAdapterDocumentation, OTXAdapterFieldSet, OTXAdapterSummary } from './components/adapters/otx';
 
 import packageJson from '../../package.json';
@@ -47,6 +48,13 @@ PluginStore.register(new PluginManifest(packageJson, {
       formComponent: AbuseChRansomAdapterFieldSet,
       summaryComponent: AbuseChRansomAdapterSummary,
       documentationComponent: AbuseChRansomAdapterDocumentation,
+    },
+    {
+      type: 'minemeld',
+      displayName: 'Blocklists from MineMeld',
+      formComponent: MineMeldAdapterFieldSet,
+      summaryComponent: MineMeldAdapterSummary,
+      documentationComponent: MineMeldAdapterDocumentation,
     },
     {
       type: 'otx-api',

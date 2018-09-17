@@ -70,6 +70,9 @@ public class PluginConfigService {
             if (previous.abusechRansomEnabled() != currentVersion.abusechRansomEnabled()) {
                 adaptersToLoad.add("abuse-ch-ransomware-domains", "abuse-ch-ransomware-ip");
             }
+            if (previous.minemeldEnabled() != currentVersion.minemeldEnabled()) {
+                adaptersToLoad.add("minemeld-domains", "minemeld-ip");
+            }
             if (previous.torEnabled() != currentVersion.torEnabled()) {
                 adaptersToLoad.add("tor-exit-node");
             }

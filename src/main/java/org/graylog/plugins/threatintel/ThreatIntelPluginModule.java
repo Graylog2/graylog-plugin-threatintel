@@ -6,6 +6,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import org.graylog.plugins.pipelineprocessor.ast.functions.Function;
 import org.graylog.plugins.threatintel.adapters.abusech.AbuseChRansomAdapter;
+import org.graylog.plugins.threatintel.adapters.minemeld.MineMeldBlockListAdapter;
 import org.graylog.plugins.threatintel.adapters.otx.OTXDataAdapter;
 import org.graylog.plugins.threatintel.functions.DomainFunctions;
 import org.graylog.plugins.threatintel.functions.IPFunctions;
@@ -15,6 +16,8 @@ import org.graylog.plugins.threatintel.functions.misc.PrivateNetLookupFunction;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
 import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomDomainLookupFunction;
 import org.graylog.plugins.threatintel.functions.abusech.AbuseChRansomIpLookupFunction;
+import org.graylog.plugins.threatintel.functions.minemeld.MineMeldDomainLookupFunction;
+import org.graylog.plugins.threatintel.functions.minemeld.MineMeldIpLookupFunction;
 import org.graylog.plugins.threatintel.functions.global.GlobalDomainLookupFunction;
 import org.graylog.plugins.threatintel.functions.global.GlobalIpLookupFunction;
 import org.graylog.plugins.threatintel.functions.otx.OTXDomainLookupFunction;
@@ -57,6 +60,11 @@ public class ThreatIntelPluginModule extends PluginModule {
         // abuse.ch Ransomware
         addMessageProcessorFunction(AbuseChRansomDomainLookupFunction.NAME, AbuseChRansomDomainLookupFunction.class);
         addMessageProcessorFunction(AbuseChRansomIpLookupFunction.NAME, AbuseChRansomIpLookupFunction.class);
+        
+        
+        // MineMeld Threat Feeds
+        addMessageProcessorFunction(MineMeldDomainLookupFunction.NAME, MineMeldDomainLookupFunction.class);
+        addMessageProcessorFunction(MineMeldIpLookupFunction.NAME, MineMeldIpLookupFunction.class);
 
         // Global/combined lookup
         addMessageProcessorFunction(GlobalIpLookupFunction.NAME, GlobalIpLookupFunction.class);
@@ -69,6 +77,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         addMessageProcessorFunction(PrivateNetLookupFunction.NAME, PrivateNetLookupFunction.class);
 
         installLookupDataAdapter(AbuseChRansomAdapter.NAME, AbuseChRansomAdapter.class, AbuseChRansomAdapter.Factory.class, AbuseChRansomAdapter.Config.class);
+        installLookupDataAdapter(MineMeldBlockListAdapter.NAME, MineMeldBlockListAdapter.class, MineMeldBlockListAdapter.Factory.class, MineMeldBlockListAdapter.Config.class);
         installLookupDataAdapter(SpamhausEDROPDataAdapter.NAME, SpamhausEDROPDataAdapter.class, SpamhausEDROPDataAdapter.Factory.class, SpamhausEDROPDataAdapter.Config.class);
         installLookupDataAdapter(TorExitNodeDataAdapter.NAME, TorExitNodeDataAdapter.class, TorExitNodeDataAdapter.Factory.class, TorExitNodeDataAdapter.Config.class);
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);
@@ -79,6 +88,8 @@ public class ThreatIntelPluginModule extends PluginModule {
 
         addDomainFunction("abusech_ransomware", AbuseChRansomDomainLookupFunction.class);
         addIPFunction("abusech_ransomware", AbuseChRansomIpLookupFunction.class);
+        addDomainFunction("minemeld", MineMeldDomainLookupFunction.class);
+        addIPFunction("minemeld", MineMeldIpLookupFunction.class);
         addIPFunction("spamhaus", SpamhausIpLookupFunction.class);
         addIPFunction("tor", TorExitNodeLookupFunction.class);
     }
