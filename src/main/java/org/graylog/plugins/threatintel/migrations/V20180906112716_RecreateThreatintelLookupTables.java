@@ -86,11 +86,11 @@ public class V20180906112716_RecreateThreatintelLookupTables extends Migration {
     @AutoValue
     @WithBeanGetter
     public static abstract class MigrationCompleted {
-        @JsonProperty("content_bundle_id")
+        @JsonProperty("content_bundle_ids")
         public abstract List<String> contentBundleIds();
 
         @JsonCreator
-        public static MigrationCompleted create(@JsonProperty("content_bundle_id") final List<String> contentBundleIds) {
+        public static MigrationCompleted create(@JsonProperty("content_bundle_ids") final List<String> contentBundleIds) {
             return new AutoValue_V20180906112716_RecreateThreatintelLookupTables_MigrationCompleted(contentBundleIds);
         }
     }
