@@ -19,6 +19,7 @@ import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapter;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
 import org.graylog2.plugin.lookup.LookupResult;
+import org.graylog2.shared.utilities.ExceptionUtils;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,11 +152,18 @@ public class SpamhausEDROPDataAdapter extends LookupDataAdapter {
 
         // TODO potentially use a RangeMap here instead of doing linear searches all the time
         // We should be able to use ranges of the integer values of lowAddress and highAddress as keys
-        final Optional<Map.Entry<SubnetUtils.SubnetInfo, String>> match = subnets.get().values()
-                .stream()
-                .flatMap(list -> list.entrySet().stream())
-                .filter(entry -> entry.getKey().isInRange(ip))
-                .findFirst();
+        final Optional<Map.Entry<SubnetUtils.SubnetInfo, String>> match;
+        try {
+            match = subnets.get().values()
+                           .stream()
+                           .flatMap(list -> list.entrySet().stream())
+                           .filter(entry -> entry.getKey().isInRange(ip))
+                           .findFirst();
+        } catch (IllegalArgumentException e) {
+            // Gracefully handle the case when a blank or invalid IP is supplied.
+            LOG.error("[{}] is an invalid IP address. Lookup aborted. {}", ip, ExceptionUtils.getRootCauseMessage(e));
+            return LookupResult.empty();
+        }
 
         return match.map(entry -> LookupResult.multi(true,
                 ImmutableMap.of("sbl_id", entry.getValue(), "subnet", entry.getKey().getCidrSignature())
