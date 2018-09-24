@@ -29,7 +29,7 @@ public class V20180906112716_RecreateThreatintelLookupTables extends Migration {
 
     @Inject
     public V20180906112716_RecreateThreatintelLookupTables(final ContentPackPersistenceService contentPackPersistenceService,
-                                                         final ObjectMapper objectMapper,
+                                                           final ObjectMapper objectMapper,
                                                            final ClusterConfigService clusterConfigService) {
         this.objectMapper = objectMapper;
         this.clusterConfigService = clusterConfigService;
