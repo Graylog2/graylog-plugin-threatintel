@@ -10,7 +10,6 @@ import org.graylog2.contentpacks.ContentPackPersistenceService;
 import org.graylog2.contentpacks.model.ContentPack;
 import org.graylog2.migrations.Migration;
 import org.graylog2.plugin.cluster.ClusterConfigService;
-import org.graylog2.shared.users.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,17 +24,14 @@ public class V20180906112716_RecreateThreatintelLookupTables extends Migration {
     private static final Logger LOG = LoggerFactory.getLogger(V20180906112716_RecreateThreatintelLookupTables.class);
 
     private final ObjectMapper objectMapper;
-    private final UserService userService;
     private final ClusterConfigService clusterConfigService;
     private final ContentPackPersistenceService contentPackPersistenceService;
 
     @Inject
     public V20180906112716_RecreateThreatintelLookupTables(final ContentPackPersistenceService contentPackPersistenceService,
                                                          final ObjectMapper objectMapper,
-                                                           final UserService userService,
                                                            final ClusterConfigService clusterConfigService) {
         this.objectMapper = objectMapper;
-        this.userService = userService;
         this.clusterConfigService = clusterConfigService;
         this.contentPackPersistenceService = contentPackPersistenceService;
     }
