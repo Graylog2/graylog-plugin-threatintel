@@ -158,6 +158,10 @@ public class SpamhausEDROPDataAdapterTest {
         // Null key should return an empty result.
         LookupResult lookupResult = adapter.doGet(null);
         assertThat(lookupResult.isEmpty()).isTrue();
+
+        // Empty string should also return an empty result.
+        lookupResult = adapter.doGet(null);
+        assertThat(lookupResult.isEmpty()).isTrue();
     }
 
     private void verifyAdapterFunctionality(SpamhausEDROPDataAdapter adapter) {
