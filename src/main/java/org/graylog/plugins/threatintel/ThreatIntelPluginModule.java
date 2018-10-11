@@ -9,7 +9,7 @@ import org.graylog.plugins.threatintel.adapters.abusech.AbuseChRansomAdapter;
 import org.graylog.plugins.threatintel.adapters.otx.OTXDataAdapter;
 import org.graylog.plugins.threatintel.functions.DomainFunctions;
 import org.graylog.plugins.threatintel.functions.IPFunctions;
-import org.graylog.plugins.threatintel.migrations.V20170815111700_CreateThreatIntelLookupTables;
+import org.graylog.plugins.threatintel.migrations.V20180906112716_RecreateThreatintelLookupTables;
 import org.graylog.plugins.threatintel.functions.misc.LookupTableFunction;
 import org.graylog.plugins.threatintel.functions.misc.PrivateNetLookupFunction;
 import org.graylog.plugins.threatintel.functions.GenericLookupResult;
@@ -74,7 +74,7 @@ public class ThreatIntelPluginModule extends PluginModule {
         installLookupDataAdapter(WhoisDataAdapter.NAME, WhoisDataAdapter.class, WhoisDataAdapter.Factory.class, WhoisDataAdapter.Config.class);
         installLookupDataAdapter(OTXDataAdapter.NAME, OTXDataAdapter.class, OTXDataAdapter.Factory.class, OTXDataAdapter.Config.class);
 
-        addMigration(V20170815111700_CreateThreatIntelLookupTables.class);
+        addMigration(V20180906112716_RecreateThreatintelLookupTables.class);
         addMigration(V20170821100300_MigrateOTXAPIToken.class);
 
         addDomainFunction("abusech_ransomware", AbuseChRansomDomainLookupFunction.class);
