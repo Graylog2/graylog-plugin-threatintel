@@ -161,7 +161,7 @@ public class SpamhausEDROPDataAdapter extends LookupDataAdapter {
                            .findFirst();
         } catch (IllegalArgumentException e) {
             // Gracefully handle the case when a blank or invalid IP is supplied.
-            LOG.error("[{}] is an invalid IP address. Lookup aborted. {}", ip, ExceptionUtils.getRootCauseMessage(e));
+            LOG.debug("[{}] is an invalid IP address. Lookup aborted. {}", ip, ExceptionUtils.getRootCauseMessage(e));
             return LookupResult.empty();
         }
 
