@@ -149,6 +149,21 @@ public class SpamhausEDROPDataAdapterTest {
         assertLookupResultHasMultiValue(edropLookupResult2, entry("sbl_id", "SBL2342"), entry("subnet", "10.1.0.0/16"));
     }
 
+    @Test
+    public void verifyEmptyResultWithNullKey() throws Exception {
+        when(httpFileRetriever.fetchFileIfNotModified("https://www.spamhaus.org/drop/drop.txt")).thenReturn(Optional.of(dropSnapshot));
+        when(httpFileRetriever.fetchFileIfNotModified("https://www.spamhaus.org/drop/edrop.txt")).thenReturn(Optional.of(edropSnapshot));
+        adapter.doStart();
+
+        // Null key should return an empty result.
+        LookupResult lookupResult = adapter.doGet(null);
+        assertThat(lookupResult.isEmpty()).isTrue();
+
+        // Empty string should also return an empty result.
+        lookupResult = adapter.doGet(null);
+        assertThat(lookupResult.isEmpty()).isTrue();
+    }
+
     private void verifyAdapterFunctionality(SpamhausEDROPDataAdapter adapter) {
         final LookupResult dropLookupResult = adapter.doGet("209.66.128.1");
         assertLookupResultHasMultiValue(dropLookupResult,
