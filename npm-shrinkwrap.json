@@ -1,6 +1,6 @@
 {
   "name": "ThreatIntelPlugin",
-  "version": "2.4.0-alpha.3-SNAPSHOT",
+  "version": "2.5.0-SNAPSHOT",
   "dependencies": {
     "acorn": {
       "version": "5.2.1",
@@ -1179,7 +1179,7 @@
       "dev": true
     },
     "graylog-web-plugin": {
-      "version": "2.4.0",
+      "version": "2.5.0-SNAPSHOT",
       "from": "../graylog2-server/graylog2-web-interface/packages/graylog-web-plugin",
       "resolved": "file:../graylog2-server/graylog2-web-interface/packages/graylog-web-plugin",
       "dev": true
@@ -1829,15 +1829,15 @@
       "dev": true
     },
     "moment": {
-      "version": "2.14.1",
-      "from": "moment@2.14.1",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.14.1.tgz",
+      "version": "2.22.2",
+      "from": "moment@>=2.22.2 <3.0.0",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.22.2.tgz",
       "dev": true
     },
     "moment-timezone": {
-      "version": "0.5.7",
-      "from": "moment-timezone@0.5.7",
-      "resolved": "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.7.tgz",
+      "version": "0.5.23",
+      "from": "moment-timezone@>=0.5.23 <0.6.0",
+      "resolved": "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.23.tgz",
       "dev": true
     },
     "ms": {
