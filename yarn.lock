@@ -2372,22 +2372,22 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2:
   integrity sha1-Dovf5NHduIVNZOBOp8AOKgJuVlg=
 
 "graylog-web-plugin@file:../graylog2-server/graylog2-web-interface/packages/graylog-web-plugin":
-  version "3.0.0-alpha.3-SNAPSHOT"
+  version "3.0.0-alpha.5-SNAPSHOT"
   dependencies:
     "@babel/preset-env" "^7.1.0"
     babel-eslint "^9.0.0"
     eslint "^4.3.0"
-    eslint-config-graylog "file:../../../.cache/yarn/v2/eslint-config-graylog"
+    eslint-config-graylog "file:../../../Library/Caches/Yarn/v3/npm-graylog-web-plugin-3.0.0-alpha.5-SNAPSHOT-0f63a36a-c1bb-4fd7-b327-8f12ece10b48-1543497091356/node_modules/eslint-config-graylog"
     html-webpack-plugin "^3.2.0"
     javascript-natural-sort "^0.7.1"
     jquery "^3.3.1"
     moment "2.22.2"
     moment-timezone "0.5.23"
     prop-types "^15.5.10"
-    react "^16.5.1"
+    react "^16.6.3"
     react-addons-pure-render-mixin "^15.6.0"
     react-bootstrap "^0.31.0"
-    react-dom "^16.5.1"
+    react-dom "^16.6.3"
     react-router "^3.2.0"
     react-router-bootstrap "0.23.2"
     reflux "^0.2.12"
@@ -4010,15 +4010,15 @@ react-bootstrap@^0.31.0:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
-react-dom@^16.5.1:
-  version "16.5.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.5.1.tgz#29d0c5a01ed3b6b4c14309aa91af6ec4eb4f292c"
-  integrity sha512-l4L9GtX7ezgnDIIr6AaNvGBM4BiK0fSs4/V8bdsu9X6xqrtHr+jp6auT0hbHpN7bH9WRvDBZceWQ9WJ3lGCIvQ==
+react-dom@^16.6.3:
+  version "16.6.3"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.6.3.tgz#8fa7ba6883c85211b8da2d0efeffc9d3825cccc0"
+  integrity sha512-8ugJWRCWLGXy+7PmNh8WJz3g1TaTUt1XyoIcFN+x0Zbkoz+KKdUyx1AQLYJdbFXjuF41Nmjn5+j//rxvhFjgSQ==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    schedule "^0.4.0"
+    scheduler "^0.11.2"
 
 react-is@^16.3.2:
   version "16.5.1"
@@ -4056,15 +4056,15 @@ react-router@^3.2.0:
     prop-types "^15.5.6"
     warning "^3.0.0"
 
-react@^16.5.1:
-  version "16.5.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.5.1.tgz#8cb8e9f8cdcb4bde41c9a138bfbf907e66132372"
-  integrity sha512-E+23+rbpPsJgSX812LQkwupUCFnbVE84+L8uxlkqN5MU0DcraWMlVf9cRvKCKtGu0XvScyRnW7Z+9d7ymkjy3A==
+react@^16.6.3:
+  version "16.6.3"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.6.3.tgz#25d77c91911d6bbdd23db41e70fb094cc1e0871c"
+  integrity sha512-zCvmH2vbEolgKxtqXL2wmGCUxUyNheYn/C+PD1YAjfxHC54+MhdruyhO7QieQrYsYeTxrn93PM2y0jRH1zEExw==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
-    schedule "^0.4.0"
+    scheduler "^0.11.2"
 
 read-pkg-up@^2.0.0:
   version "2.0.0"
@@ -4350,11 +4350,12 @@ sax@^1.2.4:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-schedule@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/schedule/-/schedule-0.4.0.tgz#fa20cfd0bfbf91c47d02272fd7096780d3170bbb"
-  integrity sha512-hYjmoaEMojiMkWCxKr6ue+LYcZ29u29+AamWYmzwT2VOO9ws5UJp/wNhsVUPiUeNh+EdRfZm7nDeB40ffTfMhA==
+scheduler@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.11.2.tgz#a8db5399d06eba5abac51b705b7151d2319d33d3"
+  integrity sha512-+WCP3s3wOaW4S7C1tl3TEXp4l9lJn0ZK8G3W3WKRWmw77Z2cIFUW2MiNTMHn5sCjxN+t7N43HAOOgMjyAg5hlg==
   dependencies:
+    loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
 schema-utils@^0.4.4, schema-utils@^0.4.5:
