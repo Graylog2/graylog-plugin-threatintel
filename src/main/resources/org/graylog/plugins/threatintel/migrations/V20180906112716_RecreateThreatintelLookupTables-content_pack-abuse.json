@@ -67,7 +67,7 @@
                         "@type": "string",
                         "@value": "SECONDS"
                     },
-                    "@type": {
+                    "type": {
                         "@type": "string",
                         "@value": "abuse-ch-ransom"
                     }
@@ -106,7 +106,7 @@
         {
             "data": {
                 "configuration": {
-                    "@type": {
+                    "type": {
                         "@type": "string",
                         "@value": "none"
                     }

@@ -43,7 +43,7 @@
         {
             "data": {
                 "configuration": {
-                    "@type": {
+                    "type": {
                         "@type": "string",
                         "@value": "none"
                     }
