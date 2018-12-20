@@ -5,45 +5,45 @@
             "data": {
                 "configuration": {
                     "api_url": {
-                        "type": "string",
-                        "value": "https://otx.alienvault.com"
+                        "@type": "string",
+                        "@value": "https://otx.alienvault.com"
                     },
                     "http_connect_timeout": {
-                        "type": "long",
-                        "value": 10000
+                        "@type": "long",
+                        "@value": 10000
                     },
                     "http_read_timeout": {
-                        "type": "long",
-                        "value": 60000
+                        "@type": "long",
+                        "@value": 60000
                     },
                     "http_user_agent": {
-                        "type": "string",
-                        "value": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel"
+                        "@type": "string",
+                        "@value": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel"
                     },
                     "http_write_timeout": {
-                        "type": "long",
-                        "value": 10000
+                        "@type": "long",
+                        "@value": 10000
                     },
                     "indicator": {
-                        "type": "string",
-                        "value": "domain"
+                        "@type": "string",
+                        "@value": "domain"
                     },
                     "type": {
-                        "type": "string",
-                        "value": "otx-api"
+                        "@type": "string",
+                        "@value": "otx-api"
                     }
                 },
                 "description": {
-                    "type": "string",
-                    "value": "This is the data adapter for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
+                    "@type": "string",
+                    "@value": "This is the data adapter for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
                 },
                 "name": {
-                    "type": "string",
-                    "value": "otx-api-domain"
+                    "@type": "string",
+                    "@value": "otx-api-domain"
                 },
                 "title": {
-                    "type": "string",
-                    "value": "Open Threat Exchange (OTX) - Domain"
+                    "@type": "string",
+                    "@value": "Open Threat Exchange (OTX) - Domain"
                 }
             },
             "id": "5ac762873d274666e34eca88",
@@ -51,51 +51,62 @@
                 "name": "lookup_adapter",
                 "version": "1"
             },
-            "v": "1"
+            "v": "1",
+            "constraints": [
+                {
+                    "plugin": "org.graylog.plugins.threatintel.ThreatIntelPlugin",
+                    "type": "plugin-version",
+                    "version": ">=3.0.0-alpha.2"
+                },
+                {
+                    "type": "server-version",
+                    "version": ">=3.0.0-alpha.2+af8d8e0"
+                }
+            ]
         },
         {
             "data": {
                 "configuration": {
                     "api_url": {
-                        "type": "string",
-                        "value": "https://otx.alienvault.com"
+                        "@type": "string",
+                        "@value": "https://otx.alienvault.com"
                     },
                     "http_connect_timeout": {
-                        "type": "long",
-                        "value": 10000
+                        "@type": "long",
+                        "@value": 10000
                     },
                     "http_read_timeout": {
-                        "type": "long",
-                        "value": 60000
+                        "@type": "long",
+                        "@value": 60000
                     },
                     "http_user_agent": {
-                        "type": "string",
-                        "value": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel"
+                        "@type": "string",
+                        "@value": "Graylog Threat Intelligence Plugin - https://github.com/Graylog2/graylog-plugin-threatintel"
                     },
                     "http_write_timeout": {
-                        "type": "long",
-                        "value": 10000
+                        "@type": "long",
+                        "@value": 10000
                     },
                     "indicator": {
-                        "type": "string",
-                        "value": "IPAutoDetect"
+                        "@type": "string",
+                        "@value": "IPAutoDetect"
                     },
                     "type": {
-                        "type": "string",
-                        "value": "otx-api"
+                        "@type": "string",
+                        "@value": "otx-api"
                     }
                 },
                 "description": {
-                    "type": "string",
-                    "value": "This is the data adapter for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
+                    "@type": "string",
+                    "@value": "This is the data adapter for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This adapter is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
                 },
                 "name": {
-                    "type": "string",
-                    "value": "otx-api-ip"
+                    "@type": "string",
+                    "@value": "otx-api-ip"
                 },
                 "title": {
-                    "type": "string",
-                    "value": "Open Threat Exchange (OTX) - IP"
+                    "@type": "string",
+                    "@value": "Open Threat Exchange (OTX) - IP"
                 }
             },
             "id": "5ac762873d274666e34eca84",
@@ -103,47 +114,58 @@
                 "name": "lookup_adapter",
                 "version": "1"
             },
-            "v": "1"
+            "v": "1",
+            "constraints": [
+                {
+                    "plugin": "org.graylog.plugins.threatintel.ThreatIntelPlugin",
+                    "type": "plugin-version",
+                    "version": ">=3.0.0-alpha.2"
+                },
+                {
+                    "type": "server-version",
+                    "version": ">=3.0.0-alpha.2+af8d8e0"
+                }
+            ]
         },
         {
             "data": {
                 "configuration": {
                     "expire_after_access": {
-                        "type": "long",
-                        "value": 0
+                        "@type": "long",
+                        "@value": 0
                     },
                     "expire_after_access_unit": {
-                        "type": "string",
-                        "value": "SECONDS"
+                        "@type": "string",
+                        "@value": "SECONDS"
                     },
                     "expire_after_write": {
-                        "type": "long",
-                        "value": 60
+                        "@type": "long",
+                        "@value": 60
                     },
                     "expire_after_write_unit": {
-                        "type": "string",
-                        "value": "SECONDS"
+                        "@type": "string",
+                        "@value": "SECONDS"
                     },
                     "max_size": {
-                        "type": "integer",
-                        "value": 1000
+                        "@type": "integer",
+                        "@value": 1000
                     },
                     "type": {
-                        "type": "string",
-                        "value": "guava_cache"
+                        "@type": "string",
+                        "@value": "guava_cache"
                     }
                 },
                 "description": {
-                    "type": "string",
-                    "value": "This is the cache for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
+                    "@type": "string",
+                    "@value": "This is the cache for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
                 },
                 "name": {
-                    "type": "string",
-                    "value": "otx-api-ip-cache"
+                    "@type": "string",
+                    "@value": "otx-api-ip-cache"
                 },
                 "title": {
-                    "type": "string",
-                    "value": "Open Threat Exchange (OTX) - IP Cache"
+                    "@type": "string",
+                    "@value": "Open Threat Exchange (OTX) - IP Cache"
                 }
             },
             "id": "5ac762873d274666e34eca7d",
@@ -151,47 +173,58 @@
                 "name": "lookup_cache",
                 "version": "1"
             },
-            "v": "1"
+            "v": "1",
+            "constraints": [
+                {
+                    "plugin": "org.graylog.plugins.threatintel.ThreatIntelPlugin",
+                    "type": "plugin-version",
+                    "version": ">=3.0.0-alpha.2"
+                },
+                {
+                    "type": "server-version",
+                    "version": ">=3.0.0-alpha.2+af8d8e0"
+                }
+            ]
         },
         {
             "data": {
                 "configuration": {
                     "expire_after_access": {
-                        "type": "long",
-                        "value": 0
+                        "@type": "long",
+                        "@value": 0
                     },
                     "expire_after_access_unit": {
-                        "type": "string",
-                        "value": "SECONDS"
+                        "@type": "string",
+                        "@value": "SECONDS"
                     },
                     "expire_after_write": {
-                        "type": "long",
-                        "value": 60
+                        "@type": "long",
+                        "@value": 60
                     },
                     "expire_after_write_unit": {
-                        "type": "string",
-                        "value": "SECONDS"
+                        "@type": "string",
+                        "@value": "SECONDS"
                     },
                     "max_size": {
-                        "type": "integer",
-                        "value": 1000
+                        "@type": "integer",
+                        "@value": 1000
                     },
                     "type": {
-                        "type": "string",
-                        "value": "guava_cache"
+                        "@type": "string",
+                        "@value": "guava_cache"
                     }
                 },
                 "description": {
-                    "type": "string",
-                    "value": "This is the cache for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
+                    "@type": "string",
+                    "@value": "This is the cache for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This cache is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
                 },
                 "name": {
-                    "type": "string",
-                    "value": "otx-api-domain-cache"
+                    "@type": "string",
+                    "@value": "otx-api-domain-cache"
                 },
                 "title": {
-                    "type": "string",
-                    "value": "Open Threat Exchange (OTX) - Domain Cache"
+                    "@type": "string",
+                    "@value": "Open Threat Exchange (OTX) - Domain Cache"
                 }
             },
             "id": "5ac762873d274666e34eca7e",
@@ -199,45 +232,56 @@
                 "name": "lookup_cache",
                 "version": "1"
             },
-            "v": "1"
+            "v": "1",
+            "constraints": [
+                {
+                    "plugin": "org.graylog.plugins.threatintel.ThreatIntelPlugin",
+                    "type": "plugin-version",
+                    "version": ">=3.0.0-alpha.2"
+                },
+                {
+                    "type": "server-version",
+                    "version": ">=3.0.0-alpha.2+af8d8e0"
+                }
+            ]
         },
         {
             "data": {
                 "cache_name": {
-                    "type": "string",
-                    "value": "5ac762873d274666e34eca7d"
+                    "@type": "string",
+                    "@value": "5ac762873d274666e34eca7d"
                 },
                 "data_adapter_name": {
-                    "type": "string",
-                    "value": "5ac762873d274666e34eca84"
+                    "@type": "string",
+                    "@value": "5ac762873d274666e34eca84"
                 },
                 "default_multi_value": {
-                    "type": "string",
-                    "value": ""
+                    "@type": "string",
+                    "@value": ""
                 },
                 "default_multi_value_type": {
-                    "type": "string",
-                    "value": "NULL"
+                    "@type": "string",
+                    "@value": "NULL"
                 },
                 "default_single_value": {
-                    "type": "string",
-                    "value": ""
+                    "@type": "string",
+                    "@value": ""
                 },
                 "default_single_value_type": {
-                    "type": "string",
-                    "value": "NULL"
+                    "@type": "string",
+                    "@value": "NULL"
                 },
                 "description": {
-                    "type": "string",
-                    "value": "This is the lookup table for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
+                    "@type": "string",
+                    "@value": "This is the lookup table for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
                 },
                 "name": {
-                    "type": "string",
-                    "value": "otx-api-ip"
+                    "@type": "string",
+                    "@value": "otx-api-ip"
                 },
                 "title": {
-                    "type": "string",
-                    "value": "Open Threat Exchange (OTX) - IP"
+                    "@type": "string",
+                    "@value": "Open Threat Exchange (OTX) - IP"
                 }
             },
             "id": "5ac762873d274666e34eca8f",
@@ -245,45 +289,56 @@
                 "name": "lookup_table",
                 "version": "1"
             },
-            "v": "1"
+            "v": "1",
+            "constraints": [
+                {
+                    "plugin": "org.graylog.plugins.threatintel.ThreatIntelPlugin",
+                    "type": "plugin-version",
+                    "version": ">=3.0.0-alpha.2"
+                },
+                {
+                    "type": "server-version",
+                    "version": ">=3.0.0-alpha.2+af8d8e0"
+                }
+            ]
         },
         {
             "data": {
                 "cache_name": {
-                    "type": "string",
-                    "value": "5ac762873d274666e34eca7e"
+                    "@type": "string",
+                    "@value": "5ac762873d274666e34eca7e"
                 },
                 "data_adapter_name": {
-                    "type": "string",
-                    "value": "5ac762873d274666e34eca88"
+                    "@type": "string",
+                    "@value": "5ac762873d274666e34eca88"
                 },
                 "default_multi_value": {
-                    "type": "string",
-                    "value": ""
+                    "@type": "string",
+                    "@value": ""
                 },
                 "default_multi_value_type": {
-                    "type": "string",
-                    "value": "NULL"
+                    "@type": "string",
+                    "@value": "NULL"
                 },
                 "default_single_value": {
-                    "type": "string",
-                    "value": ""
+                    "@type": "string",
+                    "@value": ""
                 },
                 "default_single_value_type": {
-                    "type": "string",
-                    "value": "NULL"
+                    "@type": "string",
+                    "@value": "NULL"
                 },
                 "description": {
-                    "type": "string",
-                    "value": "This is the lookup table for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
+                    "@type": "string",
+                    "@value": "This is the lookup table for AlienVault's Open Threat Exchange platform, containing crowd-sourced IoCs (Indicators of Compromise). For more information see https://otx.alienvault.com. This lookup table is used internally by Graylog's Threat Intel Plugin. Do not delete it manually."
                 },
                 "name": {
-                    "type": "string",
-                    "value": "otx-api-domain"
+                    "@type": "string",
+                    "@value": "otx-api-domain"
                 },
                 "title": {
-                    "type": "string",
-                    "value": "Open Threat Exchange (OTX) - Domain"
+                    "@type": "string",
+                    "@value": "Open Threat Exchange (OTX) - Domain"
                 }
             },
             "id": "5ac762873d274666e34eca8d",
@@ -291,23 +346,23 @@
                 "name": "lookup_table",
                 "version": "1"
             },
-            "v": "1"
+            "v": "1",
+            "constraints": [
+                {
+                    "plugin": "org.graylog.plugins.threatintel.ThreatIntelPlugin",
+                    "type": "plugin-version",
+                    "version": ">=3.0.0-alpha.2"
+                },
+                {
+                    "type": "server-version",
+                    "version": ">=3.0.0-alpha.2+af8d8e0"
+                }
+            ]
         }
     ],
     "id": "daf6355e-2d5e-08d3-f9ba-44e84a43df1a",
     "name": "Open Threat Exchange - Threat Intel Plugin",
     "parameters": [],
-    "requires": [
-        {
-            "plugin": "org.graylog.plugins.threatintel.ThreatIntelPlugin",
-            "type": "plugin-version",
-            "version": ">=3.0.0-alpha.2"
-        },
-        {
-            "type": "server-version",
-            "version": ">=3.0.0-alpha.2+af8d8e0"
-        }
-    ],
     "rev": 1,
     "summary": "The Open Thread Exchange Lookup Table of the Threat Intel Plugin",
     "url": "https://github.com/Graylog2/graylog2-server",
