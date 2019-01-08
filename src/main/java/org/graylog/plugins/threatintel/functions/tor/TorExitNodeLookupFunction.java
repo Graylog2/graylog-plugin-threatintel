@@ -43,9 +43,9 @@ public class TorExitNodeLookupFunction extends LookupTableFunction<GenericLookup
 
         final LookupResult lookupResult = this.lookupFunction.lookup(ip.trim());
         if (lookupResult != null && !lookupResult.isEmpty()) {
-            final Object value = lookupResult.singleValue();
 
             // If not a String, then fall through to false at the end of the method.
+            final Object value = lookupResult.singleValue();
             if (value instanceof String) {
                 return Strings.isNotBlank((String) value) ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
             }
