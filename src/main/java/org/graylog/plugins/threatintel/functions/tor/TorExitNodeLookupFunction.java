@@ -1,6 +1,6 @@
 package org.graylog.plugins.threatintel.functions.tor;
 
-import org.apache.logging.log4j.util.Strings;
+import com.google.common.base.Strings;
 import org.graylog.plugins.pipelineprocessor.EvaluationContext;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
@@ -47,7 +47,7 @@ public class TorExitNodeLookupFunction extends LookupTableFunction<GenericLookup
             // If not a String, then fall through to false at the end of the method.
             final Object value = lookupResult.singleValue();
             if (value instanceof String) {
-                return Strings.isNotBlank((String) value) ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
+                return !Strings.isNullOrEmpty((String) value) ? GenericLookupResult.TRUE : GenericLookupResult.FALSE;
             }
         }
 
