@@ -14,8 +14,7 @@
   ],
   "author": "Graylog, Inc. <hello@graylog.com>",
   "license": "GPL-3.0",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "graylog-web-plugin": "file:../graylog2-server/graylog2-web-interface/packages/graylog-web-plugin"
   }
