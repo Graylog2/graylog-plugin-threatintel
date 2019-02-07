@@ -8,7 +8,7 @@
                         "@type": "long",
                         "@value": 43200
                     },
-                    "@type": {
+                    "type": {
                         "@type": "string",
                         "@value": "spamhaus-edrop"
                     }
