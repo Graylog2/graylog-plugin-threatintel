@@ -8,10 +8,12 @@ import { Select, TimeUnitInput } from 'components/common';
 class AbuseChRansomAdapterFieldSet extends React.Component {
   static propTypes = {
     config: PropTypes.object.isRequired,
-// eslint-disable-next-line react/no-unused-prop-types
     updateConfig: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
     handleFormEvent: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
     validationState: PropTypes.func.isRequired,
+    // eslint-disable-next-line react/no-unused-prop-types
     validationMessage: PropTypes.func.isRequired,
   };
 
@@ -59,7 +61,7 @@ class AbuseChRansomAdapterFieldSet extends React.Component {
                      update={this.updateRefreshInterval}
                      value={config.refresh_interval}
                      unit={config.refresh_interval_unit || 'MINUTES'}
-                     enabled={config.refresh_interval > 0}
+                     defaultEnabled={config.refresh_interval > 0}
                      labelClassName="col-sm-3"
                      wrapperClassName="col-sm-9" />
     </fieldset>);
