@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.value.AutoValue;
 import org.graylog.autovalue.WithBeanGetter;
 import org.graylog2.contentpacks.ContentPackPersistenceService;
+import org.graylog2.contentpacks.exceptions.ContentPackException;
 import org.graylog2.contentpacks.model.ContentPack;
 import org.graylog2.migrations.Migration;
 import org.graylog2.plugin.cluster.ClusterConfigService;
@@ -80,7 +81,10 @@ public class V20180906112716_RecreateThreatintelLookupTables extends Migration {
                 contentPackURL = V20180906112716_RecreateThreatintelLookupTables.class.getResource(contentPackName);
                 contentPack = this.objectMapper.readValue(contentPackURL, ContentPack.class);
                 ContentPack pack = this.contentPackPersistenceService.insert(contentPack)
-                        .orElseThrow(() -> new Error("Content pack " + contentPack.id() + " with this revision " + contentPack.revision() + " already found!"));
+                        .orElseThrow(() -> {
+                            clusterConfigService.write(MigrationCompleted.create(newContentPackIds));
+                            return new ContentPackException("Content pack " + contentPack.id() + " with this revision " + contentPack.revision() + " already found!");
+                        });
                 newContentPackIds.add(pack.id().toString());
             }
 
