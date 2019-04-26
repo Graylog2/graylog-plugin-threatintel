@@ -101,7 +101,7 @@
     <build>
         <resources>
             <resource>
-                <directory>build</directory>
+                <directory>${web.build-dir}</directory>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
