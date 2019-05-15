@@ -59,7 +59,7 @@ class OTXAdapterFieldSet extends React.Component {
           <Select placeholder="Select indicator"
                   clearable={false}
                   options={OTX_INDICATORS}
-                  matchProp="value"
+                  matchProp="label"
                   onChange={this.handleSelect('indicator')}
                   value={config.indicator} />
         </Input>
