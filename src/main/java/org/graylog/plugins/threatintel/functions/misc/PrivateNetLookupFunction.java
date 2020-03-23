@@ -24,6 +24,7 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog.plugins.threatintel.tools.PrivateNet;
+import org.graylog2.shared.utilities.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class PrivateNetLookupFunction extends AbstractFunction<Boolean> {
 
             return result;
         } catch (Exception e) {
-            LOG.error("Could not run private net lookup for IP [{}].", ip, e);
+            LOG.error("Could not run private net lookup for IP [{}]: {}", ip, ExceptionUtils.getRootCauseMessage(e));
             return null;
         }
     }
