@@ -19,11 +19,11 @@ package org.graylog.plugins.threatintel.adapters.spamhaus;
 import com.codahale.metrics.MetricRegistry;
 import com.google.common.eventbus.EventBus;
 import org.graylog.plugins.threatintel.PluginConfigService;
-import org.graylog.plugins.threatintel.TestClusterConfigService;
 import org.graylog.plugins.threatintel.ThreatIntelPluginConfiguration;
 import org.graylog2.events.ClusterEventBus;
 import org.graylog2.lookup.adapters.dsvhttp.HTTPFileRetriever;
 import org.graylog2.lookup.db.DBDataAdapterService;
+import org.graylog2.plugin.cluster.ClusterConfigService;
 import org.graylog2.plugin.lookup.LookupCachePurge;
 import org.graylog2.plugin.lookup.LookupDataAdapterConfiguration;
 import org.graylog2.plugin.lookup.LookupResult;
@@ -58,12 +58,13 @@ public class SpamhausEDROPDataAdapterTest {
     public final MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
     private HTTPFileRetriever httpFileRetriever;
+    @Mock
+    private ClusterConfigService clusterConfigService;
 
     private final String dropSnapshot = readResourcesFile("drop.txt-snapshot-201709291400");
     private final String edropSnapshot = readResourcesFile("edrop.txt-snapshot-201709291400");
 
     private SpamhausEDROPDataAdapter adapter;
-    private TestClusterConfigService clusterConfigService;
     private EventBus serverEventBus;
     private ClusterEventBus clusterEventBus;
     private PluginConfigService pluginConfigService;
@@ -79,8 +80,8 @@ public class SpamhausEDROPDataAdapterTest {
 
     @Before
     public void setUp() throws Exception {
-        clusterConfigService = new TestClusterConfigService();
-        clusterConfigService.write(ThreatIntelPluginConfiguration.create(true, "", true, true, true));
+        when(clusterConfigService.get(ThreatIntelPluginConfiguration.class))
+                .thenReturn(ThreatIntelPluginConfiguration.create(true, "", true, true, true));
         serverEventBus = new EventBus();
         clusterEventBus = new ClusterEventBus();
         final DBDataAdapterService dbDataAdapterService = mock(DBDataAdapterService.class);
