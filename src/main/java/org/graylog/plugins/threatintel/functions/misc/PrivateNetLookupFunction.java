@@ -39,7 +39,7 @@ public class PrivateNetLookupFunction extends AbstractFunction<Boolean> {
     public static final String NAME = "in_private_net";
     private static final String VALUE = "ip_address";
 
-    private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IPv4 address to look up.").build();
+    private final ParameterDescriptor<String, String> valueParam = ParameterDescriptor.string(VALUE).description("The IP address to look up.").build();
 
     protected Timer lookupTime;
 
@@ -75,7 +75,7 @@ public class PrivateNetLookupFunction extends AbstractFunction<Boolean> {
     public FunctionDescriptor<Boolean> descriptor() {
         return FunctionDescriptor.<Boolean>builder()
                 .name(NAME)
-                .description("Check if an IPv4 address is in a private network as defined in RFC 1918. (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)")
+                .description("Check if an IP address is in a private network as defined in RFC 1918 (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) or RFC 4193 (fc00::/7)")
                 .params(valueParam)
                 .returnType(Boolean.class)
                 .build();
