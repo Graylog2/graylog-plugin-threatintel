@@ -17,19 +17,20 @@
 package org.graylog.plugins.threatintel.tools;
 
 import com.google.common.net.InetAddresses;
-import org.jboss.netty.handler.ipfilter.CIDR;
+import org.graylog2.utilities.IpSubnet;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+@SuppressWarnings("UnstableApiUsage")
 public class PrivateNet {
 
-    private static CIDR UNIQUE_LOCAL_ADDR_MASK = null;
+    private static IpSubnet UNIQUE_LOCAL_ADDR_MASK = null;
     static {
         try {
             // RFC 4193: https://tools.ietf.org/html/rfc4193#section-3.1
-            UNIQUE_LOCAL_ADDR_MASK = CIDR.newCIDR("FC00::/7");
+            UNIQUE_LOCAL_ADDR_MASK = new IpSubnet("FC00::/7");
         } catch (UnknownHostException ignored) {
         }
 
@@ -39,7 +40,7 @@ public class PrivateNet {
     *
      *
      * @param ip The IP address to check
-     * @return
+     * @return true if IP address is in a private subnet, false if not or unknown
      */
     public static boolean isInPrivateAddressSpace(String ip) {
         InetAddress inetAddress = InetAddresses.forString(ip);
