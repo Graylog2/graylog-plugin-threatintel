@@ -28,6 +28,9 @@ public class PrivateNetTest {
         assertTrue(PrivateNet.isInPrivateAddressSpace("172.16.20.50"));
         assertTrue(PrivateNet.isInPrivateAddressSpace("192.168.1.1"));
         assertFalse(PrivateNet.isInPrivateAddressSpace("99.42.44.219"));
+        assertFalse(PrivateNet.isInPrivateAddressSpace("ff02:0:0:0:0:0:0:fb"));
+        assertTrue(PrivateNet.isInPrivateAddressSpace("fd80:0:0:0:0:0:0:fb"));
+        assertThrows(IllegalArgumentException.class, () -> PrivateNet.isInPrivateAddressSpace("this is not an IP address"));
     }
 
 }
