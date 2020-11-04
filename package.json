@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "lint": "eslint --ext js,jsx src"
+    "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": "graylog"
