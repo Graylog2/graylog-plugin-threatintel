@@ -83,11 +83,12 @@ public class WhoisIpLookup {
             whoisClient.setDefaultPort(PORT);
             whoisClient.setConnectTimeout(connectTimeout);
             whoisClient.setDefaultTimeout(readTimeout);
+            String query = parser.buildQueryForIp(ip);
 
             try (final Timer.Context ignored = whoisRequestTimer.time()) {
                 whoisClient.connect(registry.getWhoisServer());
 
-                IOUtils.readLines(whoisClient.getInputStream(ip), StandardCharsets.UTF_8).forEach(parser::readLine);
+                IOUtils.readLines(whoisClient.getInputStream(query), StandardCharsets.UTF_8).forEach(parser::readLine);
             }
 
             // When we encounter a registry redirect we recursively call this method with the new registry server.
