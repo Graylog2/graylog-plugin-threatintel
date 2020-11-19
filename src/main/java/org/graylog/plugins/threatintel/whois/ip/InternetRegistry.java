@@ -33,5 +33,4 @@ public enum InternetRegistry {
     public String getWhoisServer() {
         return whoisServer;
     }
-
 }
