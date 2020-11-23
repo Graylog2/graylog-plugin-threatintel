@@ -50,6 +50,8 @@ public abstract class WhoisParser {
         return null;
     }
 
+    public String buildQueryForIp(String ip) { return ip; }
+
     public boolean isRedirect() {
         return isRedirect;
     }
