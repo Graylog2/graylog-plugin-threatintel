@@ -15,15 +15,15 @@
  * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 // eslint-disable-next-line no-unused-vars, import/default, no-unused-vars
-import webpackEntry from 'webpack-entry';
-
 import { PluginManifest, PluginStore } from 'graylog-web-plugin/plugin';
-import ThreatIntelPluginConfig from 'components/ThreatIntelPluginConfig';
 
+import webpackEntry from 'webpack-entry';
+import ThreatIntelPluginConfig from 'components/ThreatIntelPluginConfig';
 import { SpamhausEDROPAdapterDocumentation, SpamhausEDROPAdapterFieldSet, SpamhausEDROPAdapterSummary } from 'components/adapters/spamhaus-edrop';
 import { TorExitNodeAdapterDocumentation, TorExitNodeAdapterFieldSet, TorExitNodeAdapterSummary } from 'components/adapters/torexitnode';
 import { WhoisAdapterDocumentation, WhoisAdapterFieldSet, WhoisAdapterSummary } from 'components/adapters/whois/index';
 import { AbuseChRansomAdapterDocumentation, AbuseChRansomAdapterFieldSet, AbuseChRansomAdapterSummary } from 'components/adapters/abusech/index';
+
 import { OTXAdapterDocumentation, OTXAdapterFieldSet, OTXAdapterSummary } from './components/adapters/otx';
 
 import packageJson from '../../package.json';
@@ -59,7 +59,7 @@ PluginStore.register(new PluginManifest(packageJson, {
     },
     {
       type: 'abuse-ch-ransom',
-      displayName: 'Ransomware blocklists from abuse.ch',
+      displayName: '[Deprecated] Ransomware blocklists from abuse.ch',
       formComponent: AbuseChRansomAdapterFieldSet,
       summaryComponent: AbuseChRansomAdapterSummary,
       documentationComponent: AbuseChRansomAdapterDocumentation,
