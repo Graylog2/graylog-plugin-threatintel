@@ -112,9 +112,6 @@ const ThreatIntelPluginConfig = createReactClass({
 
           <dt>Spamhaus:</dt>
           <dd>{this.state.config.spamhaus_enabled === true ? 'Enabled' : 'Disabled'}</dd>
-
-          <dt>Abuse.ch Ransomware:</dt>
-          <dd>{this.state.config.abusech_ransom_enabled === true ? 'Enabled' : 'Disabled'}</dd>
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
@@ -144,15 +141,6 @@ const ThreatIntelPluginConfig = createReactClass({
                    name="tor_enabled"
                    checked={this.state.config.spamhaus_enabled}
                    onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')} />
-
-            <Input type="checkbox"
-                   id="abusech-checkbox"
-                   ref={(elem) => { this.abusechRansomEnabled = elem; }}
-                   label="Allow Abuse.ch Ransomware tracker lookups?"
-                   help="Enable to include Abuse.ch Ransomware tracker lookup in global pipeline function, disabling also stops refreshing the data."
-                   name="tor_enabled"
-                   checked={this.state.config.abusech_ransom_enabled}
-                   onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')} />
           </fieldset>
         </BootstrapModalForm>
       </div>
