@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2020 Graylog, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Server Side Public License, version 1,
+ * as published by MongoDB, Inc.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Server Side Public License for more details.
+ *
+ * You should have received a copy of the Server Side Public License
+ * along with this program. If not, see
+ * <http://www.mongodb.com/licensing/server-side-public-license>.
+ */
 import PropTypes from 'prop-types';
 import React from 'react';
 import createReactClass from 'create-react-class';
@@ -96,9 +112,6 @@ const ThreatIntelPluginConfig = createReactClass({
 
           <dt>Spamhaus:</dt>
           <dd>{this.state.config.spamhaus_enabled === true ? 'Enabled' : 'Disabled'}</dd>
-
-          <dt>Abuse.ch Ransomware:</dt>
-          <dd>{this.state.config.abusech_ransom_enabled === true ? 'Enabled' : 'Disabled'}</dd>
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
@@ -128,15 +141,6 @@ const ThreatIntelPluginConfig = createReactClass({
                    name="tor_enabled"
                    checked={this.state.config.spamhaus_enabled}
                    onChange={this._onCheckboxClick('spamhaus_enabled', 'spamhausEnabled')} />
-
-            <Input type="checkbox"
-                   id="abusech-checkbox"
-                   ref={(elem) => { this.abusechRansomEnabled = elem; }}
-                   label="Allow Abuse.ch Ransomware tracker lookups?"
-                   help="Enable to include Abuse.ch Ransomware tracker lookup in global pipeline function, disabling also stops refreshing the data."
-                   name="tor_enabled"
-                   checked={this.state.config.abusech_ransom_enabled}
-                   onChange={this._onCheckboxClick('abusech_ransom_enabled', 'abusechRansomEnabled')} />
           </fieldset>
         </BootstrapModalForm>
       </div>

@@ -1,19 +1,24 @@
 {
   "name": "ThreatIntelPlugin",
-  "version": "3.3.1-SNAPSHOT",
+  "version": "4.1.0-SNAPSHOT",
   "description": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/Graylog2/graylog-plugin-threatintel"
   },
   "scripts": {
-    "build": "webpack --bail"
+    "build": "webpack",
+    "lint": "eslint src",
+    "lint:path": "eslint"
+  },
+  "eslintConfig": {
+    "extends": "graylog"
   },
   "keywords": [
     "graylog"
   ],
   "author": "Graylog, Inc. <hello@graylog.com>",
-  "license": "GPL-3.0",
+  "license": "SSPL-1.0",
   "dependencies": {},
   "devDependencies": {
     "graylog-web-plugin": "file:../graylog2-server/graylog2-web-interface/packages/graylog-web-plugin"

@@ -1,18 +1,18 @@
-/**
- * This file is part of Graylog.
+/*
+ * Copyright (C) 2020 Graylog, Inc.
  *
- * Graylog is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Server Side Public License, version 1,
+ * as published by MongoDB, Inc.
  *
- * Graylog is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Server Side Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Graylog.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the Server Side Public License
+ * along with this program. If not, see
+ * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 package org.graylog.plugins.threatintel.whois.ip.parsers;
 
@@ -203,6 +203,190 @@ public class ARINResponseParserTest {
             "# https://www.arin.net/public/whoisinaccuracy/index.xhtml\n" +
             "#\n";
 
+    private static String TWO_MATCH = "#\n" +
+            "# ARIN WHOIS data and services are subject to the Terms of Use\n" +
+            "# available at: https://www.arin.net/resources/registry/whois/tou/\n" +
+            "#\n" +
+            "# If you see inaccuracies in the results, please report at\n" +
+            "# https://www.arin.net/resources/registry/whois/inaccuracy_reporting/\n" +
+            "#\n" +
+            "# Copyright 1997-2020, American Registry for Internet Numbers, Ltd.\n" +
+            "#\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "# start\n" +
+            "\n" +
+            "NetRange:       24.248.0.0 - 24.255.255.255\n" +
+            "CIDR:           24.248.0.0/13\n" +
+            "NetName:        NETBLK-COX-ATLANTA-8\n" +
+            "NetHandle:      NET-24-248-0-0-1\n" +
+            "Parent:         NET24 (NET-24-0-0-0-0)\n" +
+            "NetType:        Direct Allocation\n" +
+            "OriginAS:\n" +
+            "Organization:   Cox Communications Inc. (CXA)\n" +
+            "RegDate:        2003-10-28\n" +
+            "Updated:        2012-03-02\n" +
+            "Comment:        For legal requests/assistance please use the following contact information:\n" +
+            "Comment:\n" +
+            "Comment:        Cox Subpoena Phone: 404-269-0100\n" +
+            "Comment:\n" +
+            "Comment:        Cox Subpoena Info: http://www.cox.com/policy/leainformation/default.asp\n" +
+            "Ref:            https://rdap.arin.net/registry/ip/24.248.0.0\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "OrgName:        Cox Communications Inc.\n" +
+            "OrgId:          CXA\n" +
+            "Address:        1400 Lake Hearn Dr.\n" +
+            "City:           Atlanta\n" +
+            "StateProv:      GA\n" +
+            "PostalCode:     30319\n" +
+            "Country:        FOO\n" +
+            "RegDate:\n" +
+            "Updated:        2019-05-24\n" +
+            "Comment:        For legal requests/assistance please use the\n" +
+            "Comment:        following contact information:\n" +
+            "Comment:        Cox Subpoena Info: https://www.cox.com/aboutus/policies/law-enforcement-and-subpoenas-information.html\n" +
+            "Ref:            https://rdap.arin.net/registry/entity/CXA\n" +
+            "\n" +
+            "\n" +
+            "OrgTechHandle: GOODW243-ARIN\n" +
+            "OrgTechName:   Goodwin, Mark\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  mark.goodwin@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/GOODW243-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: ADA131-ARIN\n" +
+            "OrgTechName:   Anderson, Alvin Demond\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  alvin.anderson@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/ADA131-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: MEROL3-ARIN\n" +
+            "OrgTechName:   Merola, Cari\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  cari.merola@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/MEROL3-ARIN\n" +
+            "\n" +
+            "OrgAbuseHandle: IC146-ARIN\n" +
+            "OrgAbuseName:   Cox Communications Inc\n" +
+            "OrgAbusePhone:  +1-404-269-7626\n" +
+            "OrgAbuseEmail:  abuse@cox.net\n" +
+            "OrgAbuseRef:    https://rdap.arin.net/registry/entity/IC146-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: IPADM754-ARIN\n" +
+            "OrgTechName:   IP Adminstrator\n" +
+            "OrgTechPhone:  +1-404-269-0188\n" +
+            "OrgTechEmail:  sophea.long@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/IPADM754-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: BERUB3-ARIN\n" +
+            "OrgTechName:   Berube, Tori\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  tori.berube@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/BERUB3-ARIN\n" +
+            "\n" +
+            "# end\n" +
+            "\n" +
+            "\n" +
+            "# start\n" +
+            "\n" +
+            "NetRange:       24.255.128.0 - 24.255.255.255\n" +
+            "CIDR:           24.255.128.0/17\n" +
+            "NetName:        NETBLK-WI-RDC-24-255-128-0\n" +
+            "NetHandle:      NET-24-255-128-0-1\n" +
+            "Parent:         NETBLK-COX-ATLANTA-8 (NET-24-248-0-0-1)\n" +
+            "NetType:        Reassigned\n" +
+            "OriginAS:\n" +
+            "Customer:       Cox Communications (C00898431)\n" +
+            "RegDate:        2004-08-31\n" +
+            "Updated:        2004-08-31\n" +
+            "Ref:            https://rdap.arin.net/registry/ip/24.255.128.0\n" +
+            "\n" +
+            "\n" +
+            "CustName:       Cox Communications\n" +
+            "Address:        1400 Lake Hearn Dr.\n" +
+            "City:           Atlanta\n" +
+            "StateProv:      GA\n" +
+            "PostalCode:     30319\n" +
+            "Country:        US\n" +
+            "RegDate:        2004-08-31\n" +
+            "Updated:        2011-03-19\n" +
+            "Ref:            https://rdap.arin.net/registry/entity/C00898431\n" +
+            "\n" +
+            "OrgTechHandle: GOODW243-ARIN\n" +
+            "OrgTechName:   Goodwin, Mark\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  mark.goodwin@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/GOODW243-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: ADA131-ARIN\n" +
+            "OrgTechName:   Anderson, Alvin Demond\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  alvin.anderson@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/ADA131-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: MEROL3-ARIN\n" +
+            "OrgTechName:   Merola, Cari\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  cari.merola@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/MEROL3-ARIN\n" +
+            "\n" +
+            "OrgAbuseHandle: IC146-ARIN\n" +
+            "OrgAbuseName:   Cox Communications Inc\n" +
+            "OrgAbusePhone:  +1-404-269-7626\n" +
+            "OrgAbuseEmail:  abuse@cox.net\n" +
+            "OrgAbuseRef:    https://rdap.arin.net/registry/entity/IC146-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: IPADM754-ARIN\n" +
+            "OrgTechName:   IP Adminstrator\n" +
+            "OrgTechPhone:  +1-404-269-0188\n" +
+            "OrgTechEmail:  sophea.long@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/IPADM754-ARIN\n" +
+            "\n" +
+            "OrgTechHandle: BERUB3-ARIN\n" +
+            "OrgTechName:   Berube, Tori\n" +
+            "OrgTechPhone:  +1-404-269-4416\n" +
+            "OrgTechEmail:  tori.berube@cox.com\n" +
+            "OrgTechRef:    https://rdap.arin.net/registry/entity/BERUB3-ARIN\n" +
+            "\n" +
+            "# end\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "#\n" +
+            "# ARIN WHOIS data and services are subject to the Terms of Use\n" +
+            "# available at: https://www.arin.net/resources/registry/whois/tou/\n" +
+            "#\n" +
+            "# If you see inaccuracies in the results, please report at\n" +
+            "# https://www.arin.net/resources/registry/whois/inaccuracy_reporting/\n" +
+            "#\n" +
+            "# Copyright 1997-2020, American Registry for Internet Numbers, Ltd.\n" +
+            "#";
+
+    private static String FOUR_MATCH = "#\n" +
+            "# start\n" +
+            "NetType:        Direct Assignment\n" +
+            "Organization:   Direct Assignment Org\n" +
+            "Country:        FOO\n" +
+            "# end\n" +
+            "# start\n" +
+            "NetType:        Direct Allocation\n" +
+            "Organization:   Direct Allocation Org\n" +
+            "Country:        BAR\n" +
+            "# end\n" +
+            "# start\n" +
+            "NetType:        Reassigned\n" +
+            "Customer:       Reassigned Customer\n" +
+            "Country:        BAZ\n" +
+            "# end\n" +
+            "# start\n" +
+            "NetType:        Reallocated\n" +
+            "Customer:       Reallocated Customer\n" +
+            "Country:        MOO\n" +
+            "# end\n";
+
     @Test
     public void testRunDirectMatch() throws Exception {
         ARINResponseParser parser = new ARINResponseParser();
@@ -215,6 +399,34 @@ public class ARINResponseParserTest {
 
         assertEquals("US", parser.getCountryCode());
         assertEquals("AT&T Internet Services (SIS-80)", parser.getOrganization());
+    }
+
+    @Test
+    public void testRunTwoMatches() throws Exception {
+        ARINResponseParser parser = new ARINResponseParser();
+        for (String line : TWO_MATCH.split("\n")) {
+            parser.readLine(line);
+        }
+
+        assertFalse(parser.isRedirect());
+        assertNull(parser.getRegistryRedirect());
+
+        assertEquals("US", parser.getCountryCode());
+        assertEquals("Cox Communications (C00898431)", parser.getOrganization());
+    }
+
+    @Test
+    public void testRunFourMatches() throws Exception {
+        ARINResponseParser parser = new ARINResponseParser();
+        for (String line : FOUR_MATCH.split("\n")) {
+            parser.readLine(line);
+        }
+
+        assertFalse(parser.isRedirect());
+        assertNull(parser.getRegistryRedirect());
+
+        assertEquals("BAZ", parser.getCountryCode());
+        assertEquals("Reassigned Customer", parser.getOrganization());
     }
 
     @Test

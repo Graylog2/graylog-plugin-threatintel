@@ -1,42 +1,56 @@
-/**
- * This file is part of Graylog.
+/*
+ * Copyright (C) 2020 Graylog, Inc.
  *
- * Graylog is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the Server Side Public License, version 1,
+ * as published by MongoDB, Inc.
  *
- * Graylog is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * Server Side Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Graylog.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the Server Side Public License
+ * along with this program. If not, see
+ * <http://www.mongodb.com/licensing/server-side-public-license>.
  */
 package org.graylog.plugins.threatintel.tools;
 
 import com.google.common.net.InetAddresses;
-import org.apache.commons.net.util.SubnetUtils;
+import org.graylog2.utilities.IpSubnet;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+@SuppressWarnings("UnstableApiUsage")
 public class PrivateNet {
 
-    public static final SubnetUtils.SubnetInfo TEN = new SubnetUtils("10.0.0.0/8").getInfo();
-    public static final SubnetUtils.SubnetInfo ONE_HUNDRED_SEVENTY_TWO = new SubnetUtils("172.16.0.0/12").getInfo();
-    public static final SubnetUtils.SubnetInfo ONE_HUNDRED_NINETY_TWO = new SubnetUtils("192.168.0.0/16").getInfo();
-
-    /**
-     * Checks if an IPv4 address is part of a private network as defined in RFC 1918.
-     *
-     * @param ip The IPv4 address to check
-     * @return
-     */
-    public static boolean isInPrivateAddressSpace(String ip) {
-        if(!InetAddresses.isInetAddress(ip)) {
-            return false;
+    private static IpSubnet UNIQUE_LOCAL_ADDR_MASK = null;
+    static {
+        try {
+            // RFC 4193: https://tools.ietf.org/html/rfc4193#section-3.1
+            UNIQUE_LOCAL_ADDR_MASK = new IpSubnet("FC00::/7");
+        } catch (UnknownHostException ignored) {
         }
 
-        return ONE_HUNDRED_SEVENTY_TWO.isInRange(ip) || TEN.isInRange(ip) || ONE_HUNDRED_NINETY_TWO.isInRange(ip);
+    }
+   /**
+     * Checks if an IP address is part of a private network as defined in RFC 1918 (for IPv4) and RFC 4193 (for IPv6).
+    *
+     *
+     * @param ip The IP address to check
+     * @return true if IP address is in a private subnet, false if not or unknown
+     */
+    public static boolean isInPrivateAddressSpace(String ip) {
+        InetAddress inetAddress = InetAddresses.forString(ip);
+        if (inetAddress instanceof Inet6Address) {
+            // Inet6Address#isSiteLocalAddress is wrong: it only checks for FEC0:: prefixes, which is deprecated in RFC 3879
+            // instead we need to check for unique local addresses, which are in FC00::/7 (in practice assigned are in FD00::/8,
+            // but the RFC allows others in the future)
+            return UNIQUE_LOCAL_ADDR_MASK.contains(inetAddress);
+        }
+        return inetAddress.isSiteLocalAddress();
     }
 
 }
