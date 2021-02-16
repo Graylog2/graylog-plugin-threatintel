@@ -26,12 +26,12 @@
     <parent>
         <groupId>org.graylog.plugins</groupId>
         <artifactId>graylog-plugin-web-parent</artifactId>
-        <version>4.0.3</version>
+        <version>4.0.4-SNAPSHOT</version>
         <relativePath>../graylog2-server/graylog-plugin-parent/graylog-plugin-web-parent</relativePath>
     </parent>
 
     <artifactId>graylog-plugin-threatintel</artifactId>
-    <version>4.0.3</version>
+    <version>4.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -58,7 +58,7 @@
         <maven.install.skip>true</maven.install.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
         <maven.site.skip>true</maven.site.skip>
-        <graylog.version>4.0.3</graylog.version>
+        <graylog.version>4.0.4-SNAPSHOT</graylog.version>
     </properties>
 
     <dependencies>
