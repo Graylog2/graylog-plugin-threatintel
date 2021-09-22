@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { TimeUnit } from 'components/common';
-import { Alert } from 'components/graylog';
+import { Alert } from 'components/bootstrap';
 
 class AbuseChRansomAdapterSummary extends React.Component {
   static propTypes = {
