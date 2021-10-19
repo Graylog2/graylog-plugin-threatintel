@@ -16,7 +16,7 @@
  */
 import React from 'react';
 
-import { Alert } from 'components/graylog';
+import { Alert } from 'components/bootstrap';
 
 const AbuseChRansomAdapterDocumentation = () => {
   return (
