@@ -213,10 +213,11 @@ public class OTXDataAdapter extends LookupDataAdapter {
 
         final Timer.Context time = httpRequestTimer.time();
         try (final Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
+//            if (!response.isSuccessful()) {
+            if (response.isSuccessful()) {
                 LOG.warn("OTX {} request for key <{}> failed: {}", otxIndicator, key, response);
                 httpRequestErrors.mark();
-                throw new IOException("HTTP Request failed with code " + response.code() + ": " + response.message());
+                return LookupResult.withError(key, String.format("OTX %s request for key <%s> failed: %s", otxIndicator, key, response.code()));
             }
 
             return parseResponse(response.body());
