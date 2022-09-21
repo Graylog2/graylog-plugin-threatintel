@@ -25,15 +25,19 @@ import java.util.Map;
 
 public class OTXLookupResult extends ForwardingMap<String, Object> {
 
+    public static final String LOOKUP_KEY = "key";
+    public static final String MESSAGE = "message";
+    public static final String HAS_ERROR = "has_error";
+    public static final String OTX_THREAT_INDICATED = "otx_threat_indicated";
     private final ImmutableMap<String, Object> results;
 
-    public static final OTXLookupResult EMPTY = new EmptyOTXLookupResult();
-    public static final OTXLookupResult FALSE = new FalseOTXLookupResult();
+    protected static final OTXLookupResult EMPTY = new EmptyOTXLookupResult();
+    protected static final OTXLookupResult FALSE = new FalseOTXLookupResult();
 
     public static OTXLookupResult buildFromError(LookupResult lookupResult) {
         return new FalseOTXLookupResult(
-                (String) lookupResult.multiValue().get("key"),
-                (String) lookupResult.multiValue().get("message"));
+                (String) lookupResult.multiValue().get(LOOKUP_KEY),
+                (String) lookupResult.multiValue().get(MESSAGE));
     }
 
     public static OTXLookupResult buildFromIntel(OTXIntel intel) {
@@ -41,7 +45,7 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
             ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
 
             // Indicator that threat intelligence was returned for the query.
-            builder.put("otx_threat_indicated", true);
+            builder.put(OTX_THREAT_INDICATED, true);
 
             // Add metadata.
             Joiner joiner = Joiner.on(", ").skipNulls();
@@ -62,6 +66,13 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
         return results;
     }
 
+    public boolean hasError() {
+        if (results != null && !results.isEmpty()) {
+            return (results.get(HAS_ERROR) != null);
+        }
+        return false;
+    }
+
     @Override
     protected Map<String, Object> delegate() {
         return getResults();
@@ -69,7 +80,7 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
 
     private static class FalseOTXLookupResult extends OTXLookupResult {
         private static final ImmutableMap<String, Object> EMPTY = ImmutableMap.<String, Object>builder()
-                .put("otx_threat_indicated", false)
+                .put(OTX_THREAT_INDICATED, false)
                 .build();
 
         private FalseOTXLookupResult() {
@@ -78,9 +89,10 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
 
         private FalseOTXLookupResult(String key, String errMsg) {
             super(ImmutableMap.<String, Object>builder()
-                    .put("otx_threat_indicated", false)
-                    .put("key", key)
-                    .put("message", errMsg)
+                    .put(OTX_THREAT_INDICATED, false)
+                    .put(HAS_ERROR, true)
+                    .put(LOOKUP_KEY, key)
+                    .put(MESSAGE, errMsg)
                     .build());
         }
     }

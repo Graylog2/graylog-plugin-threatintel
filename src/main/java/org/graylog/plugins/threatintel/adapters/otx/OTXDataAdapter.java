@@ -309,11 +309,7 @@ public class OTXDataAdapter extends LookupDataAdapter {
     @JsonDeserialize(builder = OTXDataAdapter.Config.Builder.class)
     @JsonTypeName(NAME)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static abstract class Config implements LookupDataAdapterConfiguration {
-        @Override
-        @JsonProperty(TYPE_FIELD)
-        public abstract String type();
-
+    public abstract static class Config implements LookupDataAdapterConfiguration {
         @JsonProperty("indicator")
         @NotEmpty
         public abstract String indicator();

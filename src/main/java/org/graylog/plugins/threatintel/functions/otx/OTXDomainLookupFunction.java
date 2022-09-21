@@ -22,6 +22,7 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog.plugins.threatintel.tools.Domain;
 import org.graylog2.lookup.LookupTableService;
+import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,11 @@ public class OTXDomainLookupFunction extends AbstractOTXLookupFunction {
         }
 
         LOG.debug("Running OTX lookup for domain [{}].", domain);
-        return lookupDomain(Domain.prepareDomain(domain).trim());
+        OTXLookupResult result = lookupDomain(Domain.prepareDomain(domain).trim());
+        if (result.hasError()) {
+            throw new RuntimeException((String) result.getResults().get(LookupResult.MESSAGE));
+        }
+        return result;
     }
 
     @Override
