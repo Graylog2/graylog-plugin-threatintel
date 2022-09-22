@@ -21,6 +21,7 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog2.lookup.LookupTableService;
+import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,11 @@ public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
 
         LOG.debug("Running OTX lookup for IP [{}].", ip);
 
-        return lookupIP(ip.trim());
+        OTXLookupResult result = lookupIP(ip.trim());
+        if (result.hasError()) {
+            throw new RuntimeException((String) result.getResults().get(LookupResult.MESSAGE));
+        }
+        return result;
     }
 
     @Override
