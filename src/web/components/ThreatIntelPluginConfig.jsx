@@ -115,14 +115,14 @@ const ThreatIntelPluginConfig = createReactClass({
         </dl>
 
         <IfPermitted permissions="clusterconfigentry:edit">
-          <Button bsStyle="info" bsSize="xs" onClick={this._openModal}>Configure</Button>
+          <Button bsStyle="info" bsSize="xs" onClick={this._openModal}>Edit configuration</Button>
         </IfPermitted>
 
         <BootstrapModalForm ref={(ref) => { this.threatintelConfigModal = ref; }}
                             title="Update Threat Intelligence plugin Configuration"
                             onSubmitForm={this._saveConfig}
                             onModalClose={this._resetConfig}
-                            submitButtonText="Save">
+                            submitButtonText="Update configuration">
           <fieldset>
             <Input type="checkbox"
                    id="tor-checkbox"
