@@ -16,7 +16,6 @@
  */
 package org.graylog.plugins.threatintel.functions.otx;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ForwardingMap;
 import com.google.common.collect.ImmutableMap;
 import org.graylog2.plugin.lookup.LookupResult;
@@ -38,24 +37,6 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
         return new FalseOTXLookupResult(
                 (String) lookupResult.multiValue().get(LOOKUP_KEY),
                 (String) lookupResult.multiValue().get(MESSAGE));
-    }
-
-    public static OTXLookupResult buildFromIntel(OTXIntel intel) {
-        if (intel.getPulseCount() > 0) {
-            ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
-
-            // Indicator that threat intelligence was returned for the query.
-            builder.put(OTX_THREAT_INDICATED, true);
-
-            // Add metadata.
-            Joiner joiner = Joiner.on(", ").skipNulls();
-            builder.put("otx_threat_ids", joiner.join(intel.getPulseIds()));
-            builder.put("otx_threat_names", joiner.join(intel.getPulseNames()));
-
-            return new OTXLookupResult(builder.build());
-        } else {
-            return OTXLookupResult.FALSE;
-        }
     }
 
     public OTXLookupResult(ImmutableMap<String, Object> fields) {
