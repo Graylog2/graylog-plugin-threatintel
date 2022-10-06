@@ -23,8 +23,6 @@ import org.graylog2.plugin.lookup.LookupResult;
 import java.util.Map;
 
 public class OTXLookupResult extends ForwardingMap<String, Object> {
-
-    public static final String LOOKUP_KEY = "key";
     public static final String MESSAGE = "message";
     public static final String HAS_ERROR = "has_error";
     public static final String OTX_THREAT_INDICATED = "otx_threat_indicated";
@@ -34,9 +32,7 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
     protected static final OTXLookupResult FALSE = new FalseOTXLookupResult();
 
     public static OTXLookupResult buildFromError(LookupResult lookupResult) {
-        return new FalseOTXLookupResult(
-                (String) lookupResult.multiValue().get(LOOKUP_KEY),
-                (String) lookupResult.multiValue().get(MESSAGE));
+        return new FalseOTXLookupResult((String) lookupResult.singleValue());
     }
 
     public OTXLookupResult(ImmutableMap<String, Object> fields) {
@@ -68,11 +64,10 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
             super(EMPTY);
         }
 
-        private FalseOTXLookupResult(String key, String errMsg) {
+        private FalseOTXLookupResult(String errMsg) {
             super(ImmutableMap.<String, Object>builder()
                     .put(OTX_THREAT_INDICATED, false)
                     .put(HAS_ERROR, true)
-                    .put(LOOKUP_KEY, key)
                     .put(MESSAGE, errMsg)
                     .build());
         }

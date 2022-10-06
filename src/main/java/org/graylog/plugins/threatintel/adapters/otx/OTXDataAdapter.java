@@ -216,7 +216,8 @@ public class OTXDataAdapter extends LookupDataAdapter {
             if (!response.isSuccessful()) {
                 LOG.warn("OTX {} request for key <{}> failed: {}", otxIndicator, key, response);
                 httpRequestErrors.mark();
-                return LookupResult.withError(key, String.format("OTX %s request for key <%s> failed: %s", otxIndicator, key, response.code()));
+                return LookupResult.withError(
+                        String.format("OTX %s request for key <%s> failed: %s", otxIndicator, key, response.code()));
             }
 
             return parseResponse(response.body());

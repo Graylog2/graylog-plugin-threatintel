@@ -21,11 +21,12 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionArgs;
 import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog2.lookup.LookupTableService;
-import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+
+import static org.graylog.plugins.threatintel.functions.otx.OTXLookupResult.MESSAGE;
 
 public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
 
@@ -57,7 +58,7 @@ public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
 
         OTXLookupResult result = lookupIP(ip.trim());
         if (result.hasError()) {
-            throw new RuntimeException((String) result.getResults().get(LookupResult.MESSAGE));
+            throw new RuntimeException((String) result.getResults().get(MESSAGE));
         }
         return result;
     }

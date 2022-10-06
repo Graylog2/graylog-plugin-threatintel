@@ -22,11 +22,12 @@ import org.graylog.plugins.pipelineprocessor.ast.functions.FunctionDescriptor;
 import org.graylog.plugins.pipelineprocessor.ast.functions.ParameterDescriptor;
 import org.graylog.plugins.threatintel.tools.Domain;
 import org.graylog2.lookup.LookupTableService;
-import org.graylog2.plugin.lookup.LookupResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+
+import static org.graylog.plugins.threatintel.functions.otx.OTXLookupResult.MESSAGE;
 
 public class OTXDomainLookupFunction extends AbstractOTXLookupFunction {
 
@@ -56,7 +57,7 @@ public class OTXDomainLookupFunction extends AbstractOTXLookupFunction {
         LOG.debug("Running OTX lookup for domain [{}].", domain);
         OTXLookupResult result = lookupDomain(Domain.prepareDomain(domain).trim());
         if (result.hasError()) {
-            throw new RuntimeException((String) result.getResults().get(LookupResult.MESSAGE));
+            throw new RuntimeException((String) result.getResults().get(MESSAGE));
         }
         return result;
     }
