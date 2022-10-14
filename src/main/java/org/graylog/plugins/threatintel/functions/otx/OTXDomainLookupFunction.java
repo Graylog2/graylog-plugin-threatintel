@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
+import static org.graylog.plugins.threatintel.functions.otx.OTXLookupResult.MESSAGE;
+
 public class OTXDomainLookupFunction extends AbstractOTXLookupFunction {
 
     private static final Logger LOG = LoggerFactory.getLogger(OTXDomainLookupFunction.class);
@@ -53,7 +55,11 @@ public class OTXDomainLookupFunction extends AbstractOTXLookupFunction {
         }
 
         LOG.debug("Running OTX lookup for domain [{}].", domain);
-        return lookupDomain(Domain.prepareDomain(domain).trim());
+        OTXLookupResult result = lookupDomain(Domain.prepareDomain(domain).trim());
+        if (result.hasError()) {
+            throw new RuntimeException((String) result.getResults().get(MESSAGE));
+        }
+        return result;
     }
 
     @Override

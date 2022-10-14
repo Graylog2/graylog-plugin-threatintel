@@ -72,7 +72,7 @@ public class OTXDataAdapter extends LookupDataAdapter {
     private static final InetAddressValidator INET_ADDRESS_VALIDATOR = InetAddressValidator.getInstance();
     // Don't use the object mapper from ObjectMapperProvider to make sure we are not affected by changes in that one
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final TypeReference<Map<Object, Object>> MAP_TYPE_REFERENCE = new TypeReference<Map<Object, Object>>() {
+    private static final TypeReference<Map<Object, Object>> MAP_TYPE_REFERENCE = new TypeReference<>() {
     };
 
     private static final String OTX_INDICATOR_IPV4 = "IPv4";
@@ -216,7 +216,8 @@ public class OTXDataAdapter extends LookupDataAdapter {
             if (!response.isSuccessful()) {
                 LOG.warn("OTX {} request for key <{}> failed: {}", otxIndicator, key, response);
                 httpRequestErrors.mark();
-                return LookupResult.empty();
+                return LookupResult.withError(
+                        String.format("OTX %s request for key <%s> failed: %s", otxIndicator, key, response.code()));
             }
 
             return parseResponse(response.body());
@@ -308,11 +309,7 @@ public class OTXDataAdapter extends LookupDataAdapter {
     @JsonDeserialize(builder = OTXDataAdapter.Config.Builder.class)
     @JsonTypeName(NAME)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static abstract class Config implements LookupDataAdapterConfiguration {
-        @Override
-        @JsonProperty(TYPE_FIELD)
-        public abstract String type();
-
+    public abstract static class Config implements LookupDataAdapterConfiguration {
         @JsonProperty("indicator")
         @NotEmpty
         public abstract String indicator();

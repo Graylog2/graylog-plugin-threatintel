@@ -16,35 +16,23 @@
  */
 package org.graylog.plugins.threatintel.functions.otx;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ForwardingMap;
 import com.google.common.collect.ImmutableMap;
+import org.graylog2.plugin.lookup.LookupResult;
 
 import java.util.Map;
 
 public class OTXLookupResult extends ForwardingMap<String, Object> {
-
+    public static final String MESSAGE = "message";
+    public static final String HAS_ERROR = "has_error";
+    public static final String OTX_THREAT_INDICATED = "otx_threat_indicated";
     private final ImmutableMap<String, Object> results;
 
-    public static final OTXLookupResult EMPTY = new EmptyOTXLookupResult();
-    public static final OTXLookupResult FALSE = new FalseOTXLookupResult();
+    protected static final OTXLookupResult EMPTY = new EmptyOTXLookupResult();
+    protected static final OTXLookupResult FALSE = new FalseOTXLookupResult();
 
-    public static OTXLookupResult buildFromIntel(OTXIntel intel) {
-        if(intel.getPulseCount() > 0) {
-            ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder();
-
-            // Indicator that threat intelligence was returned for the query.
-            builder.put("otx_threat_indicated", true);
-
-            // Add metadata.
-            Joiner joiner = Joiner.on(", ").skipNulls();
-            builder.put("otx_threat_ids", joiner.join(intel.getPulseIds()));
-            builder.put("otx_threat_names", joiner.join(intel.getPulseNames()));
-
-            return new OTXLookupResult(builder.build());
-        } else {
-            return OTXLookupResult.FALSE;
-        }
+    public static OTXLookupResult buildFromError(LookupResult lookupResult) {
+        return new FalseOTXLookupResult((String) lookupResult.singleValue());
     }
 
     public OTXLookupResult(ImmutableMap<String, Object> fields) {
@@ -55,6 +43,13 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
         return results;
     }
 
+    public boolean hasError() {
+        if (results != null && !results.isEmpty()) {
+            return (results.get(HAS_ERROR) != null);
+        }
+        return false;
+    }
+
     @Override
     protected Map<String, Object> delegate() {
         return getResults();
@@ -62,11 +57,19 @@ public class OTXLookupResult extends ForwardingMap<String, Object> {
 
     private static class FalseOTXLookupResult extends OTXLookupResult {
         private static final ImmutableMap<String, Object> EMPTY = ImmutableMap.<String, Object>builder()
-                .put("otx_threat_indicated", false)
+                .put(OTX_THREAT_INDICATED, false)
                 .build();
 
         private FalseOTXLookupResult() {
             super(EMPTY);
+        }
+
+        private FalseOTXLookupResult(String errMsg) {
+            super(ImmutableMap.<String, Object>builder()
+                    .put(OTX_THREAT_INDICATED, false)
+                    .put(HAS_ERROR, true)
+                    .put(MESSAGE, errMsg)
+                    .build());
         }
     }
 

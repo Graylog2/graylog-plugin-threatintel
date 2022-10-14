@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
+import static org.graylog.plugins.threatintel.functions.otx.OTXLookupResult.MESSAGE;
+
 public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
 
     private static final Logger LOG = LoggerFactory.getLogger(OTXIPLookupFunction.class);
@@ -54,7 +56,11 @@ public class OTXIPLookupFunction extends AbstractOTXLookupFunction {
 
         LOG.debug("Running OTX lookup for IP [{}].", ip);
 
-        return lookupIP(ip.trim());
+        OTXLookupResult result = lookupIP(ip.trim());
+        if (result.hasError()) {
+            throw new RuntimeException((String) result.getResults().get(MESSAGE));
+        }
+        return result;
     }
 
     @Override
