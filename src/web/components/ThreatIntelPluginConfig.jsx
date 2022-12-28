@@ -46,7 +46,7 @@ const ThreatIntelPluginConfig = createReactClass({
 
     return {
       config: ObjectUtils.clone(config),
-      showModal: false,
+      threatintelConfigModal: false,
     };
   },
 
@@ -80,11 +80,11 @@ const ThreatIntelPluginConfig = createReactClass({
   },
 
   _openModal() {
-    this.setState({ showModal: true });
+    this.setState({ threatintelConfigModal: true });
   },
 
   _closeModal() {
-    this.setState({ showModal: false });
+    this.setState({ threatintelConfigModal: false });
   },
 
   _resetConfig() {
@@ -119,7 +119,7 @@ const ThreatIntelPluginConfig = createReactClass({
           <Button bsStyle="info" bsSize="xs" onClick={this._openModal}>Edit configuration</Button>
         </IfPermitted>
 
-        <BootstrapModalForm show={this.state.showModal}
+        <BootstrapModalForm show={this.state.threatintelConfigModal}
                             title="Update Threat Intelligence plugin Configuration"
                             onSubmitForm={this._saveConfig}
                             onCancel={this._resetConfig}
