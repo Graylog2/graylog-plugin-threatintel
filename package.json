@@ -20,9 +20,8 @@
   "author": "Graylog, Inc. <hello@graylog.com>",
   "license": "SSPL-1.0",
   "dependencies": {
-    "buffer": "^6.0.3"
-  },
-  "devDependencies": {
+    "buffer": "^6.0.3",
     "graylog-web-plugin": "file:../graylog2-server/graylog2-web-interface/packages/graylog-web-plugin"
-  }
+  },
+  "devDependencies": {}
 }
