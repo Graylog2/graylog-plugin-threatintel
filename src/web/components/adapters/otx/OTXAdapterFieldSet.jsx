@@ -16,7 +16,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import lodash from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { Input } from 'components/bootstrap';
 import { Select } from 'components/common';
@@ -53,7 +53,7 @@ class OTXAdapterFieldSet extends React.Component {
 
   handleSelect = (fieldName) => {
     return (selectedIndicator) => {
-      const config = lodash.cloneDeep(this.props.config);
+      const config = cloneDeep(this.props.config);
       config[fieldName] = selectedIndicator;
       this.props.updateConfig(config);
     };
